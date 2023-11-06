@@ -1,0 +1,31 @@
+# FILEPATH: /root/php/php/src/.htaccess
+Require all granted
+# disable directory browsing
+Options -Indexes
+# disable directory listing
+IndexIgnore *
+# disallow includes.php db.php and utils.php
+<FilesMatch "^(includes\.php|db\.php|utils\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+# disable access to .htaccess
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+# disable access to .htpasswd
+<Files .htpasswd>
+    Order allow,deny
+    Deny from all
+</Files>
+# disable access to .git
+<Files .git>
+    Order allow,deny
+    Deny from all
+</Files>
+# disable access to .gitignore
+<Files .gitignore>
+    Order allow,deny
+    Deny from all
+</Files>
