@@ -4,7 +4,7 @@ Require all granted
 Options -Indexes
 # disable directory listing
 IndexIgnore *
-RewriteEngine On
+
 # disallow includes.php db.php and utils.php
 <FilesMatch "^(includes\.php|db\.php|utils\.php)$">
     Order allow,deny
@@ -30,5 +30,3 @@ RewriteEngine On
     Order allow,deny
     Deny from all
 </Files>
-#redirect 404 to index.php
-ErrorDocument 404 /index.php

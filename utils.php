@@ -75,19 +75,73 @@ function get_student_name($studentid)
 function get_all_teachers()
 {
     $teacherid = "";
-    $sql = "SELECT ID FROM Teacher";
+    $name = "";
+    $pastoral = "";
+    $account = "";
+    $sql = "SELECT ID,Name,Pastoral,UserID FROM Teacher ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($teacherid);
+    $stmt->bind_result($teacherid,$name,$pastoral,$account);
     $teachers = array();
     while ($stmt->fetch()) {
         $teachers[] = new Teacher($teacherid);
+        //set the pastoral of the teacher
+        $teachers[count($teachers) - 1]->set_pastoral($pastoral);
+        //set the name of the teacher
+        $teachers[count($teachers) - 1]->set_name($name);
+        //set the account of the teacher
+        $teachers[count($teachers) - 1]->set_account($account);
     }
     $stmt->close();
-    //update the teachers
-    foreach ($teachers as $teacher) {
-        $teacher->update();
+    //update the teachers in the same way as the students
+    $Class = "";
+    $Teacher = "0";
+    $counter = -1;
+    $OldTeacher = "-1";
+    $sql = "SELECT Class,Teacher FROM TeacherClass ORDER BY Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Class, $Teacher);
+    while ($stmt->fetch()) {
+        if ($Teacher != $OldTeacher) {
+            $counter++;
+            $OldTeacher = $Teacher;
+        }
+        $teachers[$counter]->add_class($Class);
     }
+    $stmt->close();
+    $Student = "";
+    $sql = "SELECT sc.Student, tc.Teacher
+    FROM StudentClass sc
+    JOIN TeacherClass tc ON sc.Class = tc.Class
+    ORDER BY tc.Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Student, $Teacher);
+    while ($stmt->fetch()) {
+        $counter = 0;
+        while ($Teacher != $teachers[$counter]->get_id()) {
+            $counter++;
+        }
+        $teachers[$counter]->add_student($Student);
+    }
+    $stmt->close();
+    $parent="";
+    "SELECT ps.Parent, tc.Teacher
+    FROM ParentStudent ps
+    JOIN TeacherClass tc ON ps.Student = tc.Class
+    ORDER BY tc.Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parent, $Teacher);
+    while ($stmt->fetch()) {
+        $counter = 0;
+        while ($Teacher != $teachers[$counter]->get_id()) {
+            $counter++;
+        }
+        $teachers[$counter]->add_parent($parent);
+    }
+    $stmt->close();
     return $teachers;
 }
 
@@ -114,18 +168,71 @@ function get_all_classes()
 function get_all_students()
 {
     $studentid = "";
-    $sql = "SELECT ID FROM Student";
+    $name = "";
+    $year = "";
+    $sql = "SELECT ID,YearGroup,Name FROM Student ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($studentid);
+    $stmt->bind_result($studentid,$year,$name);
     $students = array();
     while ($stmt->fetch()) {
         $students[] = new Student($studentid);
+        //set the yeargroup of the student
+        $students[count($students) - 1]->set_year($year);
+        //set the name of the student
+        $students[count($students) - 1]->set_name($name);
     }
     $stmt->close();
-    //update the students
-    foreach ($students as $student) {
-        $student->update();
+    //mass add the classes
+    $Class = "";
+    $Student = "0";
+    $counter = -1;
+    $OldStudent = "-1";
+    $sql = "SELECT Class,Student FROM StudentClass ORDER BY Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Class, $Student);
+    while ($stmt->fetch()) { 
+        if ($Student != $OldStudent) {
+            $counter++;
+            $OldStudent = $Student;
+        }
+        $students[$counter]->add_class($Class);
+    }
+    $stmt->close();
+    //mass add the parents
+    //not all students have parents, so we need to check if the student has parents
+    $Parent = "";
+    $Student = "0";
+    $counter = 0;
+    $OldStudent = "-1";
+    $sql = "SELECT Parent,Student FROM ParentStudent ORDER BY Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Parent, $Student);
+    while ($stmt->fetch()) {
+        while ($Student != $OldStudent) {
+            $counter++;
+            //set the parent of the student to an empty array
+            $OldStudent = $students[$counter]->get_id();
+        }
+        $students[$counter]->add_parent($Parent);
+    }
+    $Teacher = "";
+    $stmt->close();
+    $sql = "SELECT sc.Student, tc.Teacher
+    FROM StudentClass sc
+    JOIN TeacherClass tc ON sc.Class = tc.Class
+    ORDER BY sc.Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Student, $Teacher);
+    while ($stmt->fetch()) {
+        $counter = 0;
+        while ($Student != $students[$counter]->get_id()) {
+            $counter++;
+        }
+        $students[$counter]->add_teacher($Teacher);
     }
     return $students;
 }

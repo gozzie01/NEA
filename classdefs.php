@@ -9,6 +9,10 @@ class Student {
     
     public function __construct($id) {
         $this->id = $id;
+        //set teachers, year, classes, parents to empty arrays 
+        $this->teachers = array();
+        $this->classes = array();
+        $this->parents = array();
     }
     public function update() {
         $id = $this->id;
@@ -84,6 +88,30 @@ class Student {
     public function get_year() {
         return $this->year;
     }
+    public function set_name($name) {
+        $this->name = $name;
+    }
+    public function set_classes($classes) {
+        $this->classes = $classes;
+    }
+    public function add_class($class) {
+        $this->classes[] = $class;
+    }
+    public function add_parent($parent){
+        $this->parents[] = $parent;
+    }
+    public function add_teacher($teacher) {
+        $this->teachers[] = $teacher;
+    }
+    public function set_teachers($teachers) {
+        $this->teachers = $teachers;
+    }
+    public function set_parents($parents) {
+        $this->parents = $parents;
+    }
+    public function set_year( $year) {
+        $this->year = $year;
+    }
 }
 class Teacher {
     private $id;
@@ -96,6 +124,10 @@ class Teacher {
     
     public function __construct($id) {
         $this->id = $id;
+        //set classes, students, parents to empty arrays
+        $this->classes = array();
+        $this->students = array();
+        $this->parents = array();
     }
     public function update() {
         $id = $this->id;
@@ -173,6 +205,37 @@ class Teacher {
     public function get_id() {
         return $this->id;
     }
+    public function get_parents() {
+        return $this->parents;
+    }
+    public function set_name($name) {
+        $this->name = $name;
+    }
+    public function set_pastoral($pastoral) {
+        $this->pastoral = $pastoral;
+    }
+    public function set_classes($classes) {
+        $this->classes = $classes;
+    }
+    public function set_students($students) {
+        $this->students = $students;
+    }
+    public function set_account($account) {
+        $this->account = $account;
+    }
+    public function add_class($class) {
+        $this->classes[] = $class;
+    }
+    public function add_student($student) {
+        $this->students[] = $student;
+    }
+    public function add_parent($parent) {
+        $this->parents[] = $parent;
+    }
+    public function set_parents($parents) {
+        $this->parents = $parents;
+    }
+
 }
 class Parent_ {
     private $id;
