@@ -16,7 +16,7 @@ if (!is_admin()) {
 if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {
     //write a file to make sure it works
     //file_put_contents("test.txt", $_POST["name"] . " " . $_POST["email"] . " " . $_POST["phone"]);
-    update_account($_SESSION['user'], $_POST["name"], $_POST["email"], $_POST["phone"]);
+    update_accountDetails($_SESSION['user'], $_POST["name"], $_POST["email"], $_POST["phone"]);
     //return 200 code
     header("HTTP/1.1 200 OK");
     die();

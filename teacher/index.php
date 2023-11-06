@@ -13,5 +13,17 @@ if (!is_teacher()) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <?php require_once '../includes.php'; ?>
-    
+<?php require_once '../includes.php'; ?>
+<?php require_once './nav.php'; ?>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Welcome Teacher</h1>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
