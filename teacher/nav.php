@@ -11,6 +11,14 @@
                 <a class="nav-link" href="/teacher/classes.php">Classes</a>
                 <a class="nav-link" href="/teacher/myaccount.php">My Account</a>
                 <a class="nav-link" href="/teacher/bookings.php">Bookings</a>
+                <?php
+                if (is_admin()){
+                    echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
+                }
+                if (is_parent()){
+                    echo '<a class="nav-link" href="/parent/index.php">Parent</a>';
+                }
+                ?>
                 <a class="nav-link" href="/logout.php">Logout</a>
             </div>
         </div>

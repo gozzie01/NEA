@@ -31,6 +31,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
     echo json_encode($response);
     die();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
+    $classes = get_all_classes();
+    foreach ($classes as $class_) {
+        echo "<tr id=ClassRow", $class_->get_id(), ">";
+        echo "<td>", $class_->get_id(), "</td>";
+        echo "<td>", $class_->get_name(), "</td>";
+        echo "<td>";
+        foreach ($class_->get_teachers() as $teacher) {
+            $teacher_ = new teacher($teacher);
+            $teacher_->update();
+            echo $teacher_->get_name(), "<br> ";
+        }
+        echo "</td>";
+        echo "<td>", count($class_->get_students()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $class_->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the Class exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
     $id = $_POST['id'];
@@ -148,6 +167,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                 }
             }
         }
+        function updateTable(){
+            $.ajax({
+                type: "POST",
+                url: "/admin/classes.php",
+                data: {
+                    gettabledata: true
+                },
+                success: function(data) {
+                    $('#mainbody').html(data);
+                }
+            });
+        }
         //on document load
         $(document).ready(function() {
             //make the multiselects searchable and 
@@ -165,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                 multiple: true,
                 allowClear: true
             });
-
+            updateTable();
         });
         //when a Class is selected from the table, update the edit form to show the Class's details
         $(document).on('click', 'tr', function() {
@@ -258,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                                 if (response.success) {
                                     $('#error').html(response.success);
                                     $('#clear').click();
-                                    location.reload();
+                                    updateTable();
                                 }
                             }
                         } else {
@@ -311,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                                 $('#error').html(response.success);
                                 $('#clear').click();
                                 $('#confirm').hide();
-                                location.reload();
+                                updateTable();
                             }
                         }
                     } else {
@@ -372,7 +403,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                             $('#error').html(response.success);
                             $('#clear').click();
                             $('#confirmDeletion').hide();
-                            location.reload();
+                            updateTable();
                         }
                     }
                 }
@@ -427,24 +458,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="mainbody">
                                 <?php
-                                $classes = get_all_classes();
-                                foreach ($classes as $class_) {
-                                    echo "<tr id=ClassRow", $class_->get_id(), ">";
-                                    echo "<td>", $class_->get_id(), "</td>";
-                                    echo "<td>", $class_->get_name(), "</td>";
-                                    echo "<td>";
-                                    foreach ($class_->get_teachers() as $teacher) {
-                                        $teacher_ = new teacher($teacher);
-                                        $teacher_->update();
-                                        echo $teacher_->get_name(), "<br> ";
-                                    }
-                                    echo "</td>";
-                                    echo "<td>", count($class_->get_students()), "</td>";
-                                    echo "<td><button type='button' class='btn btn-danger' id='delete", $class_->get_id(), "'>Delete</button></td>";
-                                    echo "</tr>";
-                                }
                                 ?>
                             </tbody>
                         </table>

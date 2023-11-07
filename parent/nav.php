@@ -67,6 +67,14 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
                 <a class="nav-link" href="/parent/classes.php">Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
                 <a class="nav-link" href="/parent/bookings.php">Bookings</a>
+                <?
+                if (is_admin()) {
+                    echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
+                }
+                if (is_teacher()) {
+                    echo '<a class="nav-link" href="/teacher/index.php">Teacher</a>';
+                }
+                ?>
                 <a class="nav-link" href="/logout.php">Logout</a>
             </div>
         </div>

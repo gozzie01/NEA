@@ -36,6 +36,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     echo json_encode($response);
     die();
 }
+if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])){
+    $Accounts = get_all_Accounts();
+    foreach ($Accounts as $Account) {
+        echo "<tr id=AccountRow", $Account->get_id(), ">";
+        echo "<td>", $Account->get_id(), "</td>";
+        echo "<td>", $Account->get_name(), "</td>";
+        echo "<td>", $Account->get_email(), "</td>";
+        echo "<td></td>";
+        echo "<td>", $Account->get_phone(), "</td>";
+        echo "<td>", $Account->get_parentid(), "</td>";
+        echo "<td>", $Account->get_teacherid(), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();  
+}
 //if the request is a post and the id is set, check if the Account exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     $id = $_POST['id'];
@@ -78,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         //update the Account
         $respon = update_Account($id, $name, $email, $phone, $parentid, $teacherid);
     } else {
-        //create the Accounts
+        //create the Accounts   
         $respon = create_Account($id, $name, $email, $phone, $parentid, $teacherid);
     }
     if ($respon) {
@@ -151,6 +167,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 }
             }
         }
+        function updateTable(){
+            $.ajax({
+                type: "POST",
+                url: "/admin/accounts.php",
+                data: {
+                    gettabledata: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#mainbody').html(data);
+                }
+            });
+        }
         //on document load
         $(document).ready(function() {
             //make the multiselects searchable and 
@@ -164,6 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 placeholder: "Select a Teacher",
                 allowClear: true
             });
+            updateTable();
         });
         //when a Account is selected from the table, update the edit form to show the Account's details
         $(document).on('click', 'tr', function() {
@@ -257,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                                 if (response.success) {
                                     $('#error').html(response.success);
                                     $('#clear').click();
-                                    location.reload();
+                                    updateTable();
                                 }
                             }
                         } else {
@@ -318,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                                 $('#error').html(response.success);
                                 $('#clear').click();
                                 $('#confirm').hide();
-                                location.reload();
+                                updateTable();
                             }
                         }
                     } else {
@@ -385,7 +415,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                             $('#error').html(response.success);
                             $('#clear').click();
                             $('#confirmDeletion').hide();
-                            location.reload();
+                            updateTable();
                         }
                     }
                 }
@@ -443,21 +473,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="mainbody">
                                 <?php
-                                $Accounts = get_all_Accounts();
-                                foreach ($Accounts as $Account) {
-                                    echo "<tr id=AccountRow", $Account->get_id(), ">";
-                                    echo "<td>", $Account->get_id(), "</td>";
-                                    echo "<td>", $Account->get_name(), "</td>";
-                                    echo "<td>", $Account->get_email(), "</td>";
-                                    echo "<td></td>";
-                                    echo "<td>", $Account->get_phone(), "</td>";
-                                    echo "<td>", $Account->get_parentid(), "</td>";
-                                    echo "<td>", $Account->get_teacherid(), "</td>";
-                                    echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->get_id(), "'>Delete</button></td>";
-                                    echo "</tr>";
-                                }
+
                                 ?>
                             </tbody>
                         </table>

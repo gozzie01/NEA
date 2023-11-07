@@ -35,6 +35,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentID'])) {
     echo json_encode($response);
     die();
 }
+//if server request is a post and the table data flag is set
+if ($_SERVER['REQUEST_METHOD']=== 'POST' && isset ($_POST['GetTableData'])){
+    $students = get_all_students();
+    foreach ($students as $student) {
+        echo "<tr id=studentRow", $student->get_id(), ">";
+        echo "<td>", $student->get_id(), "</td>";
+        echo "<td>", $student->get_name(), "</td>";
+        echo "<td>", $student->get_year(), "</td>";
+        echo "<td>", count($student->get_classes()), "</td>";
+        echo "<td>", count($student->get_parents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $student->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the student exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updatestudent'])) {
     $id = $_POST['id'];
@@ -229,6 +244,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
             $('#clear').click();
             var height = $(window).height() - 240;
             $('.table-scroll tbody').css('height', height);
+            //get the table data
+            $.ajax({
+                type: "POST",
+                url: "/admin/students.php",
+                data: {
+                    GetTableData: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#mainbody').html(data);
+                }
+            });
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
@@ -242,6 +269,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
             e.preventDefault();
         });
         //on click of the add/update button
+        function updateTable(){
+            $.ajax({
+                type: "POST",
+                url: "/admin/students.php",
+                data: {
+                    GetTableData: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#mainbody').html(data);
+                }
+            });
+        }
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
             if ($(this).text() == "Add") {
@@ -266,7 +306,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                                 if (response.success) {
                                     $('#error').html(response.success);
                                     $('#clear').click();
-                                    location.reload();
                                 }
                             }
                         } else {
@@ -278,6 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                 xhttp.open("POST", "/admin/students.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xhttp.send("updatestudent=true" + "&id=" + $id + "&name=" + $name + "&year=" + $year + "&classes=" + $classes + "&parents=" + $parents);
+                updateTable();
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -326,7 +366,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                                 $('#error').html(response.success);
                                 $('#clear').click();
                                 $('#confirm').hide();
-                                location.reload();
                             }
                         }
                     } else {
@@ -338,6 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
             xhttp.open("POST", "/admin/students.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhttp.send("updatestudent=true" + "&id=" + $id + "&name=" + $name + "&year=" + $year + "&classes=" + $classes + "&parents=" + $parents);
+            updateTable();
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -393,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                             $('#error').html(response.success);
                             $('#clear').click();
                             $('#confirmDeletion').hide();
-                            location.reload();
+                            updateTable();
                         }
                     }
                 }
@@ -449,20 +489,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $students = get_all_students();
-                                foreach ($students as $student) {
-                                    echo "<tr id=studentRow", $student->get_id(), ">";
-                                    echo "<td>", $student->get_id(), "</td>";
-                                    echo "<td>", $student->get_name(), "</td>";
-                                    echo "<td>", $student->get_year(), "</td>";
-                                    echo "<td>", count($student->get_classes()), "</td>";
-                                    echo "<td>", count($student->get_parents()), "</td>";
-                                    echo "<td><button type='button' class='btn btn-danger' id='delete", $student->get_id(), "'>Delete</button></td>";
-                                    echo "</tr>";
-                                }
-                                ?>
+                            <tbody id="mainbody">
                             </tbody>
                         </table>
                     </div>

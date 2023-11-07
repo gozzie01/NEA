@@ -31,6 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
     echo json_encode($response);
     die();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
+    $parents = get_all_parents();
+    foreach ($parents as $Parent) {
+        echo "<tr id=ParentRow", $Parent->get_id(), ">";
+        echo "<td>", $Parent->get_id(), "</td>";
+        echo "<td>", $Parent->get_name(), "</td>";
+        echo "<td>", $Parent->get_account(), "</td>";
+        echo "<td>", count($Parent->get_students()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the Parent exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
     $id = $_POST['id'];
@@ -154,6 +167,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                 multiple: false
             });
         });
+        function updateTable() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/parents.php",
+                data: {
+                    gettabledata: true
+                },
+                success: function(data) {
+                    $('#mainbody').html(data);
+                }
+            });
+        }
         //when a Parent is selected from the table, update the edit form to show the Parent's details
         $(document).on('click', 'tr', function() {
             if ($(this).find("th").length > 0) {
@@ -208,6 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             $('#clear').click();
             var height = $(window).height() - 240;
             $('.table-scroll tbody').css('height', height);
+            updateTable();
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
@@ -241,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                                 if (response.success) {
                                     $('#error').html(response.success);
                                     $('#clear').click();
-                                    location.reload();
+                                    updateTable();
                                 }
                             }
                         } else {
@@ -300,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                                 $('#error').html(response.success);
                                 $('#clear').click();
                                 $('#confirm').hide();
-                                location.reload();
+                                updateTable();
                             }
                         }
                     } else {
@@ -367,7 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                             $('#error').html(response.success);
                             $('#clear').click();
                             $('#confirmDeletion').hide();
-                            location.reload();
+                            updateTable();
                         }
                     }
                 }
@@ -422,18 +448,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="mainbody">
                                 <?php
-                                $parents = get_all_parents();
-                                foreach ($parents as $Parent) {
-                                    echo "<tr id=ParentRow", $Parent->get_id(), ">";
-                                    echo "<td>", $Parent->get_id(), "</td>";
-                                    echo "<td>", $Parent->get_name(), "</td>";
-                                    echo "<td>", $Parent->get_account(), "</td>";
-                                    echo "<td>", count($Parent->get_students()), "</td>";
-                                    echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->get_id(), "'>Delete</button></td>";
-                                    echo "</tr>";
-                                }
+
                                 ?>
                             </tbody>
                         </table>

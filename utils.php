@@ -204,7 +204,7 @@ function get_all_students()
     //not all students have parents, so we need to check if the student has parents
     $Parent = "";
     $Student = "0";
-    $counter = 0;
+    $counter = -1;
     $OldStudent = "-1";
     $sql = "SELECT Parent,Student FROM ParentStudent ORDER BY Student";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -768,6 +768,47 @@ function create_parent($id, $name, $account, $students)
             $stmt->close();
         }
     }
+    return true;
+}
+
+function create_account($id, $name, $email, $phone, $parentid, $teacherid)
+{
+    if (account_exists($id)) {
+        return false;
+    }
+    //check if the values passed are valid
+    if (!is_string($name) || !is_string($email) || !is_string($phone)) {
+        return false;
+    }
+    //check if the parent and teacher exist
+    if (!is_null($parentid)) {
+        if (!parent_exists($parentid)) {
+            return false;
+        }
+    }
+    if (!is_null($teacherid)) {
+        if (!teacher_exists($teacherid)) {
+            return false;
+        }
+    }
+    //create the account
+    $sql = "INSERT INTO User (ID, Name, Email, Phone) VALUES (?, ?, ?, ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("isss", $id, $name, $email, $phone);
+    $stmt->execute();
+    $stmt->close();
+    //create the parent
+    $sql = "INSERT INTO Parent (UserID) VALUES (?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+    //create the teacher
+    $sql = "INSERT INTO Teacher (UserID) VALUES (?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
     return true;
 }
 function update_parent($id, $name, $account, $students)

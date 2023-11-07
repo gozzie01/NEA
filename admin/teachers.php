@@ -43,6 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
         die();
     }
 }
+if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['gettabledata']))
+{
+    $teachers = get_all_teachers();
+    foreach ($teachers as $teacher) {
+        echo "<tr id=teacherRow", $teacher->get_id(), ">";
+        echo "<td>", $teacher->get_id(), "</td>";
+        echo "<td>", $teacher->get_name(), "</td>";
+        echo "<td>", $teacher->get_account(), "</td>";
+        echo "<td>", $teacher->get_pastoral() ? "yes" : "no", "</td>";
+        echo "<td>", count($teacher->get_classes()), "</td>";
+        echo "<td>", count($teacher->get_students()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $teacher->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the teacher exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateteacher'])) {
     $id = $_POST['id'];
@@ -225,6 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
         //on ready clear the edit form
         $(document).ready(function() {
             $('#clear').click();
+            updateTable();
         });
         //on submit
         $(document).on('submit', '#teacherUpdateForm', function(e) {
@@ -253,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                                 if (response.success) {
                                     $('#error').html(response.success);
                                     $('#clear').click();
-                                    location.reload();
+                                    updateTable();
                                 }
                             }
                         } else {
@@ -310,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                                 $('#error').html(response.success);
                                 $('#clear').click();
                                 $('#confirm').hide();
-                                location.reload();
+                                updateTable();
                             }
                         }
                     } else {
@@ -351,6 +368,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
             //show the confirmation popup
             $('#confirmDeletion').show();
         });
+        function updateTable(){
+            $.ajax({
+                type: "POST",
+                url: "/admin/teachers.php",
+                data: {
+                    gettabledata: true
+                },
+                success: function(data) {
+                    $('#mainbody').html(data);
+                }
+            });
+        }
         //on click of the confirm button
         $(document).on('click', '#confirmDeletionButton', function() {
             //get the teacher id from the form
@@ -376,7 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                             $('#error').html(response.success);
                             $('#clear').click();
                             $('#confirmDeletion').hide();
-                            location.reload();
+                            updateTable();
                         }
                     }
                 }
@@ -427,21 +456,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                                 <th scope="col">Delete</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php
-                            $teachers = get_all_teachers();
-                            foreach ($teachers as $teacher) {
-                                echo "<tr id=teacherRow", $teacher->get_id(), ">";
-                                echo "<td>", $teacher->get_id(), "</td>";
-                                echo "<td>", $teacher->get_name(), "</td>";
-                                echo "<td>", $teacher->get_account(), "</td>";
-                                echo "<td>", $teacher->get_pastoral() ? "yes" : "no", "</td>";
-                                echo "<td>", count($teacher->get_classes()), "</td>";
-                                echo "<td>", count($teacher->get_students()), "</td>";
-                                echo "<td><button type='button' class='btn btn-danger' id='delete", $teacher->get_id(), "'>Delete</button></td>";
-                                echo "</tr>";
-                            }
-                            ?>
+                        <tbody id="mainbody">
+
                         </tbody>
                     </table>
                 </div>
