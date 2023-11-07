@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
         $respon = update_Class($id, $name, $students, $teachers);
     } else {
         //create the classes
-        $respon = update_Class($id, $name, $students, $teachers);
+        $respon = create_Class($id, $name, $students, $teachers);
     }
     if ($respon) {
         $response = array(

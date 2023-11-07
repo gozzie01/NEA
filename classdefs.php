@@ -444,6 +444,38 @@ class Class_
     {
         return $this->id;
     }
+    public function get_parents()
+    {
+        return $this->parents;
+    }
+    public function set_name($name)
+    {
+        $this->name = $name;
+    }
+    public function set_students($students)
+    {
+        $this->students = $students;
+    }
+    public function set_teachers($teachers)
+    {
+        $this->teachers = $teachers;
+    }
+    public function set_parents($parents)
+    {
+        $this->parents = $parents;
+    }
+    public function add_student($student)
+    {
+        $this->students[] = $student;
+    }
+    public function add_teacher($teacher)
+    {
+        $this->teachers[] = $teacher;
+    }
+    public function add_parent($parent)
+    {
+        $this->parents[] = $parent;
+    }
 }
 class Account
 {
