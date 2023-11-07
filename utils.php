@@ -81,7 +81,7 @@ function get_all_teachers()
     $sql = "SELECT ID,Name,Pastoral,UserID FROM Teacher ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($teacherid,$name,$pastoral,$account);
+    $stmt->bind_result($teacherid, $name, $pastoral, $account);
     $teachers = array();
     while ($stmt->fetch()) {
         $teachers[] = new Teacher($teacherid);
@@ -126,7 +126,7 @@ function get_all_teachers()
         $teachers[$counter]->add_student($Student);
     }
     $stmt->close();
-    $parent="";
+    $parent = "";
     "SELECT ps.Parent, tc.Teacher
     FROM ParentStudent ps
     JOIN TeacherClass tc ON ps.Student = tc.Class
@@ -173,7 +173,7 @@ function get_all_students()
     $sql = "SELECT ID,YearGroup,Name FROM Student ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($studentid,$year,$name);
+    $stmt->bind_result($studentid, $year, $name);
     $students = array();
     while ($stmt->fetch()) {
         $students[] = new Student($studentid);
@@ -192,7 +192,7 @@ function get_all_students()
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($Class, $Student);
-    while ($stmt->fetch()) { 
+    while ($stmt->fetch()) {
         if ($Student != $OldStudent) {
             $counter++;
             $OldStudent = $Student;
@@ -221,9 +221,9 @@ function get_all_students()
     $Teacher = "";
     $stmt->close();
     $sql = "SELECT sc.Student, tc.Teacher
-    FROM StudentClass sc
-    JOIN TeacherClass tc ON sc.Class = tc.Class
-    ORDER BY sc.Student";
+        FROM StudentClass sc
+        JOIN TeacherClass tc ON sc.Class = tc.Class
+        ORDER BY sc.Student";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($Student, $Teacher);
@@ -426,7 +426,7 @@ function update_teacher($id, $name, $pastoral, $classes, $account)
         return false;
     }
     //check if the values passed are valid
-    if (!is_string($name)||!is_int($pastoral)) {
+    if (!is_string($name) || !is_int($pastoral)) {
         return false;
     }
     //allow account to be unset or null
@@ -450,7 +450,7 @@ function update_teacher($id, $name, $pastoral, $classes, $account)
     $stmt->execute();
     $stmt->close();
 
-        //update the classes
+    //update the classes
     $sql = "DELETE FROM TeacherClass WHERE Teacher=?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $id);
@@ -474,7 +474,7 @@ function create_teacher($id, $name, $pastoral, $classes, $account)
         return false;
     }
     //check if the values passed are valid
-    if (!is_string($name)||!is_int($pastoral)) {
+    if (!is_string($name) || !is_int($pastoral)) {
         return false;
     }
     //allow account to be unset or null
@@ -596,7 +596,6 @@ function update_class($id, $name, $students, $teachers)
             if (!student_exists($student)) {
                 return false;
             }
-            
         }
     }
 
@@ -730,7 +729,7 @@ function account_exists($id)
     return $numrows > 0;
 }
 
-function create_parent($id, $name,$account, $students)
+function create_parent($id, $name, $account, $students)
 {
     if (parent_exists($id)) {
         return false;
@@ -771,7 +770,7 @@ function create_parent($id, $name,$account, $students)
     }
     return true;
 }
-function update_parent($id, $name, $account,$students)
+function update_parent($id, $name, $account, $students)
 {
     if (!parent_exists($id)) {
         return false;
@@ -877,5 +876,36 @@ function update_account($id, $name, $email, $phone, $parentid, $teacherid)
     $stmt->bind_param("ii", $id, $teacherid);
     $stmt->execute();
     $stmt->close();
+    return true;
+}
+
+function update_accountDetails($id, $name, $email, $phone)
+{
+    if (!account_exists($id)) {
+        return false;
+    }
+    //check if the values passed are valid
+    if (!is_string($name) || !is_string($email) || !is_string($phone)) {
+        return false;
+    }
+    //update the account
+    $sql = "UPDATE User SET Name=?, Email=?, Phone=? WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("sssi", $name, $email, $phone, $id);
+    $stmt->execute();
+    $stmt->close();
+}
+function delete_account($id)
+{
+    if (!account_exists($id)) {
+        return false;
+    }
+    //delete the account
+    $sql = "DELETE FROM User WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
     return true;
 }

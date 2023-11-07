@@ -454,7 +454,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                 <form id="teacherUpdateForm">
                     <input type="text" class="form-control" placeholder="teacher ID" id="teacherID" style="margin: 1pt">
                     <input type="text" class="form-control" placeholder="Teacher Name" id="teacherName" style="margin: 1pt">
-                    <select class="form-select" id="AccountSelector"  style="margin: 1pt">
+                    <select class="form-select" id="AccountSelector" style="margin: 1pt">
                         <?php
                         $accounts = get_all_accounts();
                         foreach ($accounts as $account) {
@@ -462,11 +462,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                         }
                         ?>
                     </select>
-                    <div class="d-flex" >
+                    <div class="d-flex">
                         <p style="margin: 1pt;">Pastoral:</p>
                         <input type="checkbox" class="form-check-input" id="PastoralCheckbox" style="margin: 5pt;">
                     </div>
-                    <select class="form-select" id="ClassSelector"  style="margin: 1pt">
+                    <select class="form-select" id="ClassSelector" style="margin: 1pt">
                         <?php
                         $classes = get_all_classes();
                         foreach ($classes as $class) {
@@ -474,9 +474,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                         }
                         ?>
                     </select>
-                    <button type="submit" id="submitFormButton" class="btn btn-primary"  style="margin: 2pt">Add</button>
+                    <button type="submit" id="submitFormButton" class="btn btn-primary" style="margin: 2pt">Add</button>
                     <!--clear button-->
-                    <button type="button" id="clear" class="btn btn-primary"  style="margin: 2pt">Clear</button>
+                    <button type="button" id="clear" class="btn btn-primary" style="margin: 2pt">Clear</button>
                     <div id="error"></div>
                 </form>
             </div>

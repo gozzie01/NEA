@@ -1,20 +1,23 @@
 <?php
-class Student {
+class Student
+{
     private $id;
     private $name;
     private $teachers;
     private $year;
     private $classes;
     private $parents;
-    
-    public function __construct($id) {
+
+    public function __construct($id)
+    {
         $this->id = $id;
         //set teachers, year, classes, parents to empty arrays 
         $this->teachers = array();
         $this->classes = array();
         $this->parents = array();
     }
-    public function update() {
+    public function update()
+    {
         $id = $this->id;
         $classid = "";
         $teacherid = "";
@@ -27,7 +30,7 @@ class Student {
         $stmt->bind_result($this->name);
         $stmt->fetch();
         $stmt->close();
-        
+
         //sql for classes
         $sql = "SELECT Class FROM StudentClass WHERE Student=?";
         $stmt = $GLOBALS['db']->prepare($sql);
@@ -70,50 +73,65 @@ class Student {
         $stmt->fetch();
         $stmt->close();
     }
-    public function get_name() {
+    public function get_name()
+    {
         return $this->name;
     }
-    public function get_classes() {
+    public function get_classes()
+    {
         return $this->classes;
     }
-    public function get_teachers() {
+    public function get_teachers()
+    {
         return $this->teachers;
     }
-    public function get_parents() {
+    public function get_parents()
+    {
         return $this->parents;
     }
-    public function get_id() {
+    public function get_id():int
+    {
         return $this->id;
     }
-    public function get_year() {
+    public function get_year()
+    {
         return $this->year;
     }
-    public function set_name($name) {
+    public function set_name($name)
+    {
         $this->name = $name;
     }
-    public function set_classes($classes) {
+    public function set_classes($classes)
+    {
         $this->classes = $classes;
     }
-    public function add_class($class) {
+    public function add_class($class)
+    {
         $this->classes[] = $class;
     }
-    public function add_parent($parent){
+    public function add_parent($parent)
+    {
         $this->parents[] = $parent;
     }
-    public function add_teacher($teacher) {
+    public function add_teacher($teacher)
+    {
         $this->teachers[] = $teacher;
     }
-    public function set_teachers($teachers) {
+    public function set_teachers($teachers)
+    {
         $this->teachers = $teachers;
     }
-    public function set_parents($parents) {
+    public function set_parents($parents)
+    {
         $this->parents = $parents;
     }
-    public function set_year( $year) {
+    public function set_year($year)
+    {
         $this->year = $year;
     }
 }
-class Teacher {
+class Teacher
+{
     private $id;
     private $name;
     private $account;
@@ -121,15 +139,17 @@ class Teacher {
     private $classes;
     private $students;
     private $parents;
-    
-    public function __construct($id) {
+
+    public function __construct($id)
+    {
         $this->id = $id;
         //set classes, students, parents to empty arrays
         $this->classes = array();
         $this->students = array();
         $this->parents = array();
     }
-    public function update() {
+    public function update()
+    {
         $id = $this->id;
         $classid = "";
         $studentid = "";
@@ -143,7 +163,7 @@ class Teacher {
         $stmt->bind_result($this->name, $this->pastoral);
         $stmt->fetch();
         $stmt->close();
-        
+
         //sql for classes
         $sql = "SELECT Class FROM TeacherClass WHERE Teacher=?";
         $stmt = $GLOBALS['db']->prepare($sql);
@@ -185,70 +205,87 @@ class Teacher {
         $stmt->bind_result($this->account);
         $stmt->fetch();
         $stmt->close();
-
     }
-    public function get_name() {
+    public function get_name()
+    {
         return $this->name;
     }
-    public function get_pastoral() {
+    public function get_pastoral()
+    {
         return $this->pastoral;
     }
-    public function get_account() {
+    public function get_account()
+    {
         return $this->account;
     }
-    public function get_classes() {
+    public function get_classes()
+    {
         return $this->classes;
     }
-    public function get_students() {
+    public function get_students()
+    {
         return $this->students;
     }
-    public function get_id() {
+    public function get_id()
+    {
         return $this->id;
     }
-    public function get_parents() {
+    public function get_parents()
+    {
         return $this->parents;
     }
-    public function set_name($name) {
+    public function set_name($name)
+    {
         $this->name = $name;
     }
-    public function set_pastoral($pastoral) {
+    public function set_pastoral($pastoral)
+    {
         $this->pastoral = $pastoral;
     }
-    public function set_classes($classes) {
+    public function set_classes($classes)
+    {
         $this->classes = $classes;
     }
-    public function set_students($students) {
+    public function set_students($students)
+    {
         $this->students = $students;
     }
-    public function set_account($account) {
+    public function set_account($account)
+    {
         $this->account = $account;
     }
-    public function add_class($class) {
+    public function add_class($class)
+    {
         $this->classes[] = $class;
     }
-    public function add_student($student) {
+    public function add_student($student)
+    {
         $this->students[] = $student;
     }
-    public function add_parent($parent) {
+    public function add_parent($parent)
+    {
         $this->parents[] = $parent;
     }
-    public function set_parents($parents) {
+    public function set_parents($parents)
+    {
         $this->parents = $parents;
     }
-
 }
-class Parent_ {
+class Parent_
+{
     private $id;
     private $name;
     private $students;
     private $classes;
     private $account;
     private $teachers;
-    
-    public function __construct($id) {
+
+    public function __construct($id)
+    {
         $this->id = $id;
     }
-    public function update() {
+    public function update()
+    {
         $id = $this->id;
         $studentid = "";
         $classid = "";
@@ -269,7 +306,7 @@ class Parent_ {
         $stmt->bind_result($this->account);
         $stmt->fetch();
         $stmt->close();
-        
+
         //sql for students
         $sql = "SELECT Student FROM ParentStudent WHERE Parent=?";
         $stmt = $GLOBALS['db']->prepare($sql);
@@ -305,36 +342,45 @@ class Parent_ {
         }
         $stmt->close();
     }
-    public function get_name() {
+    public function get_name()
+    {
         return $this->name;
     }
-    public function get_students() {
+    public function get_students()
+    {
         return $this->students;
     }
-    public function get_id() {
+    public function get_id()
+    {
         return $this->id;
     }
-    public function get_classes() {
+    public function get_classes()
+    {
         return $this->classes;
     }
-    public function get_teachers() {
+    public function get_teachers()
+    {
         return $this->teachers;
     }
-    public function get_account() {
+    public function get_account()
+    {
         return $this->account;
     }
 }
-class Class_ {
+class Class_
+{
     private $id;
     private $name;
     private $students;
     private $teachers;
     private $parents;
-    
-    public function __construct($id) {
+
+    public function __construct($id)
+    {
         $this->id = $id;
     }
-    public function update() {
+    public function update()
+    {
         $id = $this->id;
         $studentid = "";
         $teacherid = "";
@@ -347,7 +393,7 @@ class Class_ {
         $stmt->bind_result($this->name);
         $stmt->fetch();
         $stmt->close();
-        
+
         //sql for students
         $sql = "SELECT Student FROM StudentClass WHERE Class=?";
         $stmt = $GLOBALS['db']->prepare($sql);
@@ -382,20 +428,25 @@ class Class_ {
         }
         $stmt->close();
     }
-    public function get_name() {
+    public function get_name()
+    {
         return $this->name;
     }
-    public function get_students() {
+    public function get_students()
+    {
         return $this->students;
     }
-    public function get_teachers() {
+    public function get_teachers()
+    {
         return $this->teachers;
     }
-    public function get_id() {
+    public function get_id()
+    {
         return $this->id;
     }
 }
-class Account {
+class Account
+{
     private $id;
     private $name;
     private $email;
@@ -403,10 +454,12 @@ class Account {
     private $password;
     private $teacherid;
     private $parentid;
-    public function __construct($id) {
+    public function __construct($id)
+    {
         $this->id = $id;
     }
-    public function update() {
+    public function update()
+    {
         $id = $this->id;
         //sql for username
         $sql = "SELECT Email, Password FROM User WHERE ID=?";
@@ -449,25 +502,32 @@ class Account {
         $stmt->fetch();
         $stmt->close();
     }
-    public function get_name() {
+    public function get_name()
+    {
         return $this->name;
     }
-    public function get_email() {
+    public function get_email()
+    {
         return $this->email;
     }
-    public function get_password() {
+    public function get_password()
+    {
         return $this->password;
     }
-    public function get_id() {
+    public function get_id()
+    {
         return $this->id;
     }
-    public function get_teacherid() {
+    public function get_teacherid()
+    {
         return $this->teacherid;
     }
-    public function get_parentid() {
+    public function get_parentid()
+    {
         return $this->parentid;
     }
-    public function get_phone() {
+    public function get_phone()
+    {
         return $this->phone;
     }
 }

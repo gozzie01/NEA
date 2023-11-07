@@ -13,7 +13,7 @@ if (!is_admin()) {
 }
 //if the request is a post request
 //if request type = post
-if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {
     //write a file to make sure it works
     //file_put_contents("test.txt", $_POST["name"] . " " . $_POST["email"] . " " . $_POST["phone"]);
     update_accountDetails($_SESSION['user'], $_POST["name"], $_POST["email"], $_POST["phone"]);
@@ -90,4 +90,5 @@ $account->update();
         </div>
     </div>
 </body>
+
 </html>

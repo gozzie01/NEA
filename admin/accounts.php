@@ -50,39 +50,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     $id = intval($id);
     $name = strval($name);
     //if accountID is empty set it to null
-    if ($email=="null"||$email=="")
-    {
+    if ($email == "null" || $email == "") {
         $email = null;
-    }
-    else
-    {
+    } else {
         $email = strval($email);
     }
     //check phone
-    if ($phone=="null"||$phone=="")
-    {
+    if ($phone == "null" || $phone == "") {
         $phone = null;
-    }
-    else
-    {
+    } else {
         $phone = strval($phone);
     }
     //check parentid
-    if ($parentid=="null"||$parentid=="")
-    {
+    if ($parentid == "null" || $parentid == "") {
         $parentid = null;
-    }
-    else
-    {
+    } else {
         $parentid = intval($parentid);
     }
     //check teacherid
-    if ($teacherid=="null"||$teacherid=="")
-    {
+    if ($teacherid == "null" || $teacherid == "") {
         $teacherid = null;
-    }
-    else
-    {
+    } else {
         $teacherid = intval($teacherid);
     }
     //check if the Account exists
@@ -424,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             table-layout: fixed;
             display: inline-table;
         }
-        
+
         .AccountForm input {
             margin: 2px;
         }
@@ -462,11 +450,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                                     echo "<tr id=AccountRow", $Account->get_id(), ">";
                                     echo "<td>", $Account->get_id(), "</td>";
                                     echo "<td>", $Account->get_name(), "</td>";
-                                    echo "<td>", $Account->get_email(),"</td>";
+                                    echo "<td>", $Account->get_email(), "</td>";
                                     echo "<td></td>";
-                                    echo "<td>", $Account->get_phone(),"</td>";
-                                    echo "<td>", $Account->get_parentid(),"</td>";
-                                    echo "<td>", $Account->get_teacherid(),"</td>";
+                                    echo "<td>", $Account->get_phone(), "</td>";
+                                    echo "<td>", $Account->get_parentid(), "</td>";
+                                    echo "<td>", $Account->get_teacherid(), "</td>";
                                     echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->get_id(), "'>Delete</button></td>";
                                     echo "</tr>";
                                 }

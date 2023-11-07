@@ -13,19 +13,19 @@ if (!is_admin()) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <?php require_once '../includes.php'; ?>
-    <head>
-        <title>Admin</title>
-    </head>
-    <body>
-        <?php require_once '../admin/nav.php'; ?>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h1>Admin</h1>
-                    <p>Welcome to the admin page</p>
-                </div>
+<?php require_once '../includes.php'; ?>
+
+<head>
+    <title>Admin</title>
+</head>
+
+<body>
+    <?php require_once '../admin/nav.php'; ?>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Admin</h1>
+                <p>Welcome to the admin page</p>
             </div>
         </div>
-    
-    
+    </div>

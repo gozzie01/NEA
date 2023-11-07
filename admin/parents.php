@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
         "id" => $Parent_id,
         "name" => $Parent_name,
         "account" => $Parent_account,
-        "students" => $Parent_students  
+        "students" => $Parent_students
     );
     echo json_encode($response);
     die();
@@ -42,12 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
     $id = intval($id);
     $name = strval($name);
     //if accountID is empty set it to null
-    if ($accountID=="null"||$accountID=="")
-    {
+    if ($accountID == "null" || $accountID == "") {
         $accountID = null;
-    }
-    else
-    {
+    } else {
         $accountID = intval($accountID);
     }
     //the arrays will be passed as strings so we need to convert them to arrays
@@ -255,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                 };
                 xhttp.open("POST", "/admin/parents.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("updateParent=true" + "&id=" + $id + "&name=" + $name + "&accountID=" + $accountID + "&students=" + $students    );
+                xhttp.send("updateParent=true" + "&id=" + $id + "&name=" + $name + "&accountID=" + $accountID + "&students=" + $students);
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -397,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             table-layout: fixed;
             display: inline-table;
         }
-        
+
         .ParentForm input {
             margin: 2px;
         }

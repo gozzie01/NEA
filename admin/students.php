@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
             table-layout: fixed;
             display: inline-table;
         }
-        
+
         .StudentForm input {
             margin: 2px;
         }

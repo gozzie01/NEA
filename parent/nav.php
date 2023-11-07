@@ -24,7 +24,7 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
                 window.location.href = "/parent/index.php?child=" + data.id;
             });
             //remove search bar from StudentSel
-            
+
         });
         //test jquery is working with ale
     </script>
