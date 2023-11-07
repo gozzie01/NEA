@@ -4,16 +4,16 @@ This is a system designed I am designing for my computer science NEA to allow pa
 ## Features
 ### Main
 - [x] Admin panel for admins and SLT to manage the system
-- [] Events system for managing multiple parents' evenings
-- [] Booking system for parents to mark their availabilty
-- [] Teachers able to mark students as 'wanted'
-- [] Timetable system to timetable appointments
-- [] Email system to send emails to parents and teachers
+- [ ] Events system for managing multiple parents' evenings
+- [ ] Booking system for parents to mark their availabilty
+- [ ] Teachers able to mark students as 'wanted'
+- [ ] Timetable system to timetable appointments
+- [ ] Email system to send emails to parents and teachers
 - [x] User system for parents and teachers to log in
-- [] Parent panel
-- [] Teacher panel
+- [ ] Parent panel
+- [ ] Teacher panel
 ### Sub
-- [] Internal notes/message system
-- [] Feedback System
-- [] Summary System
-- [] Attendance System
+- [ ] Internal notes/message system
+- [ ] Feedback System
+- [ ] Summary System
+- [ ] Attendance System
