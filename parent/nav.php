@@ -64,7 +64,11 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
         <div class="collapse navbar-collapse" id="navbarNavAlt">
             <!-- right side of navbar -->
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/parent/classes.php">Classes</a>
+                <a class="nav-link" href='/parent/classes.php<?php 
+                if (isset($_GET["child"])){
+                    echo ("?child=" . $_GET['child']);
+                }?>
+                '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
                 <a class="nav-link" href="/parent/bookings.php">Bookings</a>
                 <?

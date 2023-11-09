@@ -38,10 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         echo "<td>", $class_->get_id(), "</td>";
         echo "<td>", $class_->get_name(), "</td>";
         echo "<td>";
-        foreach ($class_->get_teachers() as $teacher) {
-            $teacher_ = new teacher($teacher);
-            $teacher_->update();
-            echo $teacher_->get_name(), "<br> ";
+        if (count($class_->get_teachers()) == 0) {
+            echo "";
+        } else {
+            foreach ($class_->get_teachers() as $teacher) {
+                $teacher_ = new teacher($teacher);
+                $teacher_->update();
+                echo $teacher_->get_name(), "<br> ";
+            }
         }
         echo "</td>";
         echo "<td>", count($class_->get_students()), "</td>";
@@ -167,7 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                 }
             }
         }
-        function updateTable(){
+
+        function updateTable() {
             $.ajax({
                 type: "POST",
                 url: "/admin/classes.php",

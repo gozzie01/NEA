@@ -378,6 +378,10 @@ class Class_
     public function __construct($id)
     {
         $this->id = $id;
+        //set students, teachers, parents to empty arrays
+        $this->students = array();
+        $this->teachers = array();
+        $this->parents = array();
     }
     public function update()
     {

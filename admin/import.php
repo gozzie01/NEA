@@ -34,37 +34,15 @@ foreach ($students as $student)
         $stmt->bind_result($classname);
         $stmt->fetch();
         $stmt->close();
-        if (strpos($classname,  "07") !== false)
+        //check the first two letters of the class name
+        $yeargroup = intval(substr($classname, 0, 2));
+        if ($yeargroup != 0)
         {
-            $yeargroup = 7;
-        }
-        else if (strpos($classname, "08") !== false)
-        {
-            $yeargroup = 8;
-        }
-        else if (strpos($classname, "09") !== false)
-        {
-            $yeargroup = 9;
-        }
-        else if (strpos($classname, "10") !== false)
-        {
-            $yeargroup = 10;
-        }
-        else if (strpos($classname, "11") !== false)
-        {
-            $yeargroup = 11;
-        }
-        else if (strpos($classname, "12") !== false)
-        {
-            $yeargroup = 12;
-        }
-        else if (strpos($classname, "13") !== false)
-        {
-            $yeargroup = 13;
+            break;
         }
     }
     $studid = $student->get_id();
-    $sql = "UPDATE Student SET YearGroup = ? WHERE ID = ?";#
+    $sql = "UPDATE Student SET YearGroup = ? WHERE ID = ?";
     $stmt = $db->prepare($sql);
     $stmt->bind_param("ii", $yeargroup, $studid);
     $stmt->execute();

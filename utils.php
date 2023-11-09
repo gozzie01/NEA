@@ -163,16 +163,15 @@ function get_all_classes()
     //get the students
     $Student = "";
     $Class = "0";
-    $counter = -1;
+    $counter = 0;
     $OldClass = "-1";
     $sql = "SELECT Student,Class FROM StudentClass ORDER BY Class";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($Student, $Class);
     while ($stmt->fetch()) {
-        if ($Class != $OldClass) {
+        while ($Class != $classes[$counter]->get_id()) {
             $counter++;
-            $OldClass = $Class;
         }
         $classes[$counter]->add_student($Student);
     }
@@ -180,20 +179,20 @@ function get_all_classes()
     //get the teachers
     $Teacher = "";
     $Class = "0";
-    $counter = -1;
+    $counter = 0;
     $OldClass = "-1";
     $sql = "SELECT Teacher,Class FROM TeacherClass ORDER BY Class";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($Teacher, $Class);
     while ($stmt->fetch()) {
-        if ($Class != $OldClass) {
+        while ($Class != $classes[$counter]->get_id()) {
             $counter++;
-            $OldClass = $Class;
         }
         $classes[$counter]->add_teacher($Teacher);
     }
     $stmt->close();
+    $counter = 0;
     $parent = "";
     $sql = "SELECT ps.Parent, sc.Class
     FROM ParentStudent ps
@@ -203,10 +202,10 @@ function get_all_classes()
     $stmt->execute();
     $stmt->bind_result($parent, $Class);
     while ($stmt->fetch()) {
-        $counter = 0;
         while ($Class != $classes[$counter]->get_id()) {
             $counter++;
         }
+
         $classes[$counter]->add_parent($parent);
     }
     $stmt->close();
@@ -254,7 +253,7 @@ function get_all_students()
     $Parent = "";
     $Student = "0";
     $counter = -1;
-    $OldStudent = "-1"; 
+    $OldStudent = "-1";
     $sql = "SELECT Parent,Student FROM ParentStudent ORDER BY Student";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
@@ -999,3 +998,4 @@ function delete_account($id)
 
     return true;
 }
+//1000
