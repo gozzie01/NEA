@@ -54,6 +54,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     }
     die();
 }
+//get student selector
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentselector'])) {
+    $students = get_all_students();
+    foreach ($students as $student) {
+        echo "<option value='", $student->get_id(), "'>", $student->get_name(), "</option>";
+    }
+    die();
+}
+//get teacher selector
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
+    $teachers = get_all_teachers();
+    foreach ($teachers as $teacher) {
+        echo "<option value='", $teacher->get_id(), "'>", $teacher->get_name(), "</option>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the Class exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
     $id = $_POST['id'];
@@ -186,6 +202,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
         }
         //on document load
         $(document).ready(function() {
+            //get the student selector
+            $.ajax({
+                type: "POST",
+                url: "/admin/classes.php",
+                data: {
+                    getstudentselector: true
+                },
+                success: function(data) {
+                    $('#StudentSelector').html(data);
+                }
+            });
+            //get the teacher selector
+            $.ajax({
+                type: "POST",
+                url: "/admin/classes.php",
+                data: {
+                    getteacherselector: true
+                },
+                success: function(data) {
+                    $('#TeacherSelector').html(data);
+                }
+            });
+            
             //make the multiselects searchable and 
             $('#StudentSelector').select2({
                 theme: "bootstrap-5",
@@ -481,21 +520,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                     <input type="text" class="form-control" placeholder="Class ID" id="ClassID" style="margin-bottom: 6px">
                     <input type="text" class="form-control" placeholder="Class Name" id="ClassName" style="margin-bottom: 6px;">
                     <select class="form-select" id="StudentSelector">
-                        <?php
-                        $students = get_all_students();
-                        foreach ($students as $student) {
-                            echo "<option value=", $student->get_id(), ">", $student->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <div style="margin-top: 6px;">
                         <select class="form-select" id="TeacherSelector">
-                            <?php
-                            $teachers = get_all_teachers();
-                            foreach ($teachers as $teacher) {
-                                echo "<option value=", $teacher->get_id(), ">", $teacher->get_name(), "</option>";
-                            }
-                            ?>
+
                         </select>
                     </div>
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>

@@ -349,13 +349,19 @@ function get_all_students()
 function get_all_parents()
 {
     $parentid = "";
-    $sql = "SELECT ID FROM Parent ORDER BY ID";
+    $name = "";
+    $userid = "";
+    $sql = "SELECT ID, Name, UserID FROM Parent ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($parentid);
+    $stmt->bind_result($parentid, $name, $userid);
     $parents = array();
     while ($stmt->fetch()) {
         $parents[] = new Parent_($parentid);
+        //set the name of the parent
+        $parents[count($parents) - 1]->set_name($name);
+        //set the account of the parent
+        $parents[count($parents) - 1]->set_account($userid);
     }
     $stmt->close();
     //update the parents
@@ -854,19 +860,55 @@ function create_class($id, $name, $students, $teachers)
 function get_all_accounts()
 {
     $accountid = "";
-    $sql = "SELECT ID FROM User";
+    $name="";
+    $password="";
+    $email="";
+    $phone="";
+    $sql = "SELECT ID, Name, Password, Email, Phone FROM User ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($accountid);
+    $stmt->bind_result($accountid, $name, $password, $email, $phone);
     $accounts = array();
     while ($stmt->fetch()) {
         $accounts[] = new Account($accountid);
+        //set the name of the account
+        $accounts[count($accounts) - 1]->set_name($name);
+        //set the password of the account
+        $accounts[count($accounts) - 1]->set_password($password);
+        //set the email of the account
+        $accounts[count($accounts) - 1]->set_email($email);
+        //set the phone of the account
+        $accounts[count($accounts) - 1]->set_phone($phone);
     }
     $stmt->close();
     //update the accounts
-    foreach ($accounts as $account) {
-        $account->update();
+    $parentid = "";
+    $id ="";
+    $counter = 0;
+    $sql = "SELECT ID, UserID FROM Parent WHERE UserID IS NOT NULL ORDER BY UserID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parentid, $id);
+    while ($stmt->fetch()) {
+        while ($id != $accounts[$counter]->get_id()) {
+            $counter++;
+        }
+        $accounts[$counter]->set_parentid($parentid);
     }
+    $stmt->close();
+    $teacherid = "";
+    $counter = 0;
+    $sql = "SELECT ID, UserID FROM Teacher WHERE UserID IS NOT NULL ORDER BY UserID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($teacherid, $id);
+    while ($stmt->fetch()) {
+        while ($id != $accounts[$counter]->get_id()) {
+            $counter++;
+        }
+        $accounts[$counter]->set_teacherid($teacherid);
+    }
+    $stmt->close();
     return $accounts;
 }
 

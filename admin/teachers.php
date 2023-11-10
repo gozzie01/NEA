@@ -59,6 +59,22 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['gettabledata']))
     }
     die();
 }
+if($_SERVER['REQUEST_METHOD']=== 'POST' && isset($_POST['getaccountdata']))
+{
+    $accounts = get_all_accounts();
+    foreach ($accounts as $account) {
+        echo "<option value='", $account->get_id(), "'>", $account->get_name(), "</option>";
+    }
+    die();
+}
+if($_SERVER['REQUEST_METHOD']=== "POST"&& isset($_POST['getclassdata']))
+{
+    $classes = get_all_classes();
+    foreach ($classes as $class) {
+        echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the teacher exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateteacher'])) {
     $id = $_POST['id'];
@@ -168,6 +184,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
         }
         //on document load
         $(document).ready(function() {
+            //get the accounts from the database
+            $.ajax({
+                type: "POST",
+                url: "/admin/teachers.php",
+                data: {
+                    getaccountdata: true
+                },
+                success: function(data) {
+                    $('#AccountSelector').html(data);
+                }
+            });
+            //get the classes from the database
+            $.ajax({
+                type: "POST",
+                url: "/admin/teachers.php",
+                data: {
+                    getclassdata: true
+                },
+                success: function(data) {
+                    $('#ClassSelector').html(data);
+                }
+            });
             //make the multiselects searchable and 
             $('#ClassSelector').select2({
                 theme: "bootstrap-5",
@@ -471,24 +509,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                     <input type="text" class="form-control" placeholder="teacher ID" id="teacherID" style="margin: 1pt">
                     <input type="text" class="form-control" placeholder="Teacher Name" id="teacherName" style="margin: 1pt">
                     <select class="form-select" id="AccountSelector" style="margin: 1pt">
-                        <?php
-                        $accounts = get_all_accounts();
-                        foreach ($accounts as $account) {
-                            echo "<option value=", $account->get_id(), ">", $account->get_id(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <div class="d-flex">
                         <p style="margin: 1pt;">Pastoral:</p>
                         <input type="checkbox" class="form-check-input" id="PastoralCheckbox" style="margin: 5pt;">
                     </div>
                     <select class="form-select" id="ClassSelector" style="margin: 1pt">
-                        <?php
-                        $classes = get_all_classes();
-                        foreach ($classes as $class) {
-                            echo "<option value=", $class->get_id(), ">", $class->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <button type="submit" id="submitFormButton" class="btn btn-primary" style="margin: 2pt">Add</button>
                     <!--clear button-->

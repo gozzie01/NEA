@@ -52,6 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])){
     }
     die();  
 }
+//get parent selector
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector'])) {
+    $Accounts = get_all_parents();
+    foreach ($Accounts as $Account) {
+        echo "<option value='", $Account->get_id(), "'>", $Account->get_name(), "</option>";
+    }
+    die();
+}
+//get teacher selector
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
+    $Accounts = get_all_teachers();
+    foreach ($Accounts as $Account) {
+        echo "<option value='", $Account->get_id(), "'>", $Account->get_name(), "</option>";
+    }
+    die();
+}
 //if the request is a post and the id is set, check if the Account exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     $id = $_POST['id'];
@@ -494,20 +510,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     <input type="text" class="form-control" placeholder="Email" id="AccountEmail">
                     <input type="text" class="form-control" placeholder="Phone" id="AccountPhone">
                     <select class="form-control" id="ParentSelector">
-                        <?php
-                        $parents = get_all_parents();
-                        foreach ($parents as $parent) {
-                            echo "<option value='", $parent->get_id(), "'>", $parent->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <select class="form-control" id="TeacherSelector">
-                        <?php
-                        $teachers = get_all_teachers();
-                        foreach ($teachers as $teacher) {
-                            echo "<option value='", $teacher->get_id(), "'>", $teacher->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <!--submit button-->
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>

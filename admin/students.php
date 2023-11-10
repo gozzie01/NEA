@@ -50,6 +50,21 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST' && isset ($_POST['GetTableData'])){
     }
     die();
 }
+if ($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['GetParentSelector'])){
+    $parents = get_all_parents();
+    foreach ($parents as $parent) {
+        echo "<option value='", $parent->get_id(), "'>", $parent->get_name(), "</option>";
+    }
+    die();
+}
+if ($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['GetClassSelector'])){
+    $classes = get_all_classes();
+    foreach ($classes as $class) {
+        echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
+    }
+    die();
+}
+
 //if the request is a post and the id is set, check if the student exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updatestudent'])) {
     $id = $_POST['id'];
@@ -171,6 +186,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
         }
         //on document load
         $(document).ready(function() {
+            //get the classes and parents from the database
+            $.ajax({
+                type: "POST",
+                url: "/admin/students.php",
+                data: {
+                    GetParentSelector: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#ParentSelector').html(data);
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/admin/students.php",
+                data: {
+                    GetClassSelector: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#ClassSelector').html(data);
+                }
+            });
+            
             //make the multiselects searchable and 
             $('#ClassSelector').select2({
                 theme: "bootstrap-5",
@@ -506,20 +545,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                     <input type="text" class="form-control" placeholder="Student Name" id="StudentName">
                     <input type="text" class="form-control" placeholder="Year Group" id="YearGroup">
                     <select class="form-select" id="ClassSelector">
-                        <?php
-                        $classes = get_all_classes();
-                        foreach ($classes as $class) {
-                            echo "<option value=", $class->get_id(), ">", $class->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <select class="form-select" id="ParentSelector">
-                        <?php
-                        $parents = get_all_parents();
-                        foreach ($parents as $parent) {
-                            echo "<option value=", $parent->get_id(), ">", $parent->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->

@@ -24,6 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     die();
 }
 
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])){
+    $accounts = get_all_accounts();
+    foreach ($accounts as $account) {
+        echo "<option value=", $account->get_id(), ">", $account->get_name(), "</option>";
+    }
+    die();
+}
+if($_SERVER['REQUEST_METHOD'] === "POST"&& isset($_POST['getStudentSelector'])){
+    $students = get_all_students();
+    foreach ($students as $student) {
+        echo "<option value=", $student->get_id(), ">", $student->get_name(), "</option>";
+    }
+    die();
+}
 //get the Parent id from the request
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
@@ -153,6 +167,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         }
         //on document load
         $(document).ready(function() {
+            //add the options to account selector and student selector
+            $.ajax({
+                type: "POST",
+                url: "/admin/parents.php",
+                data: {
+                    getAccountSelector: true
+                },
+                success: function(data) {
+                    $('#AccountSelector').html(data);
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/admin/parents.php",
+                data: {
+                    getStudentSelector: true
+                },
+                success: function(data) {
+                    $('#StudentSelector').html(data);
+                }
+            });
             //make the multiselects searchable and 
             $('#StudentSelector').select2({
                 theme: "bootstrap-5",
@@ -468,20 +503,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                     <input type="text" class="form-control" placeholder="Parent ID" id="ParentID">
                     <input type="text" class="form-control" placeholder="Parent Name" id="ParentName">
                     <select class="form-select" id="AccountSelector">
-                        <?php
-                        $accounts = get_all_accounts();
-                        foreach ($accounts as $account) {
-                            echo "<option value=", $account->get_id(), ">", $account->get_id(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <select class="form-select" id="StudentSelector">
-                        <?php
-                        $students = get_all_students();
-                        foreach ($students as $student) {
-                            echo "<option value=", $student->get_id(), ">", $student->get_name(), "</option>";
-                        }
-                        ?>
+
                     </select>
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->

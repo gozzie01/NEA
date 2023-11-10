@@ -528,7 +528,7 @@ class Account
     private $parentid;
     public function __construct($id)
     {
-        $this->id = $id;
+        $this->id = $id;   
     }
     public function update()
     {
@@ -601,5 +601,29 @@ class Account
     public function get_phone()
     {
         return $this->phone;
+    }
+    public function set_name($name)
+    {
+        $this->name = $name;
+    }
+    public function set_email($email)
+    {
+        $this->email = $email;
+    }
+    public function set_password($password)
+    {
+        $this->password = $password;
+    }
+    public function set_teacherid($teacherid)
+    {
+        $this->teacherid = $teacherid;
+    }
+    public function set_parentid($parentid)
+    {
+        $this->parentid = $parentid;
+    }
+    public function set_phone($phone)
+    {
+        $this->phone = $phone;
     }
 }
