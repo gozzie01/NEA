@@ -2,7 +2,7 @@
 require_once '../utils.php';
 //check if the user is logged in
 if (!is_logged_in()) {
-    header("Location: /login.php");
+    header("Location: ../login.php");
     die();
 }
 //check if admin else send to index

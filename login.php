@@ -77,6 +77,19 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         if ($teacher != null) {
             $_SESSION['teacher'] = $teacher;
         }
+        //if they are a teacher see if they are pastoral
+        if (isset($_SESSION['teacher'])) {
+            $sql = "SELECT Pastoral FROM Teacher WHERE ID=? LIMIT 1";
+            $stmt = $GLOBALS['db']->prepare($sql);
+            $stmt->bind_param("i", $_SESSION['teacher']);
+            $stmt->execute();
+            $stmt->bind_result($pastoral);
+            $stmt->fetch();
+            $stmt->close();
+            if ($pastoral == 1) {
+                $_SESSION['pastoral'] = true;
+            }
+        }
         //redirect the user to the index page
         header("HTTP/1.1 200 OK");
         die();

@@ -8,7 +8,22 @@ require_once 'db.php';
 require_once 'classdefs.php';
 function is_logged_in()
 {
-    return isset($_SESSION['user']);
+    //if user session is set, return true
+    if (isset($_SESSION['user'])) {
+        verify_login();
+        return true;
+    }
+    return false;
+}
+function destroy_token() {
+    if (isset($_SESSION['user'])) {
+        $user = $_SESSION['user'];
+        $sql = "UPDATE User SET Token=NULL WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $user);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
 function verify_login()
 {
@@ -16,14 +31,60 @@ function verify_login()
     $token = $_SESSION['token'];
     $user = $_SESSION['user'];
     $hashed_token = "";
-    $sql = "SELECT Token FROM Users WHERE User_ID=? LIMIT 1";
+    $sql = "SELECT Token FROM User WHERE ID=? LIMIT 1";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $user);
     $stmt->execute();
     $stmt->bind_result($hashed_token);
     $stmt->fetch();
     $stmt->close();
-    return password_verify($token, $hashed_token);
+    if($hashed_token == NULL){
+        //the token is invalid, so log the user out
+        //unset all the session variables
+        $_SESSION = array();
+        //delete the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+        //destroy the session
+        session_destroy();
+        //redirect the user to the login page
+        header("Location: ../login.php");
+        exit();
+    } elseif (!password_verify($token, $hashed_token)) {
+        //the token is invalid, so log the user out
+        //unset all the session variables
+        $_SESSION = array();
+        //delete the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+        //destroy the session
+        session_destroy();
+        //redirect the user to the login page
+        header("Location: ../login.php");
+        exit();
+    }
+
+
 }
 function is_admin()
 {
@@ -288,7 +349,7 @@ function get_all_students()
 function get_all_parents()
 {
     $parentid = "";
-    $sql = "SELECT ID FROM Parent";
+    $sql = "SELECT ID FROM Parent ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($parentid);
@@ -298,10 +359,54 @@ function get_all_parents()
     }
     $stmt->close();
     //update the parents
-    foreach ($parents as $parent) {
-        $parent->update();
+    $parentid = "";
+    $studentid = "";
+    $counter = 0;
+    $sql = "SELECT Student, Parent FROM ParentStudent ORDER BY Parent";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($studentid, $parentid);
+    while ($stmt->fetch()) {
+        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+            $counter++;
+        }
+        $parents[$counter]->add_student($studentid);    
     }
-
+    $stmt->close();
+    $parentid = "";
+    $classid = "";
+    $counter=0;
+    $sql = "SELECT sc.Class, ps.Parent
+    FROM StudentClass sc
+    JOIN ParentStudent ps ON sc.Student = ps.Student
+    ORDER BY ps.Parent";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($classid, $parentid);
+    while ($stmt->fetch()) {
+        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+            $counter++;
+        }
+        $parents[$counter]->add_class($classid);
+    }
+    $stmt->close();
+    $teacherid = "";
+    $parentid = "";
+    $counter=0;
+    $sql = "SELECT tc.Teacher, ps.Parent
+    FROM TeacherClass tc
+    JOIN StudentClass sc ON tc.Class = sc.Class
+    JOIN ParentStudent ps ON  ps.Student = sc.Student
+    ORDER BY ps.Parent";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($teacherid, $parentid);
+    while ($stmt->fetch()) {
+        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+            $counter++;
+        }
+        $parents[$counter]->add_teacher($teacherid);
+    }
     return $parents;
 }
 
@@ -997,5 +1102,8 @@ function delete_account($id)
     $stmt->close();
 
     return true;
+}//1000
+
+function is_pastoral(){
+    return isset($_SESSION['pastoral']);
 }
-//1000

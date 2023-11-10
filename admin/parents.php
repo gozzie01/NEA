@@ -10,6 +10,20 @@ if (!is_admin()) {
     header("Location: /index.php");
     die();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
+    $parents = get_all_parents();
+    foreach ($parents as $Parent) {
+        echo "<tr id=ParentRow", $Parent->get_id(), ">";
+        echo "<td>", $Parent->get_id(), "</td>";
+        echo "<td>", $Parent->get_name(), "</td>";
+        echo "<td>", $Parent->get_account(), "</td>";
+        echo "<td>", count($Parent->get_students()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->get_id(), "'>Delete</button></td>";
+        echo "</tr>";
+    }
+    die();
+}
+
 //get the Parent id from the request
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
@@ -31,19 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
     echo json_encode($response);
     die();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
-    $parents = get_all_parents();
-    foreach ($parents as $Parent) {
-        echo "<tr id=ParentRow", $Parent->get_id(), ">";
-        echo "<td>", $Parent->get_id(), "</td>";
-        echo "<td>", $Parent->get_name(), "</td>";
-        echo "<td>", $Parent->get_account(), "</td>";
-        echo "<td>", count($Parent->get_students()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->get_id(), "'>Delete</button></td>";
-        echo "</tr>";
-    }
-    die();
-}
+
 //if the request is a post and the id is set, check if the Parent exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
     $id = $_POST['id'];
@@ -167,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                 multiple: false
             });
         });
+
         function updateTable() {
             $.ajax({
                 type: "POST",
@@ -449,9 +452,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                                 </tr>
                             </thead>
                             <tbody id="mainbody">
-                                <?php
 
-                                ?>
                             </tbody>
                         </table>
                     </div>

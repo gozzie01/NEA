@@ -283,6 +283,10 @@ class Parent_
     public function __construct($id)
     {
         $this->id = $id;
+        //set students, classes, teachers to empty arrays
+        $this->students = array();
+        $this->classes = array();
+        $this->teachers = array();
     }
     public function update()
     {
@@ -365,6 +369,38 @@ class Parent_
     public function get_account()
     {
         return $this->account;
+    }
+    public function set_name($name)
+    {
+        $this->name = $name;
+    }
+    public function set_students($students)
+    {
+        $this->students = $students;
+    }
+    public function set_classes($classes)
+    {
+        $this->classes = $classes;
+    }
+    public function set_teachers($teachers)
+    {
+        $this->teachers = $teachers;
+    }
+    public function set_account($account)
+    {
+        $this->account = $account;
+    }
+    public function add_student($student)
+    {
+        $this->students[] = $student;
+    }
+    public function add_class($class)
+    {
+        $this->classes[] = $class;
+    }
+    public function add_teacher($teacher)
+    {
+        $this->teachers[] = $teacher;
     }
 }
 class Class_
