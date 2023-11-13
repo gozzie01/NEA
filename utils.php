@@ -328,6 +328,7 @@ function get_all_students()
         $students[$counter]->add_parent($Parent);
     }
     $Teacher = "";
+    $counter = 0;
     $stmt->close();
     $sql = "SELECT sc.Student, tc.Teacher
         FROM StudentClass sc
@@ -337,7 +338,6 @@ function get_all_students()
     $stmt->execute();
     $stmt->bind_result($Student, $Teacher);
     while ($stmt->fetch()) {
-        $counter = 0;
         while ($Student != $students[$counter]->get_id()) {
             $counter++;
         }

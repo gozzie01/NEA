@@ -42,9 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
             echo "";
         } else {
             foreach ($class_->get_teachers() as $teacher) {
-                $teacher_ = new teacher($teacher);
-                $teacher_->update();
-                echo $teacher_->get_name(), "<br> ";
+                $name = "";
+                $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
+                $stmt = $db->prepare($sql);
+                $stmt->bind_param("i", $teacher);
+                $stmt->execute();
+                $stmt->bind_result($name);
+                $stmt->fetch();
+                $stmt->close();
+                echo $name, "<br>";
             }
         }
         echo "</td>";
