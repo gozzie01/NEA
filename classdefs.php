@@ -89,7 +89,7 @@ class Student
     {
         return $this->parents;
     }
-    public function get_id():int
+    public function get_id(): int
     {
         return $this->id;
     }
@@ -528,7 +528,7 @@ class Account
     private $parentid;
     public function __construct($id)
     {
-        $this->id = $id;   
+        $this->id = $id;
     }
     public function update()
     {

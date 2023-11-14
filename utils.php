@@ -15,7 +15,8 @@ function is_logged_in()
     }
     return false;
 }
-function destroy_token() {
+function destroy_token()
+{
     if (isset($_SESSION['user'])) {
         $user = $_SESSION['user'];
         $sql = "UPDATE User SET Token=NULL WHERE ID=?";
@@ -38,7 +39,7 @@ function verify_login()
     $stmt->bind_result($hashed_token);
     $stmt->fetch();
     $stmt->close();
-    if($hashed_token == NULL){
+    if ($hashed_token == NULL) {
         //the token is invalid, so log the user out
         //unset all the session variables
         $_SESSION = array();
@@ -83,8 +84,6 @@ function verify_login()
         header("Location: ../login.php");
         exit();
     }
-
-
 }
 function is_admin()
 {
@@ -264,8 +263,8 @@ function get_all_classes()
     $stmt->bind_result($parent, $Class);
     while ($stmt->fetch()) {
         //if the counter is too large try the next value
-        if($counter>=count($classes)){
-            $counter=0;
+        if ($counter >= count($classes)) {
+            $counter = 0;
             continue;
         }
         while ($Class != $classes[$counter]->get_id()) {
@@ -279,7 +278,8 @@ function get_all_classes()
     return $classes;
 }
 
-function get_all_classes_of_teacher($teacherid){
+function get_all_classes_of_teacher($teacherid)
+{
     $classid = "";
     $name = "";
     $sql = "SELECT tc.Class, c.Name
@@ -311,12 +311,12 @@ function get_all_classes_of_teacher($teacherid){
         while ($Class != $classes[$counter]->get_id()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
-            if($counter>=count($classes)){
+            if ($counter >= count($classes)) {
                 break;
             }
         }
-        if($counter>=count($classes)){
-            $counter=0;
+        if ($counter >= count($classes)) {
+            $counter = 0;
             continue;
         }
         //if the counter is too large try the next value
@@ -336,12 +336,12 @@ function get_all_classes_of_teacher($teacherid){
         while ($Class != $classes[$counter]->get_id()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
-            if($counter>=count($classes)){
+            if ($counter >= count($classes)) {
                 break;
             }
         }
-        if($counter>=count($classes)){
-            $counter=0;
+        if ($counter >= count($classes)) {
+            $counter = 0;
             continue;
         }
         //if the counter is too large try the next value
@@ -358,19 +358,19 @@ function get_all_classes_of_teacher($teacherid){
     $stmt->execute();
     $stmt->bind_result($parent, $Class);
     while ($stmt->fetch()) {
-        if($counter>=count($classes)){
-            $counter=0;
+        if ($counter >= count($classes)) {
+            $counter = 0;
             continue;
         }
         while ($Class != $classes[$counter]->get_id()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
-            if($counter>=count($classes)){
+            if ($counter >= count($classes)) {
                 break;
             }
         }
-        if($counter>=count($classes)){
-            $counter=0;
+        if ($counter >= count($classes)) {
+            $counter = 0;
             continue;
         }
         //if the counter is too large try the next value
@@ -558,15 +558,15 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($studentid, $parentid);
     while ($stmt->fetch()) {
-        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
             $counter++;
         }
-        $parents[$counter]->add_student($studentid);    
+        $parents[$counter]->add_student($studentid);
     }
     $stmt->close();
     $parentid = "";
     $classid = "";
-    $counter=0;
+    $counter = 0;
     $sql = "SELECT sc.Class, ps.Parent
     FROM StudentClass sc
     JOIN ParentStudent ps ON sc.Student = ps.Student
@@ -575,7 +575,7 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($classid, $parentid);
     while ($stmt->fetch()) {
-        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
             $counter++;
         }
         $parents[$counter]->add_class($classid);
@@ -583,7 +583,7 @@ function get_all_parents()
     $stmt->close();
     $teacherid = "";
     $parentid = "";
-    $counter=0;
+    $counter = 0;
     $sql = "SELECT tc.Teacher, ps.Parent
     FROM TeacherClass tc
     JOIN StudentClass sc ON tc.Class = sc.Class
@@ -593,7 +593,7 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($teacherid, $parentid);
     while ($stmt->fetch()) {
-        while($parentid != $parents[$counter]->get_id()&&$counter<count($parents)){
+        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
             $counter++;
         }
         $parents[$counter]->add_teacher($teacherid);
@@ -1045,10 +1045,10 @@ function create_class($id, $name, $students, $teachers)
 function get_all_accounts()
 {
     $accountid = "";
-    $name="";
-    $password="";
-    $email="";
-    $phone="";
+    $name = "";
+    $password = "";
+    $email = "";
+    $phone = "";
     $sql = "SELECT ID, Name, Password, Email, Phone FROM User ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
@@ -1068,7 +1068,7 @@ function get_all_accounts()
     $stmt->close();
     //update the accounts
     $parentid = "";
-    $id ="";
+    $id = "";
     $counter = 0;
     $sql = "SELECT ID, UserID FROM Parent WHERE UserID IS NOT NULL ORDER BY UserID";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -1331,6 +1331,7 @@ function delete_account($id)
     return true;
 }
 
-function is_pastoral(){
+function is_pastoral()
+{
     return isset($_SESSION['pastoral']);
 }
