@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentID'])) {
     die();
 }
 //if server request is a post and the table data flag is set
-if ($_SERVER['REQUEST_METHOD']=== 'POST' && isset ($_POST['GetTableData'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetTableData'])) {
     $students = get_all_students();
     foreach ($students as $student) {
         echo "<tr id=studentRow", $student->get_id(), ">";
@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST' && isset ($_POST['GetTableData'])){
     }
     die();
 }
-if ($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['GetParentSelector'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetParentSelector'])) {
     $parents = get_all_parents();
     foreach ($parents as $parent) {
         echo "<option value='", $parent->get_id(), "'>", $parent->get_name(), "</option>";
     }
     die();
 }
-if ($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['GetClassSelector'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetClassSelector'])) {
     $classes = get_all_classes();
     foreach ($classes as $class) {
         echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
                     $('#ClassSelector').html(data);
                 }
             });
-            
+
             //make the multiselects searchable and 
             $('#ClassSelector').select2({
                 theme: "bootstrap-5",
@@ -308,7 +308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
             e.preventDefault();
         });
         //on click of the add/update button
-        function updateTable(){
+        function updateTable() {
             $.ajax({
                 type: "POST",
                 url: "/admin/students.php",

@@ -12,10 +12,10 @@
                 <a class="nav-link" href="/teacher/myaccount.php">My Account</a>
                 <a class="nav-link" href="/teacher/bookings.php">Bookings</a>
                 <?php
-                if (is_admin()){
+                if (is_admin()) {
                     echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
                 }
-                if (is_parent()){
+                if (is_parent()) {
                     echo '<a class="nav-link" href="/parent/index.php">Parent</a>';
                 }
                 ?>

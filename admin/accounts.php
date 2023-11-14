@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     echo json_encode($response);
     die();
 }
-if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])){
+if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
     $Accounts = get_all_Accounts();
     foreach ($Accounts as $Account) {
         echo "<tr id=AccountRow", $Account->get_id(), ">";
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])){
         echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->get_id(), "'>Delete</button></td>";
         echo "</tr>";
     }
-    die();  
+    die();
 }
 //get parent selector
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector'])) {
@@ -183,7 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 }
             }
         }
-        function updateTable(){
+
+        function updateTable() {
             $.ajax({
                 type: "POST",
                 url: "/admin/accounts.php",

@@ -43,8 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
         die();
     }
 }
-if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['gettabledata']))
-{
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $teachers = get_all_teachers();
     foreach ($teachers as $teacher) {
         echo "<tr id=teacherRow", $teacher->get_id(), ">";
@@ -59,16 +58,14 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['gettabledata']))
     }
     die();
 }
-if($_SERVER['REQUEST_METHOD']=== 'POST' && isset($_POST['getaccountdata']))
-{
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getaccountdata'])) {
     $accounts = get_all_accounts();
     foreach ($accounts as $account) {
         echo "<option value='", $account->get_id(), "'>", $account->get_name(), "</option>";
     }
     die();
 }
-if($_SERVER['REQUEST_METHOD']=== "POST"&& isset($_POST['getclassdata']))
-{
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getclassdata'])) {
     $classes = get_all_classes();
     foreach ($classes as $class) {
         echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
@@ -406,7 +403,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
             //show the confirmation popup
             $('#confirmDeletion').show();
         });
-        function updateTable(){
+
+        function updateTable() {
             $.ajax({
                 type: "POST",
                 url: "/admin/teachers.php",

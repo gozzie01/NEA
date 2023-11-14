@@ -24,14 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     die();
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])) {
     $accounts = get_all_accounts();
     foreach ($accounts as $account) {
         echo "<option value=", $account->get_id(), ">", $account->get_name(), "</option>";
     }
     die();
 }
-if($_SERVER['REQUEST_METHOD'] === "POST"&& isset($_POST['getStudentSelector'])){
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
     $students = get_all_students();
     foreach ($students as $student) {
         echo "<option value=", $student->get_id(), ">", $student->get_name(), "</option>";

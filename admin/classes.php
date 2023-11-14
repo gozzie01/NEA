@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                     $('#TeacherSelector').html(data);
                 }
             });
-            
+
             //make the multiselects searchable and 
             $('#StudentSelector').select2({
                 theme: "bootstrap-5",

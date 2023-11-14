@@ -49,11 +49,11 @@ $class->update();
                         foreach ($students as $student) {
                             $student = new student($student);
                             $student->update();
-                            ?>
+                        ?>
                             <tr>
                                 <th scope="row"><?php echo $student->get_id(); ?></th>
                                 <td><?php echo $student->get_name(); ?></td>
                             </tr>
                         <?php
-                    }
-                    ?>
+                        }
+                        ?>

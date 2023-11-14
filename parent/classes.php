@@ -16,6 +16,7 @@ if (!isset($_GET['child'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         $(document).ready(function() {
