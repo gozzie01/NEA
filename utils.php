@@ -263,14 +263,120 @@ function get_all_classes()
     $stmt->execute();
     $stmt->bind_result($parent, $Class);
     while ($stmt->fetch()) {
+        //if the counter is too large try the next value
+        if($counter>=count($classes)){
+            $counter=0;
+            continue;
+        }
         while ($Class != $classes[$counter]->get_id()) {
             $counter++;
         }
-
+        //if the counter is too large try the next value
         $classes[$counter]->add_parent($parent);
     }
     $stmt->close();
 
+    return $classes;
+}
+
+function get_all_classes_of_teacher($teacherid){
+    $classid = "";
+    $name = "";
+    $sql = "SELECT tc.Class, c.Name
+    FROM TeacherClass tc
+    JOIN Class c ON tc.Class = c.ID
+    WHERE tc.Teacher = ?
+    ORDER BY tc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $teacherid);
+    $stmt->execute();
+    $stmt->bind_result($classid, $name);
+    $classes = array();
+    while ($stmt->fetch()) {
+        $classes[] = new Class_($classid);
+        //set the name of the class
+        $classes[count($classes) - 1]->set_name($name);
+    }
+    $stmt->close();
+    //get the students
+    $Student = "";
+    $Class = "0";
+    $counter = 0;
+    $OldClass = "-1";
+    $sql = "SELECT Student,Class FROM StudentClass ORDER BY Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Student, $Class);
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->get_id()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if($counter>=count($classes)){
+                break;
+            }
+        }
+        if($counter>=count($classes)){
+            $counter=0;
+            continue;
+        }
+        //if the counter is too large try the next value
+        $classes[$counter]->add_student($Student);
+    }
+    $stmt->close();
+    //get the teachers
+    $Teacher = "";
+    $Class = "0";
+    $counter = 0;
+    $OldClass = "-1";
+    $sql = "SELECT Teacher,Class FROM TeacherClass ORDER BY Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Teacher, $Class);
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->get_id()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if($counter>=count($classes)){
+                break;
+            }
+        }
+        if($counter>=count($classes)){
+            $counter=0;
+            continue;
+        }
+        //if the counter is too large try the next value
+        $classes[$counter]->add_teacher($Teacher);
+    }
+    $stmt->close();
+    $counter = 0;
+    $parent = "";
+    $sql = "SELECT ps.Parent, sc.Class
+    FROM ParentStudent ps
+    JOIN StudentClass sc ON ps.Student = sc.Student
+    ORDER BY sc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parent, $Class);
+    while ($stmt->fetch()) {
+        if($counter>=count($classes)){
+            $counter=0;
+            continue;
+        }
+        while ($Class != $classes[$counter]->get_id()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if($counter>=count($classes)){
+                break;
+            }
+        }
+        if($counter>=count($classes)){
+            $counter=0;
+            continue;
+        }
+        //if the counter is too large try the next value
+        $classes[$counter]->add_parent($parent);
+    }
+    $stmt->close();
     return $classes;
 }
 
@@ -344,6 +450,85 @@ function get_all_students()
         $students[$counter]->add_teacher($Teacher);
     }
     return $students;
+}
+
+function get_all_teachers_of_classes($classes)
+{
+    //format classes like (1,2,3)
+    $classes = "(" . implode(",", $classes) . ")";
+    $teacherid = "";
+    $name = "";
+    $pastoral = "";
+    $account = "";
+    $sql = "SELECT t.ID,t.Name,t.Pastoral,t.UserID
+    FROM Teacher t
+    JOIN TeacherClass tc ON t.ID = tc.Teacher
+    WHERE tc.Class IN $classes
+    ORDER BY t.ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($teacherid, $name, $pastoral, $account);
+    $teachers = array();
+    while ($stmt->fetch()) {
+        $teachers[] = new Teacher($teacherid);
+        //set the pastoral of the teacher
+        $teachers[count($teachers) - 1]->set_pastoral($pastoral);
+        //set the name of the teacher
+        $teachers[count($teachers) - 1]->set_name($name);
+        //set the account of the teacher
+        $teachers[count($teachers) - 1]->set_account($account);
+    }
+    $stmt->close();
+    //update the teachers in the same way as the students
+    $Class = "";
+    $Teacher = "0";
+    $counter = -1;
+    $OldTeacher = "-1";
+    $sql = "SELECT Class,Teacher FROM TeacherClass ORDER BY Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Class, $Teacher);
+    while ($stmt->fetch()) {
+        if ($Teacher != $OldTeacher) {
+            $counter++;
+            $OldTeacher = $Teacher;
+        }
+        $teachers[$counter]->add_class($Class);
+    }
+    $stmt->close();
+    $Student = "";
+    $sql = "SELECT sc.Student, tc.Teacher
+    FROM StudentClass sc
+    JOIN TeacherClass tc ON sc.Class = tc.Class
+    ORDER BY tc.Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Student, $Teacher);
+    while ($stmt->fetch()) {
+        $counter = 0;
+        while ($Teacher != $teachers[$counter]->get_id()) {
+            $counter++;
+        }
+        $teachers[$counter]->add_student($Student);
+    }
+    $stmt->close();
+    $parent = "";
+    "SELECT ps.Parent, tc.Teacher
+    FROM ParentStudent ps
+    JOIN TeacherClass tc ON ps.Student = tc.Class
+    ORDER BY tc.Teacher";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parent, $Teacher);
+    while ($stmt->fetch()) {
+        $counter = 0;
+        while ($Teacher != $teachers[$counter]->get_id()) {
+            $counter++;
+        }
+        $teachers[$counter]->add_parent($parent);
+    }
+    $stmt->close();
+    return $teachers;
 }
 
 function get_all_parents()
@@ -997,7 +1182,7 @@ function create_account($id, $name, $email, $phone, $parentid, $teacherid)
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $stmt->close();
+    $stmt->close(); //1000
     //create the teacher
     $sql = "INSERT INTO Teacher (UserID) VALUES (?)";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -1144,7 +1329,7 @@ function delete_account($id)
     $stmt->close();
 
     return true;
-}//1000
+}
 
 function is_pastoral(){
     return isset($_SESSION['pastoral']);

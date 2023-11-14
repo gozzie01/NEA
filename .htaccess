@@ -34,3 +34,7 @@ IndexIgnore *
     Order allow,deny
     Deny from all
 </Files>
+<Files nav.php>
+    Order allow,deny
+    Deny from all
+</Files>

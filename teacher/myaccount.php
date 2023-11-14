@@ -4,7 +4,7 @@ if (!is_logged_in()) {
     header("Location: ../login.php");
     exit();
 }
-if (!is_parent()) {
+if (!is_teacher()) {
     header("Location: ../index.php");
     exit();
 }
@@ -27,7 +27,7 @@ $account->update();
 <?php require_once '../includes.php'; ?>
 
 <head>
-    <title>Parent</title>
+    <title>Teacher</title>
     <script>
         //when the document is ready
         $(document).ready(function() {
@@ -62,7 +62,7 @@ $account->update();
 <br>
 
 <body>
-    <?php require_once '../parent/nav.php'; ?>
+    <?php require_once '../teacher/nav.php'; ?>
     <div class="container">
         <!-- display update form filled with all information on file, which is  currently name email and phone number -->
         <div class="card-body card bg-light d-flex">
