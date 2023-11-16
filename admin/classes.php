@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
     $id = $_POST['id'];
     $id = intval($id);
     //get the Class object from the database
-    $Class = new Class_($id);
+    $Class = new Class_((int)$id);
     $Class->update();
     $class_id = $Class->getID();
     $class_name = $Class->getName();

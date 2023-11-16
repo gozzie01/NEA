@@ -8,7 +8,7 @@ class Student
     private $classes;
     private $parents;
 
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         //set teachers, year, classes, parents to empty arrays 
@@ -140,7 +140,7 @@ class Teacher
     private $students;
     private $parents;
 
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         //set classes, students, parents to empty arrays
@@ -280,7 +280,7 @@ class Parent_
     private $account;
     private $teachers;
 
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         //set students, classes, teachers to empty arrays
@@ -411,7 +411,7 @@ class Class_
     private $teachers;
     private $parents;
 
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         //set students, teachers, parents to empty arrays
@@ -526,7 +526,7 @@ class Account
     private $password;
     private $teacherid;
     private $parentid;
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
     }
