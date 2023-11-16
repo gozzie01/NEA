@@ -66,8 +66,8 @@ if (!isset($_GET['child'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            $student = new Student(intval($_GET['child']));
+<?php
+$student = new Student(intval($_GET['child']));
 $student->update();
 $classes = $student->getClasses();
 foreach ($classes as $class) {
