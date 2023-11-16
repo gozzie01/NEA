@@ -169,12 +169,6 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
 <body>
     <!-- The login form, submit using a js function, display any error in a custom message box in the center of the screen -->
-    <?php
-    //see if there is a password in the get request, hash it and display it
-    if (isset($_GET['password'])) {
-        echo password_hash($_GET['password'], PASSWORD_DEFAULT);
-    }
-    ?>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="d-flex">
             <div class="card card-body bg-light" style="max-width: 600px; width:auto; ">
