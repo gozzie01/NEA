@@ -40,7 +40,7 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
                 <select class="form-select" id="StudentSel">
                     <?php
                     $children = get_parent_students($_SESSION['parent']);
-                    if (isset($_GET['child']) && in_array($_GET['child'], $children)) {
+                    if (isset($_SESSION['child']) && in_array($_SESSION['child'], $children)) {
                         echo "<option value=-1>Select Child</option>";
                     } else {
                         echo "<option selected value=-1>Select Child</option>";
@@ -50,7 +50,7 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
                     //get the children of the parent
                     //loop through the children and display them as options
                     foreach ($children as $child) {
-                        if (isset($_GET['child']) && $_GET['child'] == $child) {
+                        if (isset($_SESSION['child']) && $_SESSION['child'] == $child) {
                             echo "<option selected value=", strval($child), ">", get_student_name($child), "</option>";
                         } else {
                             echo "<option value=", strval($child), ">", get_student_name($child), "</option>";
@@ -65,8 +65,8 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
             <!-- right side of navbar -->
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href='/parent/classes.php<?php
-                                                                if (isset($_GET["child"])) {
-                                                                    echo ("?child=" . $_GET['child']);
+                                                                if (isset($_SESSION['child'])) {
+                                                                    echo ("?child=" . $_SESSION['child']);
                                                                 } ?>
                 '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
