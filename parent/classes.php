@@ -68,25 +68,25 @@ if (!isset($_GET['child'])) {
                         <tbody>
                             <?php
                             $student = new Student(intval($_GET['child']));
-                            $student->update();
-                            $classes = $student->getClasses();
-                            foreach ($classes as $class) {
-                                $class = intval($class);
-                                $clas = new Class_($class);
-                                $clas->update();
-                                $teachers = $clas->getTeachers();
-                                echo "<tr>";
-                                echo "<td>" . $clas->getName() . "</td>";
-                                echo "<td>";
-                                foreach ($teachers as $teacher) {
-                                    $teacher = intval($teacher);
-                                    $teach = new Teacher($teacher);
-                                    $teach->update();
-                                    echo $teach->getName() . " ";
-                                }
-                                echo "</tr>";
-                            }
-                            ?>
+$student->update();
+$classes = $student->getClasses();
+foreach ($classes as $class) {
+    $class = intval($class);
+    $clas = new Class_($class);
+    $clas->update();
+    $teachers = $clas->getTeachers();
+    echo "<tr>";
+    echo "<td>" . $clas->getName() . "</td>";
+    echo "<td>";
+    foreach ($teachers as $teacher) {
+        $teacher = intval($teacher);
+        $teach = new Teacher($teacher);
+        $teach->update();
+        echo $teach->getName() . " ";
+    }
+    echo "</tr>";
+}
+?>
                         </tbody>
                     </table>
                 </div>

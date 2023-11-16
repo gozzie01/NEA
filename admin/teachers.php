@@ -7,7 +7,7 @@ require_once './autils.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
     try {
         $id = $_POST['id'];
-        $id = intval ($id);
+        $id = intval($id);
         //get the teacher object from the database
         $teacher = new Teacher($id);
         $teacher->update();
