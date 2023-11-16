@@ -4,7 +4,7 @@ require_once 'utils.php';
 if (!is_logged_in()) {
     header("Location: ../login.php");
     die();
-}else{
+} else {
     destroy_token();
 }
 //unset the session variables

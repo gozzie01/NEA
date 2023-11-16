@@ -8,4 +8,3 @@ if (!is_admin()) {
     header("Location: /index.php");
     die();
 }
-?>

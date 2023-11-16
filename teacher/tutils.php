@@ -7,4 +7,3 @@ if (!is_teacher()) {
     header("Location: /index.php");
     exit();
 }
-?>

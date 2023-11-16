@@ -40,24 +40,24 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
                 <select class="form-select" id="StudentSel">
                     <?php
                     $parent_id = intval($_SESSION['parent']);
-$children = get_parent_students($parent_id);
-if (isset($_SESSION['child']) && in_array($_SESSION['child'], $children)) {
-    echo "<option value=-1>Select Child</option>";
-} else {
-    echo "<option selected value=-1>Select Child</option>";
-}
-?>
+                    $children = get_parent_students($parent_id);
+                    if (isset($_SESSION['child']) && in_array($_SESSION['child'], $children)) {
+                        echo "<option value=-1>Select Child</option>";
+                    } else {
+                        echo "<option selected value=-1>Select Child</option>";
+                    }
+                    ?>
                     <?php
-//get the children of the parent
-//loop through the children and display them as options
-foreach ($children as $child) {
-    if (isset($_SESSION['child']) && $_SESSION['child'] == $child) {
-        echo "<option selected value=", strval($child), ">", get_student_name(intval($child)), "</option>";
-    } else {
-        echo "<option value=", strval($child), ">", get_student_name(intval($child)), "</option>";
-    }
-}
-?>
+                    //get the children of the parent
+                    //loop through the children and display them as options
+                    foreach ($children as $child) {
+                        if (isset($_SESSION['child']) && $_SESSION['child'] == $child) {
+                            echo "<option selected value=", strval($child), ">", get_student_name(intval($child)), "</option>";
+                        } else {
+                            echo "<option value=", strval($child), ">", get_student_name(intval($child)), "</option>";
+                        }
+                    }
+                    ?>
                 </select>
             </form>
         </div>
@@ -66,10 +66,10 @@ foreach ($children as $child) {
             <!-- right side of navbar -->
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href='/parent/classes.php<?php
-                                            if (isset($_SESSION['child'])) {
-                                                $childid = intval($_SESSION['child']);
-                                                echo("?child=" . $childid ."");
-                                            } ?>
+                                                                if (isset($_SESSION['child'])) {
+                                                                    $childid = intval($_SESSION['child']);
+                                                                    echo ("?child=" . $childid . "");
+                                                                } ?>
                 '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
                 <a class="nav-link" href="/parent/bookings.php">Bookings</a>
@@ -80,7 +80,7 @@ foreach ($children as $child) {
                 if (boolval(is_teacher())) {
                     echo '<a class="nav-link" href="/teacher/index.php">Teacher</a>';
                 }
-?>
+                ?>
                 <a class="nav-link" href="/logout.php">Logout</a>
             </div>
         </div>

@@ -27,7 +27,7 @@ if (!isset($_GET['child'])) {
     </script>
     <?php
     require_once('../includes.php');
-?>
+    ?>
     <title>Parent Classes</title>
     <style type="text/css">
         .well {
@@ -66,27 +66,27 @@ if (!isset($_GET['child'])) {
                             </tr>
                         </thead>
                         <tbody>
-<?php
-$student = new Student(intval($_GET['child']));
-$student->update();
-$classes = $student->getClasses();
-foreach ($classes as $class) {
-    $class = intval($class);
-    $clas = new Class_($class);
-    $clas->update();
-    $teachers = $clas->getTeachers();
-    echo "<tr>";
-    echo "<td>" . $clas->getName() . "</td>";
-    echo "<td>";
-    foreach ($teachers as $teacher) {
-        $teacher = intval($teacher);
-        $teach = new Teacher($teacher);
-        $teach->update();
-        echo $teach->getName() . " ";
-    }
-    echo "</tr>";
-}
-?>
+                            <?php
+                            $student = new Student(intval($_GET['child']));
+                            $student->update();
+                            $classes = $student->getClasses();
+                            foreach ($classes as $class) {
+                                $class = intval($class);
+                                $clas = new Class_($class);
+                                $clas->update();
+                                $teachers = $clas->getTeachers();
+                                echo "<tr>";
+                                echo "<td>" . $clas->getName() . "</td>";
+                                echo "<td>";
+                                foreach ($teachers as $teacher) {
+                                    $teacher = intval($teacher);
+                                    $teach = new Teacher($teacher);
+                                    $teach->update();
+                                    echo $teach->getName() . " ";
+                                }
+                                echo "</tr>";
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>

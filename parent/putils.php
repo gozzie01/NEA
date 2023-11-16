@@ -7,4 +7,3 @@ if (!is_parent()) {
     header('Location: /index.php');
     exit();
 }
-?>
