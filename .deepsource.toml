@@ -3,3 +3,4 @@ version = 1
 name = "php"
 enabled = true
 [[transformers]]  
+name = "prettier"
