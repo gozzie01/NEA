@@ -27,7 +27,7 @@ if (!isset($_GET['child'])) {
     </script>
     <?php
     require_once('../includes.php');
-    ?>
+?>
     <title>Parent Classes</title>
     <style type="text/css">
         .well {
