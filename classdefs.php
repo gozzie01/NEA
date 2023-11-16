@@ -1,4 +1,5 @@
 <?php
+
 class Student
 {
     private $id;
@@ -11,7 +12,7 @@ class Student
     public function __construct($id)
     {
         $this->id = $id;
-        //set teachers, year, classes, parents to empty arrays 
+        //set teachers, year, classes, parents to empty arrays
         $this->teachers = array();
         $this->classes = array();
         $this->parents = array();

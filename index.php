@@ -1,4 +1,5 @@
 <?php
+
 require_once 'utils.php';
 //check if the user is logged in
 if (!is_logged_in()) {

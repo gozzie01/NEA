@@ -1,4 +1,5 @@
 <?php
+
 //is_logged_in() checks if the user is logged in
 //is_admin() checks if the user is an admin
 //is_teacher() checks if the user is a teacher
@@ -39,7 +40,7 @@ function verify_login()
     $stmt->bind_result($hashed_token);
     $stmt->fetch();
     $stmt->close();
-    if ($hashed_token == NULL) {
+    if ($hashed_token == null) {
         //the token is invalid, so log the user out
         //unset all the session variables
         $_SESSION = array();

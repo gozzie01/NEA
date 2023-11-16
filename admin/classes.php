@@ -502,7 +502,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
                             </thead>
                             <tbody id="mainbody">
                                 <?php
-                                ?>
+?>
                             </tbody>
                         </table>
                     </div>

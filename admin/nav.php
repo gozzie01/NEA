@@ -16,14 +16,14 @@
                 <a class="nav-link" href="/admin/events.php">Events</a>
                 <?php
                 if (is_parent()) {
-                ?>
+                    ?>
                     <a class="nav-link" href="/parent/index.php">Parent</a>
                 <?php
                 }
                 ?>
                 <?php
                 if (is_teacher()) {
-                ?>
+                    ?>
                     <a class="nav-link" href="/teacher/index.php">Teacher</a>
                 <?php
                 }

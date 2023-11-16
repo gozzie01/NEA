@@ -174,7 +174,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     if (isset($_GET['password'])) {
         echo password_hash($_GET['password'], PASSWORD_DEFAULT);
     }
-    ?>
+?>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="d-flex">
             <div class="card card-body bg-light" style="max-width: 600px; width:auto; ">

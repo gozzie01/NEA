@@ -30,33 +30,33 @@ require_once './tutils.php';
                     <tbody>
                         <?php
                         $classes = get_all_classes_of_teacher($_SESSION['teacher']);
-                        foreach ($classes as $class_) {
-                        ?>
+foreach ($classes as $class_) {
+    ?>
                             <tr>
                                 <th scope="row"><?php echo $class_->get_id(); ?></th>
                                 <td><?php echo $class_->get_name(); ?></td>
                                 <?php
-                                $teachers = $class_->get_teachers();
-                                $teacher_names = array();
-                                foreach ($teachers as $teacher) {
-                                    $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
-                                    $stmt = $db->prepare($sql);
-                                    $stmt->bind_param("i", $teacher);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $row = $result->fetch_assoc();
-                                    array_push($teacher_names, $row['Name']);
-                                    $stmt->close();
-                                }
-                                $teacher_string = implode("<br>", $teacher_names);
-                                ?>
+            $teachers = $class_->get_teachers();
+    $teacher_names = array();
+    foreach ($teachers as $teacher) {
+        $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param("i", $teacher);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        array_push($teacher_names, $row['Name']);
+        $stmt->close();
+    }
+    $teacher_string = implode("<br>", $teacher_names);
+    ?>
                                 <td><?php echo $teacher_string; ?></td>
                                 <td><?php echo count($class_->get_students()); ?></td>
                                 <td><a href="class.php?id=<?php echo $class_->get_id(); ?>">View</a></td>
                             </tr>
                         <?php
-                        }
-                        ?>
+}
+?>
                     </tbody>
                 </table>
             </div>

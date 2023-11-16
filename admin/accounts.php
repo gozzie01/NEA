@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         //update the Account
         $respon = update_Account($id, $name, $email, $phone, $parentid, $teacherid);
     } else {
-        //create the Accounts   
+        //create the Accounts
         $respon = create_Account($id, $name, $email, $phone, $parentid, $teacherid);
     }
     if ($respon) {
@@ -485,7 +485,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                             <tbody id="mainbody">
                                 <?php
 
-                                ?>
+?>
                             </tbody>
                         </table>
                     </div>

@@ -1,4 +1,5 @@
 <?php
+
 if (!is_logged_in()) {
     header("Location: /login.php");
     die();
@@ -8,4 +9,3 @@ if (!is_admin()) {
     header("Location: /index.php");
     die();
 }
-?>
