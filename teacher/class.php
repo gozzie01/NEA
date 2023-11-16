@@ -37,10 +37,10 @@ $class->update();
                     <tbody>
                         <?php
                         $students = $class->getStudents();
-                        foreach ($students as $student) {
-                            $student = new Student($student);
-                            $student->update();
-                        ?>
+foreach ($students as $student) {
+    $student = new Student($student);
+    $student->update();
+    ?>
                             <tr>
                                 <th scope="row"><?php echo $student->getId(); ?></th>
                                 <td><?php echo $student->getName(); ?></td>
