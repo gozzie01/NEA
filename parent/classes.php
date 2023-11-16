@@ -27,7 +27,7 @@ if (!isset($_GET['child'])) {
     </script>
     <?php
     require_once('../includes.php');
-    ?>
+?>
     <title>Parent Classes</title>
     <style type="text/css">
         .well {
@@ -67,24 +67,24 @@ if (!isset($_GET['child'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $student = new Student($_GET['child']);
-                            $student->update();
-                            $classes = $student->getClasses();
-                            foreach ($classes as $class) {
-                                $clas = new Class_($class);
-                                $clas->update();
-                                $teachers = $clas->getTeachers();
-                                echo "<tr>";
-                                echo "<td>" . $clas->getName() . "</td>";
-                                echo "<td>";
-                                foreach ($teachers as $teacher) {
-                                    $teach = new Teacher($teacher);
-                                    $teach->update();
-                                    echo $teach->getName() . " ";
-                                }
-                                echo "</tr>";
-                            }
-                            ?>
+                        $student = new Student($_GET['child']);
+$student->update();
+$classes = $student->getClasses();
+foreach ($classes as $class) {
+    $clas = new Class_($class);
+    $clas->update();
+    $teachers = $clas->getTeachers();
+    echo "<tr>";
+    echo "<td>" . $clas->getName() . "</td>";
+    echo "<td>";
+    foreach ($teachers as $teacher) {
+        $teach = new Teacher($teacher);
+        $teach->update();
+        echo $teach->getName() . " ";
+    }
+    echo "</tr>";
+}
+?>
                         </tbody>
                     </table>
                 </div>
