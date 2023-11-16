@@ -2,15 +2,7 @@
 //admin/myaccount.php
 require_once '../utils.php';
 //check if the user is logged in
-if (!is_logged_in()) {
-    header("Location: ../login.php");
-    die();
-}
-//check if admin else send to index
-if (!is_admin()) {
-    header("Location: ../index.php");
-    die();
-}
+require_once './autils.php';
 //if the request is a post request
 //if request type = post
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {

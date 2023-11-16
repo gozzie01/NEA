@@ -1,15 +1,7 @@
 <?php
 require_once '../utils.php';
 //check if the user is logged in
-if (!is_logged_in()) {
-    header("Location: /login.php");
-    die();
-}
-//check if admin else send to index
-if (!is_admin()) {
-    header("Location: /index.php");
-    die();
-}
+require_once './autils.php';
 //get the teacher id from the request
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {

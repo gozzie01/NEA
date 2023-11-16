@@ -1,8 +1,3 @@
-<?php
-//this is navbar page for admin admin has the following pages, teachers, classes, students, accounts, parents, events, My account, logout
-//the links are as follows /admin/teachers.php, /admin/classes.php, /admin/students.php, /admin/accounts.php, /admin/parents.php, /admin/events.php, /admin/myaccount.php, /logout.php
-// there should also be a home button that links to /admin/index.php on the left the rest should be on the right
-?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
         <!-- left side of navbar -->

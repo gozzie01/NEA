@@ -1,13 +1,6 @@
 <?php
 require_once '../utils.php';
-if (!is_logged_in()) {
-    header("Location: ../login.php");
-    exit();
-}
-if (!is_teacher()) {
-    header("Location: ../index.php");
-    exit();
-}
+require_once './tutils.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {
     //write a file to make sure it works

@@ -1,16 +1,7 @@
 <?php
 require_once '../utils.php';
 //check if the user is logged in
-if (!is_logged_in()) {
-    header("Location: login.php");
-    die();
-}
-//check if teacher else send to index
-if (!is_teacher()) {
-    header("Location: /index.php");
-    die();
-}
-
+require_once './tutils.php';
 if (!isset($_GET['id']) && class__exists($_GET['id'])) {
     header("Location: /classes.php");
     die();
