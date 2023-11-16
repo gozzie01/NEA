@@ -73,59 +73,59 @@ class Student
         $stmt->fetch();
         $stmt->close();
     }
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
-    public function get_classes()
+    public function getClasses()
     {
         return $this->classes;
     }
-    public function get_teachers()
+    public function getTeachers()
     {
         return $this->teachers;
     }
-    public function get_parents()
+    public function getParents()
     {
         return $this->parents;
     }
-    public function get_id(): int
+    public function getId(): int
     {
         return $this->id;
     }
-    public function get_year()
+    public function getYear()
     {
         return $this->year;
     }
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public function set_classes($classes)
+    public function setClasses($classes)
     {
         $this->classes = $classes;
     }
-    public function add_class($class)
+    public function addClass($class)
     {
         $this->classes[] = $class;
     }
-    public function add_parent($parent)
+    public function addParent($parent)
     {
         $this->parents[] = $parent;
     }
-    public function add_teacher($teacher)
+    public function addTeacher($teacher)
     {
         $this->teachers[] = $teacher;
     }
-    public function set_teachers($teachers)
+    public function setTeachers($teachers)
     {
         $this->teachers = $teachers;
     }
-    public function set_parents($parents)
+    public function setParents($parents)
     {
         $this->parents = $parents;
     }
-    public function set_year($year)
+    public function setYear($year)
     {
         $this->year = $year;
     }
@@ -206,67 +206,67 @@ class Teacher
         $stmt->fetch();
         $stmt->close();
     }
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
-    public function get_pastoral()
+    public function getPastoral()
     {
         return $this->pastoral;
     }
-    public function get_account()
+    public function getAccount()
     {
         return $this->account;
     }
-    public function get_classes()
+    public function getClasses()
     {
         return $this->classes;
     }
-    public function get_students()
+    public function getStudents()
     {
         return $this->students;
     }
-    public function get_id()
+    public function getID()
     {
         return $this->id;
     }
-    public function get_parents()
+    public function getParents()
     {
         return $this->parents;
     }
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public function set_pastoral($pastoral)
+    public function setPastoral($pastoral)
     {
         $this->pastoral = $pastoral;
     }
-    public function set_classes($classes)
+    public function setClasses($classes)
     {
         $this->classes = $classes;
     }
-    public function set_students($students)
+    public function setStudents($students)
     {
         $this->students = $students;
     }
-    public function set_account($account)
+    public function setAccount($account)
     {
         $this->account = $account;
     }
-    public function add_class($class)
+    public function addClass($class)
     {
         $this->classes[] = $class;
     }
-    public function add_student($student)
+    public function addStudent($student)
     {
         $this->students[] = $student;
     }
-    public function add_parent($parent)
+    public function addParent($parent)
     {
         $this->parents[] = $parent;
     }
-    public function set_parents($parents)
+    public function setParents($parents)
     {
         $this->parents = $parents;
     }
@@ -346,59 +346,59 @@ class Parent_
         }
         $stmt->close();
     }
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
-    public function get_students()
+    public function getStudents()
     {
         return $this->students;
     }
-    public function get_id()
+    public function getID()
     {
         return $this->id;
     }
-    public function get_classes()
+    public function getClasses()
     {
         return $this->classes;
     }
-    public function get_teachers()
+    public function getTeachers()
     {
         return $this->teachers;
     }
-    public function get_account()
+    public function getAccount()
     {
         return $this->account;
     }
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public function set_students($students)
+    public function setStudents($students)
     {
         $this->students = $students;
     }
-    public function set_classes($classes)
+    public function setClasses($classes)
     {
         $this->classes = $classes;
     }
-    public function set_teachers($teachers)
+    public function setTeachers($teachers)
     {
         $this->teachers = $teachers;
     }
-    public function set_account($account)
+    public function setAccount($account)
     {
         $this->account = $account;
     }
-    public function add_student($student)
+    public function addStudent($student)
     {
         $this->students[] = $student;
     }
-    public function add_class($class)
+    public function addClass($class)
     {
         $this->classes[] = $class;
     }
-    public function add_teacher($teacher)
+    public function addTeacher($teacher)
     {
         $this->teachers[] = $teacher;
     }
@@ -468,51 +468,51 @@ class Class_
         }
         $stmt->close();
     }
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
-    public function get_students()
+    public function getStudents()
     {
         return $this->students;
     }
-    public function get_teachers()
+    public function getTeachers()
     {
         return $this->teachers;
     }
-    public function get_id()
+    public function getID()
     {
         return $this->id;
     }
-    public function get_parents()
+    public function getParents()
     {
         return $this->parents;
     }
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public function set_students($students)
+    public function setStudents($students)
     {
         $this->students = $students;
     }
-    public function set_teachers($teachers)
+    public function setTeachers($teachers)
     {
         $this->teachers = $teachers;
     }
-    public function set_parents($parents)
+    public function setParents($parents)
     {
         $this->parents = $parents;
     }
-    public function add_student($student)
+    public function addStudent($student)
     {
         $this->students[] = $student;
     }
-    public function add_teacher($teacher)
+    public function addTeacher($teacher)
     {
         $this->teachers[] = $teacher;
     }
-    public function add_parent($parent)
+    public function addParent($parent)
     {
         $this->parents[] = $parent;
     }
@@ -574,55 +574,55 @@ class Account
         $stmt->fetch();
         $stmt->close();
     }
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
-    public function get_email()
+    public function getEmail()
     {
         return $this->email;
     }
-    public function get_password()
+    public function getPassword()
     {
         return $this->password;
     }
-    public function get_id()
+    public function getID()
     {
         return $this->id;
     }
-    public function get_teacherid()
+    public function getTeacherID()
     {
         return $this->teacherid;
     }
-    public function get_parentid()
+    public function getParentID()
     {
         return $this->parentid;
     }
-    public function get_phone()
+    public function getPhone()
     {
         return $this->phone;
     }
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public function set_email($email)
+    public function setEmail($email)
     {
         $this->email = $email;
     }
-    public function set_password($password)
+    public function setPassword($password)
     {
         $this->password = $password;
     }
-    public function set_teacherid($teacherid)
+    public function setTeacherID($teacherid)
     {
         $this->teacherid = $teacherid;
     }
-    public function set_parentid($parentid)
+    public function setParentID($parentid)
     {
         $this->parentid = $parentid;
     }
-    public function set_phone($phone)
+    public function setPhone($phone)
     {
         $this->phone = $phone;
     }

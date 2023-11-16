@@ -5,12 +5,12 @@ require_once './autils.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $parents = get_all_parents();
     foreach ($parents as $Parent) {
-        echo "<tr id=ParentRow", $Parent->get_id(), ">";
-        echo "<td>", $Parent->get_id(), "</td>";
-        echo "<td>", $Parent->get_name(), "</td>";
-        echo "<td>", $Parent->get_account(), "</td>";
-        echo "<td>", count($Parent->get_students()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->get_id(), "'>Delete</button></td>";
+        echo "<tr id=ParentRow", $Parent->getID(), ">";
+        echo "<td>", $Parent->getID(), "</td>";
+        echo "<td>", $Parent->getName(), "</td>";
+        echo "<td>", $Parent->getAccount(), "</td>";
+        echo "<td>", count($Parent->getStudents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -19,14 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])) {
     $accounts = get_all_accounts();
     foreach ($accounts as $account) {
-        echo "<option value=", $account->get_id(), ">", $account->get_name(), "</option>";
+        echo "<option value=", $account->getID(), ">", $account->getName(), "</option>";
     }
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
     $students = get_all_students();
     foreach ($students as $student) {
-        echo "<option value=", $student->get_id(), ">", $student->get_name(), "</option>";
+        echo "<option value=", $student->getId(), ">", $student->getName(), "</option>";
     }
     die();
 }
@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
     //get the Parent object from the database
     $Parent = new Parent_($id);
     $Parent->update();
-    $Parent_id = $Parent->get_id();
-    $Parent_name = $Parent->get_name();
-    $Parent_account = $Parent->get_account();
-    $Parent_students = $Parent->get_students();
+    $Parent_id = $Parent->getID();
+    $Parent_name = $Parent->getName();
+    $Parent_account = $Parent->getAccount();
+    $Parent_students = $Parent->getStudents();
     //format the json response
     $response = array(
         "id" => $Parent_id,

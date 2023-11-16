@@ -69,18 +69,18 @@ if (!isset($_GET['child'])) {
                             <?php
                             $student = new student($_GET['child']);
                             $student->update();
-                            $classes = $student->get_classes();
+                            $classes = $student->getClasses();
                             foreach ($classes as $class) {
                                 $clas = new class_($class);
                                 $clas->update();
-                                $teachers = $clas->get_teachers();
+                                $teachers = $clas->getTeachers();
                                 echo "<tr>";
-                                echo "<td>" . $clas->get_name() . "</td>";
+                                echo "<td>" . $clas->getName() . "</td>";
                                 echo "<td>";
                                 foreach ($teachers as $teacher) {
                                     $teach = new teacher($teacher);
                                     $teach->update();
-                                    echo $teach->get_name() . " ";
+                                    echo $teach->getName() . " ";
                                 }
                                 echo "</tr>";
                             }

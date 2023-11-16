@@ -33,10 +33,10 @@ require_once './tutils.php';
                         foreach ($classes as $class_) {
                         ?>
                             <tr>
-                                <th scope="row"><?php echo $class_->get_id(); ?></th>
-                                <td><?php echo $class_->get_name(); ?></td>
+                                <th scope="row"><?php echo $class_->getID(); ?></th>
+                                <td><?php echo $class_->getName(); ?></td>
                                 <?php
-                                $teachers = $class_->get_teachers();
+                                $teachers = $class_->getTeachers();
                                 $teacher_names = array();
                                 foreach ($teachers as $teacher) {
                                     $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
@@ -51,8 +51,8 @@ require_once './tutils.php';
                                 $teacher_string = implode("<br>", $teacher_names);
                                 ?>
                                 <td><?php echo $teacher_string; ?></td>
-                                <td><?php echo count($class_->get_students()); ?></td>
-                                <td><a href="class.php?id=<?php echo $class_->get_id(); ?>">View</a></td>
+                                <td><?php echo count($class_->getStudents()); ?></td>
+                                <td><a href="class.php?id=<?php echo $class_->getID(); ?>">View</a></td>
                             </tr>
                         <?php
                         }

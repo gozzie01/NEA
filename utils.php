@@ -146,11 +146,11 @@ function get_all_teachers()
     while ($stmt->fetch()) {
         $teachers[] = new Teacher($teacherid);
         //set the pastoral of the teacher
-        $teachers[count($teachers) - 1]->set_pastoral($pastoral);
+        $teachers[count($teachers) - 1]->setPastoral($pastoral);
         //set the name of the teacher
-        $teachers[count($teachers) - 1]->set_name($name);
+        $teachers[count($teachers) - 1]->setName($name);
         //set the account of the teacher
-        $teachers[count($teachers) - 1]->set_account($account);
+        $teachers[count($teachers) - 1]->setAccount($account);
     }
     $stmt->close();
     //update the teachers in the same way as the students
@@ -167,7 +167,7 @@ function get_all_teachers()
             $counter++;
             $OldTeacher = $Teacher;
         }
-        $teachers[$counter]->add_class($Class);
+        $teachers[$counter]->addClass($Class);
     }
     $stmt->close();
     $Student = "";
@@ -180,10 +180,10 @@ function get_all_teachers()
     $stmt->bind_result($Student, $Teacher);
     while ($stmt->fetch()) {
         $counter = 0;
-        while ($Teacher != $teachers[$counter]->get_id()) {
+        while ($Teacher != $teachers[$counter]->getID()) {
             $counter++;
         }
-        $teachers[$counter]->add_student($Student);
+        $teachers[$counter]->addStudent($Student);
     }
     $stmt->close();
     $parent = "";
@@ -196,10 +196,10 @@ function get_all_teachers()
     $stmt->bind_result($parent, $Teacher);
     while ($stmt->fetch()) {
         $counter = 0;
-        while ($Teacher != $teachers[$counter]->get_id()) {
+        while ($Teacher != $teachers[$counter]->getID()) {
             $counter++;
         }
-        $teachers[$counter]->add_parent($parent);
+        $teachers[$counter]->addParent($parent);
     }
     $stmt->close();
     return $teachers;
@@ -217,7 +217,7 @@ function get_all_classes()
     while ($stmt->fetch()) {
         $classes[] = new Class_($classid);
         //set the name of the class
-        $classes[count($classes) - 1]->set_name($name);
+        $classes[count($classes) - 1]->setName($name);
     }
     $stmt->close();
     //get the students
@@ -230,10 +230,10 @@ function get_all_classes()
     $stmt->execute();
     $stmt->bind_result($Student, $Class);
     while ($stmt->fetch()) {
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
         }
-        $classes[$counter]->add_student($Student);
+        $classes[$counter]->addStudent($Student);
     }
     $stmt->close();
     //get the teachers
@@ -246,10 +246,10 @@ function get_all_classes()
     $stmt->execute();
     $stmt->bind_result($Teacher, $Class);
     while ($stmt->fetch()) {
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
         }
-        $classes[$counter]->add_teacher($Teacher);
+        $classes[$counter]->addTeacher($Teacher);
     }
     $stmt->close();
     $counter = 0;
@@ -267,11 +267,11 @@ function get_all_classes()
             $counter = 0;
             continue;
         }
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
         }
         //if the counter is too large try the next value
-        $classes[$counter]->add_parent($parent);
+        $classes[$counter]->addParent($parent);
     }
     $stmt->close();
 
@@ -295,7 +295,7 @@ function get_all_classes_of_teacher($teacherid)
     while ($stmt->fetch()) {
         $classes[] = new Class_($classid);
         //set the name of the class
-        $classes[count($classes) - 1]->set_name($name);
+        $classes[count($classes) - 1]->setName($name);
     }
     $stmt->close();
     //get the students
@@ -308,7 +308,7 @@ function get_all_classes_of_teacher($teacherid)
     $stmt->execute();
     $stmt->bind_result($Student, $Class);
     while ($stmt->fetch()) {
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
             if ($counter >= count($classes)) {
@@ -320,7 +320,7 @@ function get_all_classes_of_teacher($teacherid)
             continue;
         }
         //if the counter is too large try the next value
-        $classes[$counter]->add_student($Student);
+        $classes[$counter]->addStudent($Student);
     }
     $stmt->close();
     //get the teachers
@@ -333,7 +333,7 @@ function get_all_classes_of_teacher($teacherid)
     $stmt->execute();
     $stmt->bind_result($Teacher, $Class);
     while ($stmt->fetch()) {
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
             if ($counter >= count($classes)) {
@@ -345,7 +345,7 @@ function get_all_classes_of_teacher($teacherid)
             continue;
         }
         //if the counter is too large try the next value
-        $classes[$counter]->add_teacher($Teacher);
+        $classes[$counter]->addTeacher($Teacher);
     }
     $stmt->close();
     $counter = 0;
@@ -362,7 +362,7 @@ function get_all_classes_of_teacher($teacherid)
             $counter = 0;
             continue;
         }
-        while ($Class != $classes[$counter]->get_id()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
             if ($counter >= count($classes)) {
@@ -374,7 +374,7 @@ function get_all_classes_of_teacher($teacherid)
             continue;
         }
         //if the counter is too large try the next value
-        $classes[$counter]->add_parent($parent);
+        $classes[$counter]->addParent($parent);
     }
     $stmt->close();
     return $classes;
@@ -393,9 +393,9 @@ function get_all_students()
     while ($stmt->fetch()) {
         $students[] = new Student($studentid);
         //set the yeargroup of the student
-        $students[count($students) - 1]->set_year($year);
+        $students[count($students) - 1]->setYear($year);
         //set the name of the student
-        $students[count($students) - 1]->set_name($name);
+        $students[count($students) - 1]->setName($name);
     }
     $stmt->close();
     //mass add the classes
@@ -412,7 +412,7 @@ function get_all_students()
             $counter++;
             $OldStudent = $Student;
         }
-        $students[$counter]->add_class($Class);
+        $students[$counter]->addClass($Class);
     }
     $stmt->close();
     //mass add the parents
@@ -429,9 +429,9 @@ function get_all_students()
         while ($Student != $OldStudent) {
             $counter++;
             //set the parent of the student to an empty array
-            $OldStudent = $students[$counter]->get_id();
+            $OldStudent = $students[$counter]->getId();
         }
-        $students[$counter]->add_parent($Parent);
+        $students[$counter]->addParent($Parent);
     }
     $Teacher = "";
     $counter = 0;
@@ -444,10 +444,10 @@ function get_all_students()
     $stmt->execute();
     $stmt->bind_result($Student, $Teacher);
     while ($stmt->fetch()) {
-        while ($Student != $students[$counter]->get_id()) {
+        while ($Student != $students[$counter]->getId()) {
             $counter++;
         }
-        $students[$counter]->add_teacher($Teacher);
+        $students[$counter]->addTeacher($Teacher);
     }
     return $students;
 }
@@ -472,11 +472,11 @@ function get_all_teachers_of_classes($classes)
     while ($stmt->fetch()) {
         $teachers[] = new Teacher($teacherid);
         //set the pastoral of the teacher
-        $teachers[count($teachers) - 1]->set_pastoral($pastoral);
+        $teachers[count($teachers) - 1]->setPastoral($pastoral);
         //set the name of the teacher
-        $teachers[count($teachers) - 1]->set_name($name);
+        $teachers[count($teachers) - 1]->setName($name);
         //set the account of the teacher
-        $teachers[count($teachers) - 1]->set_account($account);
+        $teachers[count($teachers) - 1]->setAccount($account);
     }
     $stmt->close();
     //update the teachers in the same way as the students
@@ -493,7 +493,7 @@ function get_all_teachers_of_classes($classes)
             $counter++;
             $OldTeacher = $Teacher;
         }
-        $teachers[$counter]->add_class($Class);
+        $teachers[$counter]->addClass($Class);
     }
     $stmt->close();
     $Student = "";
@@ -506,10 +506,10 @@ function get_all_teachers_of_classes($classes)
     $stmt->bind_result($Student, $Teacher);
     while ($stmt->fetch()) {
         $counter = 0;
-        while ($Teacher != $teachers[$counter]->get_id()) {
+        while ($Teacher != $teachers[$counter]->getID()) {
             $counter++;
         }
-        $teachers[$counter]->add_student($Student);
+        $teachers[$counter]->addStudent($Student);
     }
     $stmt->close();
     $parent = "";
@@ -522,10 +522,10 @@ function get_all_teachers_of_classes($classes)
     $stmt->bind_result($parent, $Teacher);
     while ($stmt->fetch()) {
         $counter = 0;
-        while ($Teacher != $teachers[$counter]->get_id()) {
+        while ($Teacher != $teachers[$counter]->getID()) {
             $counter++;
         }
-        $teachers[$counter]->add_parent($parent);
+        $teachers[$counter]->addParent($parent);
     }
     $stmt->close();
     return $teachers;
@@ -544,9 +544,9 @@ function get_all_parents()
     while ($stmt->fetch()) {
         $parents[] = new Parent_($parentid);
         //set the name of the parent
-        $parents[count($parents) - 1]->set_name($name);
+        $parents[count($parents) - 1]->setName($name);
         //set the account of the parent
-        $parents[count($parents) - 1]->set_account($userid);
+        $parents[count($parents) - 1]->setAccount($userid);
     }
     $stmt->close();
     //update the parents
@@ -558,10 +558,10 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($studentid, $parentid);
     while ($stmt->fetch()) {
-        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
+        while ($parentid != $parents[$counter]->getID() && $counter < count($parents)) {
             $counter++;
         }
-        $parents[$counter]->add_student($studentid);
+        $parents[$counter]->addStudent($studentid);
     }
     $stmt->close();
     $parentid = "";
@@ -575,10 +575,10 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($classid, $parentid);
     while ($stmt->fetch()) {
-        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
+        while ($parentid != $parents[$counter]->getID() && $counter < count($parents)) {
             $counter++;
         }
-        $parents[$counter]->add_class($classid);
+        $parents[$counter]->addClass($classid);
     }
     $stmt->close();
     $teacherid = "";
@@ -593,10 +593,10 @@ function get_all_parents()
     $stmt->execute();
     $stmt->bind_result($teacherid, $parentid);
     while ($stmt->fetch()) {
-        while ($parentid != $parents[$counter]->get_id() && $counter < count($parents)) {
+        while ($parentid != $parents[$counter]->getID() && $counter < count($parents)) {
             $counter++;
         }
-        $parents[$counter]->add_teacher($teacherid);
+        $parents[$counter]->addTeacher($teacherid);
     }
     return $parents;
 }
@@ -1057,13 +1057,13 @@ function get_all_accounts()
     while ($stmt->fetch()) {
         $accounts[] = new Account($accountid);
         //set the name of the account
-        $accounts[count($accounts) - 1]->set_name($name);
+        $accounts[count($accounts) - 1]->setName($name);
         //set the password of the account
-        $accounts[count($accounts) - 1]->set_password($password);
+        $accounts[count($accounts) - 1]->setPassword($password);
         //set the email of the account
-        $accounts[count($accounts) - 1]->set_email($email);
+        $accounts[count($accounts) - 1]->setEmail($email);
         //set the phone of the account
-        $accounts[count($accounts) - 1]->set_phone($phone);
+        $accounts[count($accounts) - 1]->setPhone($phone);
     }
     $stmt->close();
     //update the accounts
@@ -1075,10 +1075,10 @@ function get_all_accounts()
     $stmt->execute();
     $stmt->bind_result($parentid, $id);
     while ($stmt->fetch()) {
-        while ($id != $accounts[$counter]->get_id()) {
+        while ($id != $accounts[$counter]->getID()) {
             $counter++;
         }
-        $accounts[$counter]->set_parentid($parentid);
+        $accounts[$counter]->setParentID($parentid);
     }
     $stmt->close();
     $teacherid = "";
@@ -1088,10 +1088,10 @@ function get_all_accounts()
     $stmt->execute();
     $stmt->bind_result($teacherid, $id);
     while ($stmt->fetch()) {
-        while ($id != $accounts[$counter]->get_id()) {
+        while ($id != $accounts[$counter]->getID()) {
             $counter++;
         }
-        $accounts[$counter]->set_teacherid($teacherid);
+        $accounts[$counter]->setTeacherID($teacherid);
     }
     $stmt->close();
     return $accounts;

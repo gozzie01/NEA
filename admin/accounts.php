@@ -9,12 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     //get the Account object from the database
     $Account = new Account($id);
     $Account->update();
-    $Account_id = $Account->get_id();
-    $Account_name = $Account->get_name();
-    $Account_Email = $Account->get_email();
-    $Account_Phone = $Account->get_phone();
-    $Account_ParentID = $Account->get_parentid();
-    $Account_TeacherID = $Account->get_teacherid();
+    $Account_id = $Account->getID();
+    $Account_name = $Account->getName();
+    $Account_Email = $Account->getEmail();
+    $Account_Phone = $Account->getPhone();
+    $Account_ParentID = $Account->getParentID();
+    $Account_TeacherID = $Account->getTeacherID();
     //format the json response
     $response = array(
         "id" => $Account_id,
@@ -29,17 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
-    $Accounts = get_all_Accounts();
+    $Accounts = get_all_accounts();
     foreach ($Accounts as $Account) {
-        echo "<tr id=AccountRow", $Account->get_id(), ">";
-        echo "<td>", $Account->get_id(), "</td>";
-        echo "<td>", $Account->get_name(), "</td>";
-        echo "<td>", $Account->get_email(), "</td>";
+        echo "<tr id=AccountRow", $Account->getID(), ">";
+        echo "<td>", $Account->getID(), "</td>";
+        echo "<td>", $Account->getName(), "</td>";
+        echo "<td>", $Account->getEmail(), "</td>";
         echo "<td></td>";
-        echo "<td>", $Account->get_phone(), "</td>";
-        echo "<td>", $Account->get_parentid(), "</td>";
-        echo "<td>", $Account->get_teacherid(), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->get_id(), "'>Delete</button></td>";
+        echo "<td>", $Account->getPhone(), "</td>";
+        echo "<td>", $Account->getParentID(), "</td>";
+        echo "<td>", $Account->getTeacherID(), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector'])) {
     $Accounts = get_all_parents();
     foreach ($Accounts as $Account) {
-        echo "<option value='", $Account->get_id(), "'>", $Account->get_name(), "</option>";
+        echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
     }
     die();
 }
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector']))
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
     $Accounts = get_all_teachers();
     foreach ($Accounts as $Account) {
-        echo "<option value='", $Account->get_id(), "'>", $Account->get_name(), "</option>";
+        echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
     }
     die();
 }
@@ -98,12 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         $teacherid = intval($teacherid);
     }
     //check if the Account exists
-    if (Account_exists($id)) {
+    if (account_exists($id)) {
         //update the Account
-        $respon = update_Account($id, $name, $email, $phone, $parentid, $teacherid);
+        $respon = update_account($id, $name, $email, $phone, $parentid, $teacherid);
     } else {
         //create the Accounts   
-        $respon = create_Account($id, $name, $email, $phone, $parentid, $teacherid);
+        $respon = create_account($id, $name, $email, $phone, $parentid, $teacherid);
     }
     if ($respon) {
         $response = array(
@@ -123,9 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
     $id = $_POST['id'];
     //check if the Account exists
-    if (Account_exists($id)) {
+    if (account_exists($id)) {
         //delete the Account
-        $respon = delete_Account($id);
+        $respon = delete_account($id);
     } else {
         $response = array(
             "error" => "Account does not exist"

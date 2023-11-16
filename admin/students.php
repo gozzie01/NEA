@@ -9,12 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentID'])) {
     //get the student object from the database
     $student = new Student($id);
     $student->update();
-    $student_id = $student->get_id();
-    $student_name = $student->get_name();
-    $student_year = $student->get_year();
-    $student_parents = $student->get_parents();
-    $student_classes = $student->get_classes();
-    $student_teachers = $student->get_teachers();
+    $student_id = $student->getId();
+    $student_name = $student->getName();
+    $student_year = $student->getYear();
+    $student_parents = $student->getParents();
+    $student_classes = $student->getClasses();
+    $student_teachers = $student->getTeachers();
     //format the json response
     $response = array(
         "id" => $student_id,
@@ -31,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentID'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetTableData'])) {
     $students = get_all_students();
     foreach ($students as $student) {
-        echo "<tr id=studentRow", $student->get_id(), ">";
-        echo "<td>", $student->get_id(), "</td>";
-        echo "<td>", $student->get_name(), "</td>";
-        echo "<td>", $student->get_year(), "</td>";
-        echo "<td>", count($student->get_classes()), "</td>";
-        echo "<td>", count($student->get_parents()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $student->get_id(), "'>Delete</button></td>";
+        echo "<tr id=studentRow", $student->getId(), ">";
+        echo "<td>", $student->getId(), "</td>";
+        echo "<td>", $student->getName(), "</td>";
+        echo "<td>", $student->getYear(), "</td>";
+        echo "<td>", count($student->getClasses()), "</td>";
+        echo "<td>", count($student->getParents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $student->getId(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -45,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetTableData'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetParentSelector'])) {
     $parents = get_all_parents();
     foreach ($parents as $parent) {
-        echo "<option value='", $parent->get_id(), "'>", $parent->get_name(), "</option>";
+        echo "<option value='", $parent->getID(), "'>", $parent->getName(), "</option>";
     }
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['GetClassSelector'])) {
     $classes = get_all_classes();
     foreach ($classes as $class) {
-        echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
+        echo "<option value='", $class->getID(), "'>", $class->getName(), "</option>";
     }
     die();
 }

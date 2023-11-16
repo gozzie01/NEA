@@ -9,10 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
     //get the Class object from the database
     $class_ = new class_($id);
     $class_->update();
-    $class_id = $class_->get_id();
-    $class_name = $class_->get_name();
-    $class_students = $class_->get_students();
-    $class_teachers = $class_->get_teachers();
+    $class_id = $class_->getID();
+    $class_name = $class_->getName();
+    $class_students = $class_->getStudents();
+    $class_teachers = $class_->getTeachers();
     //format the json response
     $response = array(
         "id" => $class_id,
@@ -26,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $classes = get_all_classes();
     foreach ($classes as $class_) {
-        echo "<tr id=ClassRow", $class_->get_id(), ">";
-        echo "<td>", $class_->get_id(), "</td>";
-        echo "<td>", $class_->get_name(), "</td>";
+        echo "<tr id=ClassRow", $class_->getID(), ">";
+        echo "<td>", $class_->getID(), "</td>";
+        echo "<td>", $class_->getName(), "</td>";
         echo "<td>";
-        if (count($class_->get_teachers()) == 0) {
+        if (count($class_->getTeachers()) == 0) {
             echo "";
         } else {
-            foreach ($class_->get_teachers() as $teacher) {
+            foreach ($class_->getTeachers() as $teacher) {
                 $name = "";
                 $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
                 $stmt = $db->prepare($sql);
@@ -46,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
             }
         }
         echo "</td>";
-        echo "<td>", count($class_->get_students()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $class_->get_id(), "'>Delete</button></td>";
+        echo "<td>", count($class_->getStudents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $class_->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentselector'])) {
     $students = get_all_students();
     foreach ($students as $student) {
-        echo "<option value='", $student->get_id(), "'>", $student->get_name(), "</option>";
+        echo "<option value='", $student->getId(), "'>", $student->getName(), "</option>";
     }
     die();
 }
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentselector'])
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
     $teachers = get_all_teachers();
     foreach ($teachers as $teacher) {
-        echo "<option value='", $teacher->get_id(), "'>", $teacher->get_name(), "</option>";
+        echo "<option value='", $teacher->getID(), "'>", $teacher->getName(), "</option>";
     }
     die();
 }

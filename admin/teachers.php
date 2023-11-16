@@ -10,12 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
         //get the teacher object from the database
         $teacher = new teacher($id);
         $teacher->update();
-        $teacher_id = $teacher->get_id();
-        $teacher_name = $teacher->get_name();
-        $teacher_account = $teacher->get_account();
-        $teacher_classes = $teacher->get_classes();
-        $teacher_pastoral = $teacher->get_pastoral();
-        $teacher_students = $teacher->get_students();
+        $teacher_id = $teacher->getID();
+        $teacher_name = $teacher->getName();
+        $teacher_account = $teacher->getAccount();
+        $teacher_classes = $teacher->getClasses();
+        $teacher_pastoral = $teacher->getPastoral();
+        $teacher_students = $teacher->getStudents();
         //format the json response
         $response = array(
             "id" => $teacher_id,
@@ -38,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $teachers = get_all_teachers();
     foreach ($teachers as $teacher) {
-        echo "<tr id=teacherRow", $teacher->get_id(), ">";
-        echo "<td>", $teacher->get_id(), "</td>";
-        echo "<td>", $teacher->get_name(), "</td>";
-        echo "<td>", $teacher->get_account(), "</td>";
-        echo "<td>", $teacher->get_pastoral() ? "yes" : "no", "</td>";
-        echo "<td>", count($teacher->get_classes()), "</td>";
-        echo "<td>", count($teacher->get_students()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $teacher->get_id(), "'>Delete</button></td>";
+        echo "<tr id=teacherRow", $teacher->getID(), ">";
+        echo "<td>", $teacher->getID(), "</td>";
+        echo "<td>", $teacher->getName(), "</td>";
+        echo "<td>", $teacher->getAccount(), "</td>";
+        echo "<td>", $teacher->getPastoral() ? "yes" : "no", "</td>";
+        echo "<td>", count($teacher->getClasses()), "</td>";
+        echo "<td>", count($teacher->getStudents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $teacher->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -53,14 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getaccountdata'])) {
     $accounts = get_all_accounts();
     foreach ($accounts as $account) {
-        echo "<option value='", $account->get_id(), "'>", $account->get_name(), "</option>";
+        echo "<option value='", $account->getID(), "'>", $account->getName(), "</option>";
     }
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getclassdata'])) {
     $classes = get_all_classes();
     foreach ($classes as $class) {
-        echo "<option value='", $class->get_id(), "'>", $class->get_name(), "</option>";
+        echo "<option value='", $class->getID(), "'>", $class->getName(), "</option>";
     }
     die();
 }

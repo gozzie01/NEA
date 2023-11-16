@@ -63,15 +63,15 @@ $account->update();
             <form>
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" value="<?php echo $account->get_name(); ?>" id="name">
+                    <input type="text" class="form-control" value="<?php echo $account->getName(); ?>" id="name">
                 </div>
                 <div class="form-group">
                     <label for="email">Email address</label>
-                    <input type="text" class="form-control" id="email" value="<?php echo $account->get_email(); ?>">
+                    <input type="text" class="form-control" id="email" value="<?php echo $account->getEmail(); ?>">
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="text" class="form-control" id="phone" value="<?php echo $account->get_phone(); ?>">
+                    <input type="text" class="form-control" id="phone" value="<?php echo $account->getPhone(); ?>">
                 </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">Submit</button>

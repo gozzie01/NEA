@@ -15,7 +15,7 @@ $class->update();
 <?php require_once '../includes.php'; ?>
 
 <head>
-    <title>Class <? echo $class->get_name(); ?></title>
+    <title>Class <? echo $class->getName(); ?></title>
 </head>
 <?php require_once './nav.php'; ?>
 
@@ -24,7 +24,7 @@ $class->update();
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Class <? echo $class->get_name(); ?></h1>
+                <h1>Class <? echo $class->getName(); ?></h1>
                 <!--display a list of students in the class-->
                 <h2>Students</h2>
                 <table class="table table-striped">
@@ -36,14 +36,14 @@ $class->update();
                     </thead>
                     <tbody>
                         <?php
-                        $students = $class->get_students();
+                        $students = $class->getStudents();
                         foreach ($students as $student) {
                             $student = new student($student);
                             $student->update();
                         ?>
                             <tr>
-                                <th scope="row"><?php echo $student->get_id(); ?></th>
-                                <td><?php echo $student->get_name(); ?></td>
+                                <th scope="row"><?php echo $student->getId(); ?></th>
+                                <td><?php echo $student->getName(); ?></td>
                             </tr>
                         <?php
                         }
