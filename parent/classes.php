@@ -67,18 +67,18 @@ if (!isset($_GET['child'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $student = new student($_GET['child']);
+                            $student = new Student($_GET['child']);
                             $student->update();
                             $classes = $student->getClasses();
                             foreach ($classes as $class) {
-                                $clas = new class_($class);
+                                $clas = new Class_($class);
                                 $clas->update();
                                 $teachers = $clas->getTeachers();
                                 echo "<tr>";
                                 echo "<td>" . $clas->getName() . "</td>";
                                 echo "<td>";
                                 foreach ($teachers as $teacher) {
-                                    $teach = new teacher($teacher);
+                                    $teach = new Teacher($teacher);
                                     $teach->update();
                                     echo $teach->getName() . " ";
                                 }

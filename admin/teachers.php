@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
     try {
         $id = $_POST['id'];
         //get the teacher object from the database
-        $teacher = new teacher($id);
+        $teacher = new Teacher($id);
         $teacher->update();
         $teacher_id = $teacher->getID();
         $teacher_name = $teacher->getName();

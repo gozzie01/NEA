@@ -7,7 +7,7 @@ if (!isset($_GET['id']) && class__exists($_GET['id'])) {
     die();
 }
 $id = $_GET["id"];
-$class = new class_($id);
+$class = new Class_($id);
 $class->update();
 ?>
 <!DOCTYPE html>
@@ -38,7 +38,7 @@ $class->update();
                         <?php
                         $students = $class->getStudents();
                         foreach ($students as $student) {
-                            $student = new student($student);
+                            $student = new Student($student);
                             $student->update();
                         ?>
                             <tr>

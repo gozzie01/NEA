@@ -7,7 +7,7 @@ require_once './autils.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
     $id = $_POST['id'];
     //get the Class object from the database
-    $class_ = new class_($id);
+    $class_ = new Class_($id);
     $class_->update();
     $class_id = $class_->getID();
     $class_name = $class_->getName();
