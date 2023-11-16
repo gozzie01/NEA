@@ -30,17 +30,17 @@ require_once './tutils.php';
                     <tbody>
                         <?php
                         $classes = get_all_classes_of_teacher($_SESSION['teacher']);
-                        foreach ($classes as $class_) {
+                        foreach ($classes as $Class) {
                         ?>
                             <tr>
-                                <th scope="row"><?php echo $class_->getID(); ?></th>
-                                <td><?php echo $class_->getName(); ?></td>
+                                <th scope="row"><?php echo $Class->getID(); ?></th>
+                                <td><?php echo $Class->getName(); ?></td>
                                 <?php
-                                $teachers = $class_->getTeachers();
+                                $teachers = $Class->getTeachers();
                                 $teacher_names = array();
                                 foreach ($teachers as $teacher) {
                                     $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
-                                    $stmt = $db->prepare($sql);
+                                    $stmt = $GLOBALS['db']->prepare($sql);
                                     $stmt->bind_param("i", $teacher);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
@@ -51,8 +51,8 @@ require_once './tutils.php';
                                 $teacher_string = implode("<br>", $teacher_names);
                                 ?>
                                 <td><?php echo $teacher_string; ?></td>
-                                <td><?php echo count($class_->getStudents()); ?></td>
-                                <td><a href="class.php?id=<?php echo $class_->getID(); ?>">View</a></td>
+                                <td><?php echo count($Class->getStudents()); ?></td>
+                                <td><a href="class.php?id=<?php echo $Class->getID(); ?>">View</a></td>
                             </tr>
                         <?php
                         }

@@ -3,7 +3,7 @@
 //the nav bar also needs a home button that links to /parent/index.php
 //this nav bar is special because it will have a separate dropdown to the left of all the links where
 //the parent selects the child they want to view
-$_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
+$_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
 
 ?>
 
@@ -39,7 +39,8 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
             <form class="d-flex">
                 <select class="form-select" id="StudentSel">
                     <?php
-                    $children = get_parent_students($_SESSION['parent']);
+                    $parent_id =intval($_SESSION['parent']);
+                    $children = get_parent_students($parent_id);
                     if (isset($_SESSION['child']) && in_array($_SESSION['child'], $children)) {
                         echo "<option value=-1>Select Child</option>";
                     } else {
@@ -51,9 +52,9 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
                     //loop through the children and display them as options
                     foreach ($children as $child) {
                         if (isset($_SESSION['child']) && $_SESSION['child'] == $child) {
-                            echo "<option selected value=", strval($child), ">", get_student_name($child), "</option>";
+                            echo "<option selected value=", strval($child), ">", get_student_name(intval($child)), "</option>";
                         } else {
-                            echo "<option value=", strval($child), ">", get_student_name($child), "</option>";
+                            echo "<option value=", strval($child), ">", get_student_name(intval($child)), "</option>";
                         }
                     }
                     ?>
@@ -66,16 +67,17 @@ $_SESSION['child'] = isset($_GET['child']) ? $_GET['child'] : null;
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href='/parent/classes.php<?php
                                                                 if (isset($_SESSION['child'])) {
-                                                                    echo ("?child=" . $_SESSION['child']);
+                                                                    $childid = intval($_SESSION['child']);
+                                                                    echo ("?child=" . $childid ."");
                                                                 } ?>
                 '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
                 <a class="nav-link" href="/parent/bookings.php">Bookings</a>
                 <?
-                if (is_admin()) {
+                if (boolval(is_admin())) {
                     echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
                 }
-                if (is_teacher()) {
+                if (boolval(is_teacher())) {
                     echo '<a class="nav-link" href="/teacher/index.php">Teacher</a>';
                 }
                 ?>

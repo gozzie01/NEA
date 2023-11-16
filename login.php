@@ -33,6 +33,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     if (password_verify($password, $hashed_password)) {
         //if the password is correct then we can log the user in
         //generate a token for the user
+        $admin = "";
+        $parent = "";
+        $teacher = "";
+        $pastoral = "";
         $token = bin2hex(random_bytes(32));
         //store the token in the database
         $hashed_token = password_hash($token, PASSWORD_DEFAULT);

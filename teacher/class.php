@@ -2,7 +2,7 @@
 require_once '../utils.php';
 //check if the user is logged in
 require_once './tutils.php';
-if (!isset($_GET['id']) && class__exists($_GET['id'])) {
+if (!isset($_GET['id']) && class__exists(intval($_GET['id']))) {
     header("Location: /classes.php");
     die();
 }
@@ -38,7 +38,7 @@ $class->update();
                         <?php
                         $students = $class->getStudents();
                         foreach ($students as $student) {
-                            $student = new Student($student);
+                            $student = new Student(intval($student));
                             $student->update();
                         ?>
                             <tr>

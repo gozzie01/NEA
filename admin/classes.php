@@ -6,13 +6,14 @@ require_once './autils.php';
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
     $id = $_POST['id'];
+    $id = intval($id);
     //get the Class object from the database
-    $class_ = new Class_($id);
-    $class_->update();
-    $class_id = $class_->getID();
-    $class_name = $class_->getName();
-    $class_students = $class_->getStudents();
-    $class_teachers = $class_->getTeachers();
+    $Class = new Class_($id);
+    $Class->update();
+    $class_id = $Class->getID();
+    $class_name = $Class->getName();
+    $class_students = $Class->getStudents();
+    $class_teachers = $Class->getTeachers();
     //format the json response
     $response = array(
         "id" => $class_id,
@@ -25,18 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $classes = get_all_classes();
-    foreach ($classes as $class_) {
-        echo "<tr id=ClassRow", $class_->getID(), ">";
-        echo "<td>", $class_->getID(), "</td>";
-        echo "<td>", $class_->getName(), "</td>";
+    foreach ($classes as $Class) {
+        echo "<tr id=ClassRow", $Class->getID(), ">";
+        echo "<td>", $Class->getID(), "</td>";
+        echo "<td>", $Class->getName(), "</td>";
         echo "<td>";
-        if (count($class_->getTeachers()) == 0) {
+        if (count($Class->getTeachers()) == 0) {
             echo "";
         } else {
-            foreach ($class_->getTeachers() as $teacher) {
+            foreach ($Class->getTeachers() as $teacher) {
                 $name = "";
                 $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
-                $stmt = $db->prepare($sql);
+                $stmt = $GLOBALS['db']->prepare($sql);
                 $stmt->bind_param("i", $teacher);
                 $stmt->execute();
                 $stmt->bind_result($name);
@@ -46,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
             }
         }
         echo "</td>";
-        echo "<td>", count($class_->getStudents()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $class_->getID(), "'>Delete</button></td>";
+        echo "<td>", count($Class->getStudents()), "</td>";
+        echo "<td><button type='button' class='btn btn-danger' id='delete", $Class->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
@@ -108,12 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
         $classes = null;
     }
     //check if the Class exists
-    if (Class__exists($id)) {
+    if (class__exists($id)) {
         //update the Class
-        $respon = update_Class($id, $name, $students, $teachers);
+        $respon = update_class($id, $name, $students, $teachers);
     } else {
         //create the classes
-        $respon = create_Class($id, $name, $students, $teachers);
+        $respon = create_class($id, $name, $students, $teachers);
     }
     if ($respon) {
         $response = array(
@@ -133,9 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
     $id = $_POST['id'];
     //check if the Class exists
-    if (Class__exists($id)) {
+    if (class__exists($id)) {
         //delete the Class
-        $respon = delete_Class($id);
+        $respon = delete_class($id);
     } else {
         $response = array(
             "error" => "Class does not exist"

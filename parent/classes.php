@@ -67,10 +67,11 @@ if (!isset($_GET['child'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $student = new Student($_GET['child']);
+                            $student = new Student(intval($_GET['child']));
                             $student->update();
                             $classes = $student->getClasses();
                             foreach ($classes as $class) {
+                                $class = intval($class);
                                 $clas = new Class_($class);
                                 $clas->update();
                                 $teachers = $clas->getTeachers();
@@ -78,6 +79,7 @@ if (!isset($_GET['child'])) {
                                 echo "<td>" . $clas->getName() . "</td>";
                                 echo "<td>";
                                 foreach ($teachers as $teacher) {
+                                    $teacher = intval($teacher);
                                     $teach = new Teacher($teacher);
                                     $teach->update();
                                     echo $teach->getName() . " ";

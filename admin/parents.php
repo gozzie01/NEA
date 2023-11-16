@@ -80,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
         $students = null;
     }
     //check if the Parent exists
-    if (Parent_exists($id)) {
+    if (parent_exists($id)) {
         //update the Parent
-        $respon = update_Parent($id, $name, $accountID, $students);
+        $respon = update_parent($id, $name, $accountID, $students);
     } else {
         //create the parents
-        $respon = create_Parent($id, $name, $accountID, $students);
+        $respon = create_parent($id, $name, $accountID, $students);
     }
     if ($respon) {
         $response = array(
@@ -105,9 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
     $id = $_POST['id'];
     //check if the Parent exists
-    if (Parent_exists($id)) {
+    if (parent_exists($id)) {
         //delete the Parent
-        $respon = delete_Parent($id);
+        $respon = delete_parent($id);
     } else {
         $response = array(
             "error" => "Parent does not exist"
