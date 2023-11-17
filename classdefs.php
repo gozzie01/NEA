@@ -130,8 +130,7 @@ class Student
         $this->year = $year;
     }
 }
-class Teacher
-{
+class Teacher{
     private $id;
     private $name;
     private $account;
