@@ -1361,6 +1361,7 @@ function get_all_events(){
         $events[count($events) - 1]->setYear($YearGroup);
     }
     $stmt->close();
+    return $events;
 }
 
 function event_exists($id)
@@ -1375,19 +1376,16 @@ function event_exists($id)
     return $numrows > 0;
 }
 
-function create_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
+function create_event($name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
 {
-    if (event_exists($id)) {
-        return false;
-    }
     //check if the values passed are valid
     if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
         return false;
     }
     //create the event
-    $sql = "INSERT INTO Event (ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("issssss", $id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
+    $stmt->bind_param("sssssi", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -1404,11 +1402,13 @@ function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration
     //update the event
     $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, SlotDuration=?, YearGroup=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("ssssssi", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup, $id);
+    $stmt->bind_param("sssssii", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup, $id);
     $stmt->execute();
     $stmt->close();
     return true;
 }
+
+
 function delete_event($id)
 {
     if (!event_exists($id)) {
@@ -1426,4 +1426,9 @@ function delete_event($id)
 function is_pastoral()
 {
     return isset($_SESSION['pastoral']);
+}
+
+function format_date($inputdate){
+    $date = new DateTime($inputdate);
+    return $date->format('d/m/Y/ H:i');
 }

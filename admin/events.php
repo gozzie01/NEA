@@ -3,131 +3,142 @@ require_once '../utils.php';
 //check if the user is logged in
 require_once './autils.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
-    $parents = get_all_parents();
-    foreach ($parents as $Parent) {
-        echo "<tr id=ParentRow", $Parent->getID(), ">";
-        echo "<td>", $Parent->getID(), "</td>";
-        echo "<td>", $Parent->getName(), "</td>";
-        echo "<td>", $Parent->getAccount(), "</td>";
-        echo "<td>", count($Parent->getStudents()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->getID(), "'>Delete</button></td>";
-        echo "</tr>";
+    try {
+        $events = get_all_events();
+        foreach ($events as $Event) {
+            echo "<tr id=EventRow", $Event->getID(), ">";
+            echo "<td>", $Event->getID(), "</td>";
+            echo "<td>", $Event->getName(), "</td>";
+            echo "<td>", format_date($Event->getStartTime()), "</td>";
+            echo "<td>", format_date($Event->getEndTime()), "</td>";
+            echo "<td>", format_date($Event->getOpenTime()), "</td>";
+            echo "<td>", $Event->getSlotDuration(), "</td>";
+            echo "<td>", $Event->getYear(), "</td>";
+            //link to bookings page with event id
+            echo "<td><a href='/admin/bookings.php?event=", $Event->getID(), "'>View</a></td>";
+            echo "<td><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
+            echo "</tr>";
+        }
+    } catch (Exception $e) {
     }
     die();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])) {
-    $accounts = get_all_accounts();
-    foreach ($accounts as $account) {
-        echo "<option value=", $account->getID(), ">", $account->getName(), "</option>";
-    }
-    die();
-}
-if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
-    $students = get_all_students();
-    foreach ($students as $student) {
-        echo "<option value=", $student->getId(), ">", $student->getName(), "</option>";
-    }
-    die();
-}
-//get the Parent id from the request
+//get the Event id from the request
 //if its a post get the post id if not try to get it from get
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
-    $id = $_POST['id'];
-    //get the Parent object from the database
-    $Parent = new Parent_($id);
-    $Parent->update();
-    $Parent_id = $Parent->getID();
-    $Parent_name = $Parent->getName();
-    $Parent_account = $Parent->getAccount();
-    $Parent_students = $Parent->getStudents();
-    //format the json response
-    $response = array(
-        "id" => $Parent_id,
-        "name" => $Parent_name,
-        "account" => $Parent_account,
-        "students" => $Parent_students
-    );
-    echo json_encode($response);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
+    try {
+        $id = $_POST['id'];
+        //get the Event object from the database
+        $Event = new Event($id);
+        $Event->update();
+        $Event_id = $Event->getID();
+        $Event_name = $Event->getName();
+        $Event_startTime = $Event->getStartTime();
+        $Event_endTime = $Event->getEndTime();
+        $Event_openTime = $Event->getOpenTime();
+        $Event_slotDuration = $Event->getSlotDuration();
+        $Event_year = $Event->getYear();
+        //format the json response
+        $response = array(
+            "id" => $Event_id,
+            "name" => $Event_name,
+            "startTime" => $Event_startTime,
+            "endTime" => $Event_endTime,
+            "openTime" => $Event_openTime,
+            "slotDuration" => $Event_slotDuration,
+            "year" => $Event_year
+        );
+        echo json_encode($response);
+    } catch (Exception $e) {
+    }
     die();
 }
 
-//if the request is a post and the id is set, check if the Parent exists, if it does update it, if not create it
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $accountID = $_POST['accountID'];
-    $students = $_POST['students'];
-    //check if the values passed are valid
-    //format the variables properly
-    $id = intval($id);
-    $name = strval($name);
-    //if accountID is empty set it to null
-    if ($accountID == "null" || $accountID == "") {
-        $accountID = null;
-    } else {
-        $accountID = intval($accountID);
-    }
-    //the arrays will be passed as strings so we need to convert them to arrays
-    //check if there is a value
-    if ($students != "") {
-        //if there is a value then convert it to an array
-        str_replace(" ", "", $students);
-        str_replace("[", "", $students);
-        str_replace("]", "", $students);
-        $students = explode(",", $students);
-    } else {
-        $students = null;
-    }
-    //check if the Parent exists
-    if (parent_exists($id)) {
-        //update the Parent
-        $respon = update_parent($id, $name, $accountID, $students);
-    } else {
-        //create the parents
-        $respon = create_parent($id, $name, $accountID, $students);
-    }
-    if ($respon) {
+//if the request is a post and the id is set, check if the Event exists, if it does update it, if not create it
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
+    try {
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $startTime = date('Y-m-d H:i:s', strtotime($_POST['startTime']));
+        $endTime = date('Y-m-d H:i:s', strtotime($_POST['endTime']));
+        $openTime = date('Y-m-d H:i:s', strtotime($_POST['openTime']));
+        $slotDuration = $_POST['slotDuration'];
+        //date times are in the format yyyy-mm-ddTHH:mm
+        //convert to a format sql can understand
+        
+
+        $year = $_POST['year'];
+        //check if the Event exists
+        if (event_exists($id)) {
+            //update the Event
+            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $slotDuration, $year);
+        } else {
+            //create the Event
+            $respon = create_event($name, $startTime, $endTime, $openTime, $slotDuration, $year);
+        }
+        if ($respon) {
+            $response = array(
+                "success" => "Event updated successfully"
+            );
+            echo json_encode($response);
+            die();
+        } else {
+            $response = array(
+                "error" => "Event could not be updated"
+            );
+            echo json_encode($response);
+            die();
+        }
+    } catch (Exception $e) {
         $response = array(
-            "success" => "Parent updated successfully"
-        );
-        echo json_encode($response);
-        die();
-    } else {
-        $response = array(
-            "error" => "Parent does not exist"
+            "error" => "Event could not be updated"
         );
         echo json_encode($response);
         die();
     }
+    die();
 }
-//if the request is a post and the id is set, check if the Parent exists, if it does delete it
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
+//if the request is a post and the id is set, check if the Event exists, if it does delete it
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
     $id = $_POST['id'];
-    //check if the Parent exists
-    if (parent_exists($id)) {
-        //delete the Parent
-        $respon = delete_parent($id);
-    } else {
+    //check if the Event exists
+    try {
+        if (event_exists($id)) {
+            //delete the Event
+            $respon = delete_event($id);
+        } else {
+            $response = array(
+                "error" => "Event does not exist"
+            );
+            echo json_encode($response);
+            die();
+        }
+        if ($respon) {
+            $response = array(
+                "success" => "Event deleted successfully"
+            );
+            echo json_encode($response);
+            die();
+        } else {
+            $response = array(
+                "error" => "Event does not exist"
+            );
+            echo json_encode($response);
+            die();
+        }
+    } catch (Exception $e) {
         $response = array(
-            "error" => "Parent does not exist"
+            "error" => "Event does not exist"
         );
         echo json_encode($response);
         die();
     }
-    if ($respon) {
-        $response = array(
-            "success" => "Parent deleted successfully"
-        );
-        echo json_encode($response);
-        die();
-    } else {
-        $response = array(
-            "error" => "Parent does not exist"
-        );
-        echo json_encode($response);
-        die();
-    }
+    die();
+}
+//if its a post with no data just die :)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    die();
 }
 ?>
 <!DOCTYPE html>
@@ -160,47 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         //on document load
         $(document).ready(function() {
             //add the options to account selector and student selector
-            $.ajax({
-                type: "POST",
-                url: "/admin/parents.php",
-                data: {
-                    getAccountSelector: true
-                },
-                success: function(data) {
-                    $('#AccountSelector').html(data);
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: "/admin/parents.php",
-                data: {
-                    getStudentSelector: true
-                },
-                success: function(data) {
-                    $('#StudentSelector').html(data);
-                }
-            });
             //make the multiselects searchable and 
-            $('#StudentSelector').select2({
-                theme: "bootstrap-5",
-                placeholder: "Select Students",
-                width: "100%",
-                allowClear: true,
-                multiple: true
-            });
-            $('#AccountSelector').select2({
-                theme: "bootstrap-5",
-                placeholder: "Select Account",
-                width: "100%",
-                allowClear: true,
-                multiple: false
-            });
         });
 
         function updateTable() {
             $.ajax({
                 type: "POST",
-                url: "/admin/parents.php",
+                url: "/admin/events.php",
                 data: {
                     gettabledata: true
                 },
@@ -209,32 +186,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                 }
             });
         }
-        //when a Parent is selected from the table, update the edit form to show the Parent's details
+        //when a Event is selected from the table, update the edit form to show the Event's details
         $(document).on('click', 'tr', function() {
             if ($(this).find("th").length > 0) {
                 return;
             }
-            //get the Parent id from the row
-            var ParentID = $(this).find("td:first").html();
+            //get the Event id from the row
+            var EventID = $(this).find("td:first").html();
             //print the id to the console
-            console.log(ParentID);
+            console.log(EventID);
             $(this).addClass('table-danger').siblings().removeClass('table-danger');
-            //get the Parent object from the database
+            //get the Event object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/parents.php",
+                url: "/admin/events.php",
                 data: {
-                    getParentID: true,
-                    id: ParentID
+                    getEventID: true,
+                    id: EventID
                 },
                 success: function(data) {
                     //parse the json response
-                    var Parent = JSON.parse(data);
-                    //set the values of the edit form to the Parent's details
-                    $('#ParentID').val(Parent.id);
-                    $('#ParentName').val(Parent.name);
-                    $('#AccountSelector').val(Parent.account);
-                    $('#StudentSelector').val(Parent.students);
+                    var Event = JSON.parse(data);
+                    //set the values of the edit form to the Event's details
+                    $('#EventID').val(Event.id);
+                    $('#EventName').val(Event.name);
+                    $('#EventStartTime').val(Event.startTime);
+                    $('#EventEndTime').val(Event.endTime);
+                    $('#EventOpenTime').val(Event.openTime);
+                    $('#EventSlotDuration').val(Event.slotDuration);
+                    $('#EventYear').val(Event.year);
                     //refresh the selects
                     $('#AccountSelector').trigger('change');
                     $('#StudentSelector').trigger('change');
@@ -243,18 +223,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                 }
             });
         });
-        //clear button to stop selecting a Parent
+        //clear button to stop selecting a Event
         $(document).on('click', '#clear', function() {
             //remove the selected class from the table
             $('tr').removeClass('table-danger');
             //clear the edit form
-            $('#ParentID').val("");
-            $('#ParentName').val("");
-            $('#AccountSelector').val("");
-            $('#StudentSelector').val("");
-            //refresh the selects
-            $('#AccountSelector').trigger('change');
-            $('#StudentSelector').trigger('change');
+            $('#EventID').val("");
+            $('#EventName').val("");
+            $('#EventStartTime').val("");
+            $('#EventEndTime').val("");
+            $('#EventOpenTime').val("");
+            $('#EventSlotDuration').val("");
+            $('#EventYear').val("");
+            
             //change the text in the submit button to add
             $('#submitFormButton').text("Add");
         });
@@ -272,17 +253,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             $('.table-scroll tbody').css('height', height);
         });
         //on submit do nothing, let the button press function handle it
-        $(document).on('submit', '#ParentUpdateForm', function(e) {
+        $(document).on('submit', '#EventUpdateForm', function(e) {
             e.preventDefault();
         });
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
             if ($(this).text() == "Add") {
                 //submit the form using xhttprequest
-                $id = $('#ParentID').val();
-                $name = $('#ParentName').val();
-                $accountID = $('#AccountSelector').val();
-                $students = $('#StudentSelector').val();
+                $id = $('#EventID').val();
+                $name = $('#EventName').val();
+                $startTime = $('#EventStartTime').val();
+                $endTime = $('#EventEndTime').val();
+                $openTime = $('#EventOpenTime').val();
+                $slotDuration = $('#EventSlotDuration').val();
+                $year = $('#EventYear').val();
+
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     //if the request is complete
@@ -306,30 +291,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                         }
                     }
                 };
-                xhttp.open("POST", "/admin/parents.php", true);
+                xhttp.open("POST", "/admin/events.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("updateParent=true" + "&id=" + $id + "&name=" + $name + "&accountID=" + $accountID + "&students=" + $students);
+                xhttp.send("updateEvent=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
             } else {
                 //if the button says update
                 //show the confirmation popup
                 $('#confirm').show();
-                //get the Parent id from the form
-                var ParentID = $('#ParentID').val();
+                //get the Event id from the form
+                var EventID = $('#EventID').val();
                 //print the id to the console
-                console.log(ParentID);
-                //get the Parent object from the database
+                console.log(EventID);
+                //get the Event object from the database
                 $.ajax({
                     type: "POST",
-                    url: "/admin/parents.php",
+                    url: "/admin/events.php",
                     data: {
-                        getParentID: true,
-                        id: ParentID
+                        getEventID: true,
+                        id: EventID
                     },
                     success: function(data) {
                         //parse the json response
-                        var Parent = JSON.parse(data);
+                        var Event = JSON.parse(data);
                         //set the text of the confirmation popup
-                        $('#confirmText').text("Are you sure you want to update " + Parent.name + "?");
+                        $('#confirmText').text("Are you sure you want to update " + Event.name + "?");
                     }
                 });
             }
@@ -337,10 +322,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         //on click of the confirm button
         $(document).on('click', '#confirmButton', function() {
             //submit the form
-            $id = $('#ParentID').val();
-            $name = $('#ParentName').val();
-            $accountID = $('#AccountSelector').val();
-            $students = $('#StudentSelector').val();
+            $id = $('#EventID').val();
+            $name = $('#EventName').val();
+            $startTime = $('#EventStartTime').val();
+            $endTime = $('#EventEndTime').val();
+            $openTime = $('#EventOpenTime').val();
+            $slotDuration = $('#EventSlotDuration').val();
+            $year = $('#EventYear').val();
+
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 //if the request is complete
@@ -365,9 +354,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
                     }
                 }
             };
-            xhttp.open("POST", "/admin/parents.php", true);
+            xhttp.open("POST", "/admin/events.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateParent=true" + "&id=" + $id + "&name=" + $name + "&accountID=" + $accountID + "&students=" + $students);
+            xhttp.send("updateEvent=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -376,22 +365,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         });
         $(document).on('click', 'button[id^="delete"]', function() {
             //get the teacher id from the button id
-            var ParentID = $(this).attr('id').replace('delete', '');
+            var EventID = $(this).attr('id').replace('delete', '');
             //print the id to the console
-            console.log(ParentID);
+            console.log(EventID);
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/parents.php",
+                url: "/admin/events.php",
                 data: {
-                    getParentID: true,
-                    id: ParentID
+                    getEventID: true,
+                    id: EventID
                 },
                 success: function(data) {
                     //parse the json response
-                    var Parent = JSON.parse(data);
+                    var Event = JSON.parse(data);
                     //set the text of the confirmation popup
-                    $('#confirmDeletionText').text("Are you sure you want to delete " + Parent.name + "?");
+                    $('#confirmDeletionText').text("Are you sure you want to delete " + Event.name + "?");
                 }
             });
             //show the confirmation popup
@@ -400,16 +389,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         //on click of the confirm button
         $(document).on('click', '#confirmDeletionButton', function() {
             //get the teacher id from the form
-            var ParentID = $('#ParentID').val();
+            var EventID = $('#EventID').val();
             //print the id to the console
-            console.log(ParentID);
+            console.log(EventID);
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/parents.php",
+                url: "/admin/events.php",
                 data: {
-                    deleteParent: true,
-                    id: ParentID
+                    deleteEvent: true,
+                    id: EventID
                 },
                 success: function(data) {
                     //parse the json response
@@ -451,30 +440,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             display: inline-table;
         }
 
-        .ParentForm input {
+        .EventForm input {
             margin: 2px;
         }
     </style>
 </head>
 <?php include_once '../admin/nav.php'; ?>
-<!--searchable table of parents-->
+<!--searchable table of -->
 
 <body>
     <div style="display: flex; margin-top: 2pt;">
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1>parents</h1>
-                    <p>Here you can view all the parents in the school</p>
+                    <h1>Events</h1>
+                    <p>Here you can view all the Events in the school</p>
                     <input class="form-control" id="myInput" type="text" onkeyup="searchupdate()" placeholder="Search..">
                     <div class="well">
                         <table class="table table-striped table-scroll table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">Parent ID</th>
-                                    <th scope="col">Parent Name</th>
-                                    <th scope="col">Account ID</th>
-                                    <th scope="col">Students</th>
+                                    <th scope="col">Event ID</th>
+                                    <th scope="col">Event Name</th>
+                                    <th scope="col">Start Time</th>
+                                    <th scope="col">End Time</th>
+                                    <th scope="col">Open Time</th>
+                                    <th scope="col">Slot Duration</th>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">view</th>
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
@@ -490,16 +483,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         <div class="container" style="max-width: 25%;">
             <div class="col">
                 <h1>Edit</h1>
-                <form id="ParentUpdateForm" class="ParentForm">
-                    <!--Parent id, name, yeargroup, select multiclasses from a list of all classes, select parents from a list of multi parents-->
-                    <input type="text" class="form-control" placeholder="Parent ID" id="ParentID">
-                    <input type="text" class="form-control" placeholder="Parent Name" id="ParentName">
-                    <select class="form-select" id="AccountSelector">
-
-                    </select>
-                    <select class="form-select" id="StudentSelector">
-
-                    </select>
+                <form id="EventUpdateForm" class="EventForm">
+                    <!--Event id, name, yeargroup, select multiclasses from a list of all classes, select  from a list of multi -->
+                    <input type="text" class="form-control" placeholder="Event ID" id="EventID">
+                    <input type="text" class="form-control" placeholder="Event Name" id="EventName">
+                    <!--date selector-->
+                    <input type="datetime-local" class="form-control" placeholder="Start Time" id="EventStartTime">
+                    <input type="datetime-local" class="form-control" placeholder="End Time" id="EventEndTime">
+                    <input type="datetime-local" class="form-control" placeholder="Open Time" id="EventOpenTime">
+                    <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
+                    <input type="number" class="form-control" placeholder="Year" id="EventYear">       
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->
                     <button type="button" id="clear" class="btn btn-primary">Clear</button>
@@ -512,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
     <div id="confirm" style="display: none; position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4);">
         <!--confirmation box-->
         <div style="background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 80%;">
-            <p id="confirmText">Are you sure you want to update this Parent?</p>
+            <p id="confirmText">Are you sure you want to update this Event?</p>
             <button type="button" id="confirmButton" class="btn btn-primary">Confirm</button>
             <button type="button" id="cancelButton" class="btn btn-primary">Cancel</button>
         </div>
@@ -520,7 +513,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
     <div id="confirmDeletion" style="display: none; position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4);">
         <!--confirmation box-->
         <div style="background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 80%;">
-            <p id="confirmDeletionText">Are you sure you want to delete this Parent?</p>
+            <p id="confirmDeletionText">Are you sure you want to delete this Event?</p>
             <button type="button" id="confirmDeletionButton" class="btn btn-danger">Confirm</button>
             <button type="button" id="cancelDeletionButton" class="btn btn-primary">Cancel</button>
         </div>
