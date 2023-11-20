@@ -997,7 +997,7 @@ function create_class($id, $name, $students, $teachers)
     if (!is_string($name)) {
         return false;
     }
-    //check if the students and teachers exist
+    //check if the students and teachers exist //1000
     if (!is_null($students)) {
         foreach ($students as $student) {
             if (!student_exists($student)) {
@@ -1182,7 +1182,7 @@ function create_account($id, $name, $email, $phone, $parentid, $teacherid)
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $stmt->close(); //1000
+    $stmt->close(); 
     //create the teacher
     $sql = "INSERT INTO Teacher (UserID) VALUES (?)";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -1331,6 +1331,98 @@ function delete_account($id)
     return true;
 }
 
+function get_all_events(){
+    $eventid = "";
+    $name = "";
+    $StartTime = "";
+    $EndTime = "";
+    $OpenTime = "";
+    $SlotDuration = "";
+    $YearGroup = "";
+
+    $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
+    $events = array();
+    while ($stmt->fetch()) {
+        $events[] = new Event($eventid);
+        //set the name of the event
+        $events[count($events) - 1]->setName($name);
+        //set the date of the event
+        $events[count($events) - 1]->setStartTime($StartTime);
+        //set the end time of the event
+        $events[count($events) - 1]->setEndTime($EndTime);
+        //set the open time of the event
+        $events[count($events) - 1]->setOpenTime($OpenTime);
+        //set the slot duration of the event
+        $events[count($events) - 1]->setSlotDuration($SlotDuration);
+        //set the year group of the event
+        $events[count($events) - 1]->setYear($YearGroup);
+    }
+    $stmt->close();
+}
+
+function event_exists($id)
+{
+    $sql = "SELECT ID FROM Event WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+    $numrows = $stmt->num_rows;
+    $stmt->close();
+    return $numrows > 0;
+}
+
+function create_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
+{
+    if (event_exists($id)) {
+        return false;
+    }
+    //check if the values passed are valid
+    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
+        return false;
+    }
+    //create the event
+    $sql = "INSERT INTO Event (ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("issssss", $id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
+{
+    if (!event_exists($id)) {
+        return false;
+    }
+    //check if the values passed are valid
+    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
+        return false;
+    }
+    //update the event
+    $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, SlotDuration=?, YearGroup=? WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ssssssi", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup, $id);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+function delete_event($id)
+{
+    if (!event_exists($id)) {
+        return false;
+    }
+    //delete the event
+    $sql = "DELETE FROM Event WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    return true;
+}
 function is_pastoral()
 {
     return isset($_SESSION['pastoral']);

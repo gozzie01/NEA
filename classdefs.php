@@ -626,3 +626,82 @@ class Account
         $this->phone = $phone;
     }
 }
+
+class Event
+{
+    private $id;
+    private $name;
+    private $openTime;
+    private $startTime;
+    private $endTime;
+    private $slotDuration;
+    private $year;
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+    public function update()
+    {
+        $id = $this->id;
+        //sql for name
+        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->slotDuration, $this->year);
+        $stmt->fetch();
+        $stmt->close();
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+    public function getOpenTime()
+    {
+        return $this->openTime;
+    }
+    public function getSlotDuration()
+    {
+        return $this->slotDuration;
+    }
+    public function getYear()
+    {
+        return $this->year;
+    }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
+    }
+    public function setEndTime($endTime)
+    {
+        $this->endTime = $endTime;
+    }
+    public function setOpenTime($openTime)
+    {
+        $this->openTime = $openTime;
+    }
+    public function setSlotDuration($slotDuration)
+    {
+        $this->slotDuration = $slotDuration;
+    }
+    public function setYear($year)
+    {
+        $this->year = $year;
+    }
+}
