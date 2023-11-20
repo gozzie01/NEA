@@ -1346,7 +1346,7 @@ function get_all_events(){
     $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
     $events = array();
     while ($stmt->fetch()) {
-        $events[] = new Event($eventid);
+        $events[] = new Event((int)$eventid);
         //set the name of the event
         $events[count($events) - 1]->setName($name);
         //set the date of the event
