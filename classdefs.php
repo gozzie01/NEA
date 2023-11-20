@@ -139,7 +139,7 @@ class Teacher{
     private $students;
     private $parents;
 
-    public function __construct(int $id)
+    function __construct(int $id)
     {
         $this->id = $id;
         //set classes, students, parents to empty arrays
