@@ -1182,7 +1182,7 @@ function create_account($id, $name, $email, $phone, $parentid, $teacherid)
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $stmt->close(); 
+    $stmt->close();
     //create the teacher
     $sql = "INSERT INTO Teacher (UserID) VALUES (?)";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -1331,7 +1331,8 @@ function delete_account($id)
     return true;
 }
 
-function get_all_events(){
+function get_all_events()
+{
     $eventid = "";
     $name = "";
     $StartTime = "";
@@ -1428,7 +1429,8 @@ function is_pastoral()
     return isset($_SESSION['pastoral']);
 }
 
-function format_date($inputdate){
+function format_date($inputdate)
+{
     $date = new DateTime($inputdate);
     return $date->format('d/m/Y/ H:i');
 }

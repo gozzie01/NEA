@@ -103,7 +103,6 @@ class FPDF
 		$this->ws = 0;
 		$this->iconv = function_exists('iconv');
 		// Font paths
-
 		$this->fontpath = '/var/www/html/font/';
 		// Core fonts
 		$this->CoreFonts = array('courier', 'helvetica', 'times', 'symbol', 'zapfdingbats');

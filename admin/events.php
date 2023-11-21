@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         $slotDuration = $_POST['slotDuration'];
         //date times are in the format yyyy-mm-ddTHH:mm
         //convert to a format sql can understand
-        
+
 
         $year = $_POST['year'];
         //check if the Event exists
@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#EventOpenTime').val("");
             $('#EventSlotDuration').val("");
             $('#EventYear').val("");
-            
+
             //change the text in the submit button to add
             $('#submitFormButton').text("Add");
         });
@@ -492,7 +492,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="datetime-local" class="form-control" placeholder="End Time" id="EventEndTime">
                     <input type="datetime-local" class="form-control" placeholder="Open Time" id="EventOpenTime">
                     <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
-                    <input type="number" class="form-control" placeholder="Year" id="EventYear">       
+                    <input type="number" class="form-control" placeholder="Year" id="EventYear">
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->
                     <button type="button" id="clear" class="btn btn-primary">Clear</button>
