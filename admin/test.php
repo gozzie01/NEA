@@ -24,7 +24,7 @@ $pdf->AddPage('L','A4');
 $pdf->SetFont('Arial','B',16);
 //add some text
 $pdf->Cell(40,10,'Hello World!');
-//write a small table
+//write a small  table
 $pdf->Ln();
 $pdf->Cell(40,10,'Table');
 $pdf->Ln();
