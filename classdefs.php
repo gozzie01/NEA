@@ -705,3 +705,92 @@ class Event
         $this->year = $year;
     }
 }
+class PrefSlot
+{
+    private $id;
+    private $StartTime;
+    private $EndTime;
+    private $Teacher;
+    private $Event;
+    private $Class;
+    private $Student;
+    private $Parent;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+    public function update()
+    {
+        $id = $this->id;
+        //sql for start time
+        $sql = "SELECT StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefSlot WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        //bind results to variables
+        $stmt->bind_result($this->StartTime, $this->EndTime, $this->Teacher, $this->Event, $this->Class, $this->Student, $this->Parent);
+        $stmt->fetch();
+        $stmt->close();
+    }
+    public function getStartTime()
+    {
+        return $this->StartTime;
+    }
+    public function getEndTime()
+    {
+        return $this->EndTime;
+    }
+    public function getTeacher()
+    {
+        return $this->Teacher;
+    }
+    public function getEvent()
+    {
+        return $this->Event;
+    }
+    public function getClass()
+    {
+        return $this->Class;
+    }
+    public function getStudent()
+    {
+        return $this->Student;
+    }
+    public function getParent()
+    {
+        return $this->Parent;
+    }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function setStartTime($StartTime)
+    {
+        $this->StartTime = $StartTime;
+    }
+    public function setEndTime($EndTime)
+    {
+        $this->EndTime = $EndTime;
+    }
+    public function setTeacher($Teacher)
+    {
+        $this->Teacher = $Teacher;
+    }
+    public function setEvent($Event)
+    {
+        $this->Event = $Event;
+    }
+    public function setClass($Class)
+    {
+        $this->Class = $Class;
+    }
+    public function setStudent($Student)
+    {
+        $this->Student = $Student;
+    }
+    public function setParent($Parent)
+    {
+        $this->Parent = $Parent;
+    }
+}

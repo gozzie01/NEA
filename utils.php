@@ -1409,7 +1409,6 @@ function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration
     return true;
 }
 
-
 function delete_event($id)
 {
     if (!event_exists($id)) {
@@ -1424,6 +1423,139 @@ function delete_event($id)
 
     return true;
 }
+
+function prefSlot_exists($id)
+{
+    $sql = "SELECT ID FROM PrefferedTime WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+    $numrows = $stmt->num_rows;
+    $stmt->close();
+    return $numrows > 0;
+}
+function create_prefSlot($StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent)
+{
+    //check if the values passed are valid
+    if (!is_string($StartTime) || !is_string($EndTime) || !is_string($Teacher) || !is_string($Event) || !is_string($Class) || !is_string($Student) || !is_string($Parent)) {
+        return false;
+    }
+    //create the event
+    $sql = "INSERT INTO PrefferedTime (StartTime, EndTime, Teacher, Event, Class, Student, Parent) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("sssssss", $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+function update_prefSlot($id, $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent)
+{
+    if (!prefSlot_exists($id)) {
+        return false;
+    }
+    //check if the values passed are valid
+    if (!is_string($StartTime) || !is_string($EndTime) || !is_string($Teacher) || !is_string($Event) || !is_string($Class) || !is_string($Student) || !is_string($Parent)) {
+        return false;
+    }
+    //update the event
+    $sql = "UPDATE PrefferedTime SET StartTime=?, EndTime=?, Teacher=?, Event=?, Class=?, Student=?, Parent=? WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("sssssssi", $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent, $id);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+function delete_prefSlot($id)
+{
+    if (!prefSlot_exists($id)) {
+        return false;
+    }
+    //delete the event
+    $sql = "DELETE FROM PrefferedTime WHERE ID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    return true;
+}
+function get_all_PrefSlots()
+{
+    $id = "";
+    $StartTime = "";
+    $EndTime = "";
+    $Teacher = "";
+    $Event = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($id, $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent);
+    $prefBooks = array();
+    while ($stmt->fetch()) {
+        $prefBooks[] = new PrefSlot((int)$id);
+        //set the name of the event
+        $prefBooks[count($prefBooks) - 1]->setStartTime($StartTime);
+        //set the date of the event
+        $prefBooks[count($prefBooks) - 1]->setEndTime($EndTime);
+        //set the end time of the event
+        $prefBooks[count($prefBooks) - 1]->setTeacher($Teacher);
+        //set the open time of the event
+        $prefBooks[count($prefBooks) - 1]->setEvent($Event);
+        //set the slot duration of the event
+        $prefBooks[count($prefBooks) - 1]->setClass($Class);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setStudent($Student);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setParent($Parent);
+    }
+    $stmt->close();
+    return $prefBooks;
+}
+
+//function to get all the prefSlots of an event
+function get_all_PrefSlots_of_event($event)
+{
+    $id = "";
+    $StartTime = "";
+    $EndTime = "";
+    $Teacher = "";
+    $Event = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime WHERE Event=? ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $event);
+    $stmt->execute();
+    $stmt->bind_result($id, $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent);
+    $prefBooks = array();
+    while ($stmt->fetch()) {
+        $prefBooks[] = new PrefSlot((int)$id);
+        //set the name of the event
+        $prefBooks[count($prefBooks) - 1]->setStartTime($StartTime);
+        //set the date of the event
+        $prefBooks[count($prefBooks) - 1]->setEndTime($EndTime);
+        //set the end time of the event
+        $prefBooks[count($prefBooks) - 1]->setTeacher($Teacher);
+        //set the open time of the event
+        $prefBooks[count($prefBooks) - 1]->setEvent($Event);
+        //set the slot duration of the event
+        $prefBooks[count($prefBooks) - 1]->setClass($Class);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setStudent($Student);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setParent($Parent);
+    }
+    $stmt->close();
+    return $prefBooks;
+}
+
 function is_pastoral()
 {
     return isset($_SESSION['pastoral']);
