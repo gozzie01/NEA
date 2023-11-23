@@ -68,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         //date times are in the format yyyy-mm-ddTHH:mm
         //convert to a format sql can understand
 
-
         $year = $_POST['year'];
         //check if the Event exists
         if (event_exists($id)) {

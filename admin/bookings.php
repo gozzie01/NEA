@@ -39,39 +39,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getprefSlotID'])) {
     try {
-        //if post has id set then get the id
-        if (isset($_POST['id'])) {
-            $id = $_POST['id'];
-        } else {
-            //if get has id set then get the id
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-            } else {
-                //if no id is set then return an error
-                $response = array(
-                    "error" => "no id set"
-                );
-                echo json_encode($response);
-                die();
-            }
-        }
-        //get the prefSlot object from the database
+        $id = $_POST['id'];
+        $id = intval($id);
         $prefSlot = new PrefSlot($id);
         $prefSlot->update();
-        //if the prefSlot object is not empty
-        if ($prefSlot) {
-            //return the prefSlot object as json
-            echo json_encode($prefSlot);
-            die();
-        } else {
-            //if the prefSlot object is empty return an error
-            $response = array(
-                "error" => "prefSlot does not exist"
-            );
-            echo json_encode($response);
-            die();
-        }
+        $response = array(
+            "id" => $prefSlot->getId(),
+            "startTime" => $prefSlot->getStartTime(),
+            "endTime" => $prefSlot->getEndTime(),
+            "teacher" => $prefSlot->getTeacher(),
+            "event" => $prefSlot->getEvent(),
+            "class" => $prefSlot->getClass(),
+            "student" => $prefSlot->getStudent(),
+            "parent" => $prefSlot->getParent()
+        );
+        echo json_encode($response);
     } catch (Exception $e) {
+        $response = array(
+            "error" => "prefSlot does not exist"
+        );
+        echo json_encode($response);
     }
     die();
 }
@@ -79,17 +66,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getprefSlotID'])) {
 //if the request is a post and the id is set, check if the prefSlot exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateprefSlot'])) {
     try {
-
-        //date times are in the format yyyy-mm-ddTHH:mm
-        //convert to a format sql can understand
-
-
-        $year = $_POST['year'];
+        $id = $_POST['id'];
+        $startTime = date("Y-m-d H:i:s", strtotime($_POST['startTime']));
+        $endTime = date("Y-m-d H:i:s", strtotime($_POST['endTime']));
+        $teacher = $_POST['teacher'];
+        $event = $_POST['event'];
+        $class = $_POST['class'];
+        $student = $_POST['student'];
+        $parent = $_POST['parent'];
         //check if the prefSlot exists
         if (prefSlot_exists($id)) {
             //update the prefSlot
+            $respon = update_prefSlot($id, $startTime, $endTime, $teacher, $event, $class, $student, $parent);
         } else {
             //create the prefSlot
+            $respon = create_prefSlot($startTime, $endTime, $teacher, $event, $class, $student, $parent);
         }
         if ($respon) {
             $response = array(
@@ -111,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateprefSlot'])) {
         echo json_encode($response);
         die();
     }
-    die();
 }
 //if the request is a post and the id is set, check if the prefSlot exists, if it does delete it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteprefSlot'])) {
@@ -148,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteprefSlot'])) {
         echo json_encode($response);
         die();
     }
-    die();
 }
 //if its a post with no data just die :)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -223,15 +212,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     var prefSlot = JSON.parse(data);
                     //set the values of the edit form to the prefSlot's details
                     $('#prefSlotID').val(prefSlot.id);
-                    $('#prefSlotName').val(prefSlot.name);
                     $('#prefSlotStartTime').val(prefSlot.startTime);
                     $('#prefSlotEndTime').val(prefSlot.endTime);
-                    $('#prefSlotOpenTime').val(prefSlot.openTime);
-                    $('#prefSlotSlotDuration').val(prefSlot.slotDuration);
-                    $('#prefSlotYear').val(prefSlot.year);
-                    //refresh the selects
-                    $('#AccountSelector').trigger('change');
-                    $('#StudentSelector').trigger('change');
+                    $('#prefSlotTeacher').val(prefSlot.teacher);
+                    $('#prefSlotEvent').val(prefSlot.event);
+                    $('#prefSlotClass').val(prefSlot.class);
+                    $('#prefSlotStudent').val(prefSlot.student);
+                    $('#prefSlotParent').val(prefSlot.parent);
                     //change the text in the submit button to update
                     $('#submitFormButton').text("Update");
                 }
@@ -243,12 +230,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('tr').removeClass('table-danger');
             //clear the edit form
             $('#prefSlotID').val("");
-            $('#prefSlotName').val("");
             $('#prefSlotStartTime').val("");
             $('#prefSlotEndTime').val("");
-            $('#prefSlotOpenTime').val("");
-            $('#prefSlotSlotDuration').val("");
-            $('#prefSlotYear').val("");
+            $('#prefSlotTeacher').val("");
+            $('#prefSlotEvent').val("");
+            $('#prefSlotClass').val("");
+            $('#prefSlotStudent').val("");
+            $('#prefSlotParent').val("");
+            
 
             //change the text in the submit button to add
             $('#submitFormButton').text("Add");
@@ -274,7 +263,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //if the button says add
             if ($(this).text() == "Add") {
                 //submit the form using xhttprequest
-
+                var $id = $('#prefSlotID').val();
+                var $startTime = $('#prefSlotStartTime').val();
+                var $endTime = $('#prefSlotEndTime').val();
+                var $teacher = $('#prefSlotTeacher').val();
+                var $event = $('#prefSlotEvent').val();
+                var $class = $('#prefSlotClass').val();
+                var $student = $('#prefSlotStudent').val();
+                var $parent = $('#prefSlotParent').val();
 
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
@@ -301,6 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 };
                 xhttp.open("POST", "/admin/bookings.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("updateprefSlot=true&id=" + $id + "&startTime=" + $startTime + "&endTime=" + $endTime + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -328,8 +325,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
         //on click of the confirm button
         $(document).on('click', '#confirmButton', function() {
-            //submit the form
-
+            //get the prefSlot id from the form
+            var $id = $('#prefSlotID').val();
+            var $startTime = $('#prefSlotStartTime').val();
+            var $endTime = $('#prefSlotEndTime').val();
+            var $teacher = $('#prefSlotTeacher').val();
+            var $event = $('#prefSlotEvent').val();
+            var $class = $('#prefSlotClass').val();
+            var $student = $('#prefSlotStudent').val();
+            var $parent = $('#prefSlotParent').val();
 
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -357,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             };
             xhttp.open("POST", "/admin/bookings.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateprefSlot=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
+            xhttp.send("updateprefSlot=true&id=" + $id + "&startTime=" + $startTime + "&endTime=" + $endTime + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -486,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h1>Edit</h1>
                 <form id="prefSlotUpdateForm" class="prefSlotForm">
                     <!--prefSlot id, event, parent, teacher, student, class-->
-                    <input class="form-control" id="prefSlotID" name="prefSlotID">
+                    <input class="form-control" id="prefSlotID" name="prefSlotID" placeholder="ID">
                     <input class="form-control" id="prefSlotEvent" name="prefSlotEvent" placeholder="Event">
                     <input class="form-control" id="prefSlotParent" name="prefSlotParent" placeholder="Parent">
                     <input class="form-control" id="prefSlotTeacher" name="prefSlotTeacher" placeholder="Teacher">
