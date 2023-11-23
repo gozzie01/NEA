@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
     try {
         $id = $_POST['id'];
+        $id = intval($id);
         //get the Event object from the database
         $Event = new Event($id);
         $Event->update();
