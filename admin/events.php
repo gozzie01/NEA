@@ -97,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         echo json_encode($response);
         die();
     }
-    die();
 }
 //if the request is a post and the id is set, check if the Event exists, if it does delete it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
@@ -134,7 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
         echo json_encode($response);
         die();
     }
-    die();
 }
 //if its a post with no data just die :)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
