@@ -15,18 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
             $prefSlots = get_all_PrefSlots();
         }
         //if the prefSlots array is not empty
-        if ($prefSlots){
-            foreach($prefSlots as $prefSlots){
+        if ($prefSlots) {
+            foreach ($prefSlots as $prefSlots) {
                 echo "<tr>";
                 echo "<td>" . $prefSlots->getId() . "</td>";
                 echo "<td>" . $prefSlots->getEvent() . "</td>";
                 echo "<td>" . $prefSlots->getStartTime() . "</td>";
                 echo "<td>" . $prefSlots->getEndTime() . "</td>";
-                echo "<td>" . $prefSlots->getParent() . "</td>";
-                echo "<td>" . $prefSlots->getStudent() . "</td>";
-                echo "<td>" . $prefSlots->getTeacher() . "</td>";
-                echo "<td>" . $prefSlots->getClass() . "</td>";
-                echo "<td><button type='button' id='delete" . $prefSlots->getId() . "' class='btn btn-danger'>Delete</button></td>";
+                echo "<td style='width: 12%'>" . $prefSlots->getParent() . "</td>";
+                echo "<td style='width: 11%'>" . $prefSlots->getStudent() . "</td>";
+                echo "<td style='width: 11%'>" . $prefSlots->getTeacher() . "</td>";
+                echo "<td style='width: 11%'>" . $prefSlots->getClass() . "</td>";
+                echo "<td style='width: 9%'><button type='button' id='delete" . $prefSlots->getId() . "' class='btn btn-danger'>Delete</button></td>";
                 echo "</tr>";
             }
         }
@@ -34,6 +34,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     }
     die();
 }
+
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
+    $students = get_all_students();
+    $output = "";
+    foreach ($students as $student) {
+        $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
+    }
+    echo $output;
+    die();
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getEventSelector'])) {
+    $events = get_all_events();
+    $output = "";
+    foreach ($events as $event) {
+        $output = $output . "<option value=" . $event->getId() . ">" . $event->getName() . "</option>";
+    }
+    echo $output;
+    die();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getParentSelector'])) {
+    $parents = get_all_parents();
+    $output = "";
+    foreach ($parents as $parent) {
+        $output = $output . "<option value=" . $parent->getId() . ">" . $parent->getName() . "</option>";
+    }
+    echo $output;
+    die();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getTeacherSelector'])) {
+    $teachers = get_all_teachers();
+    $output = "";
+    foreach ($teachers as $teacher) {
+        $output = $output . "<option value=" . $teacher->getId() . ">" . $teacher->getName() . "</option>";
+    }
+    echo $output;
+    die();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getClassSelector'])) {
+    $classes = get_all_classes();
+    $output = "";
+    foreach ($classes as $class) {
+        $output = $output . "<option value=" . $class->getId() . ">" . $class->getName() . "</option>";
+    }
+    echo $output;
+    die();
+}
+
 
 //get the prefSlot id from the request
 //if its a post get the post id if not try to get it from get
@@ -56,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getprefSlotID'])) {
         echo json_encode($response);
     } catch (Exception $e) {
         $response = array(
-            "error" => "prefSlot does not exist"
+            "error" => "prefSlot does not exist" . $e->getMessage()
         );
         echo json_encode($response);
     }
@@ -173,8 +225,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         //on document load
         $(document).ready(function() {
+            //set the data in the select
+            let requests = [
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        getStudentSelector: true
+                    }
+                }),
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        getParentSelector: true
+                    }
+                }),
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        getEventSelector: true
+                    }
+                }),
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        getTeacherSelector: true
+                    }
+                }),
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        getClassSelector: true
+                    }
+
+                }),
+                $.ajax({
+                type: "POST",
+                url: "/admin/bookings.php",
+                data: {
+                    gettabledata: true
+                }})
+            ];
+
+            Promise.all(requests).then(function(responses) {
+                $('#prefSlotStudent').html(responses[0]);
+                $('#prefSlotParent').html(responses[1]);
+                $('#prefSlotEvent').html(responses[2]);
+                $('#prefSlotTeacher').html(responses[3]);
+                $('#prefSlotClass').html(responses[4]);
+                $('#mainbody').html(responses[5]);
+            });
             //add the options to account selector and student selector
             //make the multiselects searchable and 
+
+            $('#prefSlotEvent').select2({
+                theme: "bootstrap-5",
+                placeholder: "Select an event",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#prefSlotParent').select2({
+                theme: "bootstrap-5",
+                placeholder: "Select a parent",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#prefSlotTeacher').select2({
+                theme: "bootstrap-5",
+                placeholder: "Select a teacher",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#prefSlotStudent').select2({
+                theme: "bootstrap-5",
+                placeholder: "Select a student",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#prefSlotClass').select2({
+                theme: "bootstrap-5",
+                placeholder: "Select a class",
+                allowClear: true,
+                width: '100%'
+            });
+            //clear the edit form
         });
 
         function updateTable() {
@@ -219,6 +357,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $('#prefSlotClass').val(prefSlot.class);
                     $('#prefSlotStudent').val(prefSlot.student);
                     $('#prefSlotParent').val(prefSlot.parent);
+                    //update the selectors
+                    $('#prefSlotEvent').trigger('change');
+                    $('#prefSlotParent').trigger('change');
+                    $('#prefSlotTeacher').trigger('change');
+                    $('#prefSlotStudent').trigger('change');
+                    $('#prefSlotClass').trigger('change');
+
                     //change the text in the submit button to update
                     $('#submitFormButton').text("Update");
                 }
@@ -237,7 +382,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#prefSlotClass').val("");
             $('#prefSlotStudent').val("");
             $('#prefSlotParent').val("");
-            
+            //update the selectors
+            $('#prefSlotEvent').trigger('change');
+            $('#prefSlotParent').trigger('change');
+            $('#prefSlotTeacher').trigger('change');
+            $('#prefSlotStudent').trigger('change');
+            $('#prefSlotClass').trigger('change');
+
 
             //change the text in the submit button to add
             $('#submitFormButton').text("Add");
@@ -247,7 +398,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#clear').click();
             var height = $(window).height() - 240;
             $('.table-scroll tbody').css('height', height);
-            updateTable();
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
@@ -491,15 +641,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form id="prefSlotUpdateForm" class="prefSlotForm">
                     <!--prefSlot id, event, parent, teacher, student, class-->
                     <input class="form-control" id="prefSlotID" name="prefSlotID" placeholder="ID">
-                    <input class="form-control" id="prefSlotEvent" name="prefSlotEvent" placeholder="Event">
-                    <input class="form-control" id="prefSlotParent" name="prefSlotParent" placeholder="Parent">
-                    <input class="form-control" id="prefSlotTeacher" name="prefSlotTeacher" placeholder="Teacher">
-                    <input class="form-control" id="prefSlotStudent" name="prefSlotStudent" placeholder="Student">
-                    <input class="form-control" id="prefSlotClass" name="prefSlotClass" placeholder="Class">
+                    <!--selectors for event, parent, teacher, student, class-->
+                    <select class="form-select" id="prefSlotEvent" name="prefSlotEvent">
+                    </select>
+                    <select class="form-select" id="prefSlotParent" name="prefSlotParent">
+                    </select>
+                    <select class="form-select" id="prefSlotTeacher" name="prefSlotTeacher">
+                    </select>
+                    <select class="form-select" id="prefSlotStudent" name="prefSlotStudent">
+                    </select>
+                    <select class="form-select" id="prefSlotClass" name="prefSlotClass">
+                    </select>
                     <!--date selector-->
                     <input class="form-control" id="prefSlotStartTime" name="prefSlotStartTime" placeholder="Start Time">
                     <input class="form-control" id="prefSlotEndTime" name="prefSlotEndTime" placeholder="End Time">
-                    
+
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->
                     <button type="button" id="clear" class="btn btn-primary">Clear</button>

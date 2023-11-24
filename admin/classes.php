@@ -26,31 +26,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $classes = get_all_classes();
+    $respon = "";
     foreach ($classes as $Class) {
-        echo "<tr id=ClassRow", $Class->getID(), ">";
-        echo "<td>", $Class->getID(), "</td>";
-        echo "<td>", $Class->getName(), "</td>";
-        echo "<td>";
+        $respon = $respon .  "<tr id=ClassRow". $Class->getID(). ">";
+        $respon = $respon .  "<td>". $Class->getID(). "</td>";
+        $respon = $respon .  "<td>". $Class->getName(). "</td>";
+        $respon = $respon .  "<td>";
         if (count($Class->getTeachers()) == 0) {
-            echo "";
+            $respon = $respon .  "";
         } else {
             foreach ($Class->getTeachers() as $teacher) {
-                $name = "";
-                $sql = "SELECT Name FROM `Teacher` WHERE `id` = ?";
-                $stmt = $GLOBALS['db']->prepare($sql);
-                $stmt->bind_param("i", $teacher);
-                $stmt->execute();
-                $stmt->bind_result($name);
-                $stmt->fetch();
-                $stmt->close();
-                echo $name, "<br>";
+                $respon = $respon . "x".  $teacher. "<br>";
             }
         }
-        echo "</td>";
-        echo "<td>", count($Class->getStudents()), "</td>";
-        echo "<td><button type='button' class='btn btn-danger' id='delete", $Class->getID(), "'>Delete</button></td>";
-        echo "</tr>";
+        $respon = $respon .  "</td>";
+        $respon = $respon .  "<td>". count($Class->getStudents()). "</td>";
+        $respon = $respon .  "<td><button type='button' class='btn btn-danger' id='delete". $Class->getID(). "'>Delete</button></td>";
+        $respon = $respon .  "</tr>";
     }
+    $teachers = get_all_teachers();
+    foreach ($teachers as $teacher) {
+        //replace their id with thier name
+        $respon = str_replace("x".$teacher->getID()."<br>", $teacher->getName()."<br>", $respon);
+    }
+    echo $respon;
     die();
 }
 //get student selector

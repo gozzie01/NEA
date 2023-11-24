@@ -724,7 +724,7 @@ class PrefSlot
     {
         $id = $this->id;
         //sql for start time
-        $sql = "SELECT StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefSlot WHERE ID=?";
+        $sql = "SELECT StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
