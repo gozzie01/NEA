@@ -173,8 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             $.ajax({
                 type: "POST",
                 url: "/admin/parents.php",
+                getStudentSelector: true,
                 data: {
-                    getStudentSelector: true
                 },
                 success: function(data) {
                     $('#StudentSelector').html(data);
@@ -261,13 +261,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         //on ready clear the edit form
         $(document).ready(function() {
             $('#clear').click();
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             $('.table-scroll tbody').css('height', height);
             updateTable();
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
         });

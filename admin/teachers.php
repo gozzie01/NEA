@@ -211,14 +211,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                 placeholder: "Select Account",
                 allowClear: true
             });
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
         });
         //on resize
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
 

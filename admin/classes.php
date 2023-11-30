@@ -293,12 +293,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
         //on ready clear the edit form
         $(document).ready(function() {
             $('#clear').click();
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             $('.table-scroll tbody').css('height', height);
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
         });

@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
         //on ready clear the edit form
         $(document).ready(function() {
             $('#clear').click();
-            var height = $(window).height() - 240;
+            var height = $(window).height() -  $('.table-scroll tbody').offset().top;
             $('.table-scroll tbody').css('height', height);
             //get the table data
             $.ajax({
@@ -290,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
         });

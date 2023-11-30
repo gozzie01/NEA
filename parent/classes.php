@@ -13,13 +13,13 @@ if (!isset($_GET['child'])) {
     <script>
         $(document).ready(function() {
             alert("height")
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             $('.table-scroll tbody').css('height', height);
         });
 
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - 240;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             alert(height)
             //just tbody
             $('.table-scroll tbody').css('height', height);
