@@ -129,6 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
         die();
     }
 }
+
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    die();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
