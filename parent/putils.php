@@ -7,3 +7,8 @@ if (!is_parent()) {
     header('Location: /index.php');
     exit();
 }
+if (isset($_SESSION['child'])) {
+    global $childid;
+    $childid = intval($_SESSION['child']);
+} 
+?>

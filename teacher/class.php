@@ -32,6 +32,9 @@ $class->update();
                         <tr>
                             <th scope="col">Student ID</th>
                             <th scope="col">Student Name</th>
+                            <?php if (get_next_event_of_class($class->getId()) != null) { ?>
+                                <th scope="col">Wanted</th>
+                            <?php } ?>
                         <tr>
                     </thead>
                     <tbody>
@@ -48,3 +51,9 @@ $class->update();
                         <?php
                         }
                         ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>

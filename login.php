@@ -114,6 +114,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     <title>Login</title>
     <?php require_once 'includes.php'; ?>
     <script>
+        const searchParams = new URLSearchParams(window.location.search);
         //when the document is ready
         $(document).ready(function() {
             //when the login form is submitted
@@ -166,7 +167,11 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             };
             xhttp.open("POST", "login.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("email=" + email + "&password=" + password);
+            if(!searchParams.has('SetupToken')){
+                xhttp.send("email=" + email + "&password=" + password);
+            }else{
+                
+            }
         }
     </script>
 </head>

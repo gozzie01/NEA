@@ -1566,3 +1566,62 @@ function format_date($inputdate)
     $date = new DateTime($inputdate);
     return $date->format('d/m/Y/ H:i');
 }
+function get_next_event_of_child($studentid)
+{
+    $studentid = intval($studentid);
+    $yg = "";
+    $sql = "SELECT YearGroup FROM Student WHERE ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $studentid);
+    $stmt->execute();
+    $stmt->bind_result($yg);
+    $stmt->fetch();
+    $stmt->close();
+    return get_next_event_of_year($yg);
+}
+function get_next_event_of_class($classid)
+{
+    $classid = intval($classid);
+    $name = "";
+    $sql = "SELECT Name FROM Class Where ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $classid);
+    $stmt->execute();
+    $stmt->bind_result($name);
+    $stmt->fetch();
+    $stmt->close();
+    $yg = intval($name[0] . $name[1]);
+    if ($yg >= 7 && $yg <= 13) {
+        return get_next_event_of_year($yg);
+    }
+    //get the yeargroup of one of the students in the class
+    $studentid = "";
+    $sql = "SELECT Student FROM StudentClass WHERE Class = ? LIMIT 1";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $classid);
+    $stmt->execute();
+    $stmt->bind_result($studentid);
+    $stmt->fetch();
+    $stmt->close();
+    $yg = "";
+    $sql = "SELECT YearGroup FROM Student WHERE ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $studentid);
+    $stmt->execute();
+    $stmt->bind_result($yg);
+    $stmt->fetch();
+    $stmt->close();
+    return get_next_event_of_year($yg);
+}
+function get_next_event_of_year($yg)
+{
+    $eventid = null;
+    $sql = "SELECT ID FROM Event WHERE YearGroup = ? AND EndTime >= NOW() ORDER BY EndTime LIMIT 1";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("s", $yg);
+    $stmt->execute();
+    $stmt->bind_result($eventid);
+    $stmt->fetch();
+    $stmt->close();
+    return $eventid;
+}

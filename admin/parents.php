@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])
     }
     die();
 }
-if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getStudentSelector'])) {
     $students = get_all_students();
     foreach ($students as $student) {
         echo "<option value=", $student->getId(), ">", $student->getName(), "</option>";

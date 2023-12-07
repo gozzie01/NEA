@@ -72,7 +72,11 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
                                                                 } ?>
                 '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php">My Account</a>
-                <a class="nav-link" href="/parent/bookings.php">Bookings</a>
+                <a class="nav-link" href="/parent/bookings.php<?php
+                                                                if (isset($_SESSION['child'])) {
+                                                                    $childid = intval($_SESSION['child']);
+                                                                    echo ("?child=" . $childid . "");
+                                                                } ?>">Bookings</a>
                 <?php
                 if (boolval(is_admin())) {
                     echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
