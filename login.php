@@ -167,10 +167,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             };
             xhttp.open("POST", "login.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            if(!searchParams.has('SetupToken')){
+            if (!searchParams.has('SetupToken')) {
                 xhttp.send("email=" + email + "&password=" + password);
-            }else{
-                
+            } else {
+
             }
         }
     </script>

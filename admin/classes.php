@@ -28,26 +28,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $classes = get_all_classes();
     $respon = "";
     foreach ($classes as $Class) {
-        $respon = $respon .  "<tr id=ClassRow". $Class->getID(). ">";
-        $respon = $respon .  "<td>". $Class->getID(). "</td>";
-        $respon = $respon .  "<td>". $Class->getName(). "</td>";
+        $respon = $respon .  "<tr id=ClassRow" . $Class->getID() . ">";
+        $respon = $respon .  "<td>" . $Class->getID() . "</td>";
+        $respon = $respon .  "<td>" . $Class->getName() . "</td>";
         $respon = $respon .  "<td>";
         if (count($Class->getTeachers()) == 0) {
             $respon = $respon .  "";
         } else {
             foreach ($Class->getTeachers() as $teacher) {
-                $respon = $respon . "x".  $teacher. "<br>";
+                $respon = $respon . "x" .  $teacher . "<br>";
             }
         }
         $respon = $respon .  "</td>";
-        $respon = $respon .  "<td>". count($Class->getStudents()). "</td>";
-        $respon = $respon .  "<td><button type='button' class='btn btn-danger' id='delete". $Class->getID(). "'>Delete</button></td>";
+        $respon = $respon .  "<td>" . count($Class->getStudents()) . "</td>";
+        $respon = $respon .  "<td><button type='button' class='btn btn-danger' id='delete" . $Class->getID() . "'>Delete</button></td>";
         $respon = $respon .  "</tr>";
     }
     $teachers = get_all_teachers();
     foreach ($teachers as $teacher) {
         //replace their id with thier name
-        $respon = str_replace("x".$teacher->getID()."<br>", $teacher->getName()."<br>", $respon);
+        $respon = str_replace("x" . $teacher->getID() . "<br>", $teacher->getName() . "<br>", $respon);
     }
     echo $respon;
     die();

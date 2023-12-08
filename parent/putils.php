@@ -10,5 +10,4 @@ if (!is_parent()) {
 if (isset($_SESSION['child'])) {
     global $childid;
     $childid = intval($_SESSION['child']);
-} 
-?>
+}

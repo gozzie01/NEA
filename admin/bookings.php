@@ -264,11 +264,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 }),
                 $.ajax({
-                type: "POST",
-                url: "/admin/bookings.php",
-                data: {
-                    gettabledata: true
-                }})
+                    type: "POST",
+                    url: "/admin/bookings.php",
+                    data: {
+                        gettabledata: true
+                    }
+                })
             ];
 
             Promise.all(requests).then(function(responses) {
