@@ -1,0 +1,19 @@
+{
+    "name": "sam/nea",
+    "description": "My Nea",
+    "type": "project",
+    "require": {
+        "mpdf/mpdf": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sam\\Nea\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gozzie12",
+            "email": "gosdens025012@tbshs.org"
+        }
+    ]
+}

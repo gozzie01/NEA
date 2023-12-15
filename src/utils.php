@@ -85,6 +85,63 @@ function verify_login()
         exit();
     }
 }
+function verify_login_($user, $token)
+{
+    //check if the users token is valid
+    $hashed_token = "";
+    $sql = "SELECT Token FROM User WHERE ID=? LIMIT 1";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $user);
+    $stmt->execute();
+    $stmt->bind_result($hashed_token);
+    $stmt->fetch();
+    $stmt->close();
+    if ($hashed_token == NULL) {
+        //the token is invalid, so log the user out
+        //unset all the session variables
+        $_SESSION = array();
+        //delete the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+        //destroy the session
+        session_destroy();
+        //redirect the user to the login page
+        header("Location: ../login.php");
+        exit();
+    } elseif (!password_verify($token, $hashed_token)) {
+        //the token is invalid, so log the user out
+        //unset all the session variables
+        $_SESSION = array();
+        //delete the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+        //destroy the session
+        session_destroy();
+        //redirect the user to the login page
+        header("Location: ../login.php");
+        exit();
+    }
+}
 function is_admin()
 {
     if (isset($_SESSION['admin'])) {
