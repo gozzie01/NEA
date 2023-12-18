@@ -47,7 +47,11 @@ $class->update();
                             <tr>
                                 <th scope="row"><?php echo $student->getId(); ?></th>
                                 <td><?php echo $student->getName(); ?></td>
-                                <td><form><input type="checkbox"></input></form></td>
+                                <?php if (get_next_event_of_class($class->getId()) != null) { ?>
+                                    <td>
+                                        <form><input type="checkbox"></input></form>
+                                    </td>
+                                <?php } ?>
                             </tr>
                         <?php
                         }
