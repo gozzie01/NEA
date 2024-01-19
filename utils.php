@@ -509,6 +509,93 @@ function get_all_students()
     return $students;
 }
 
+function get_all_students_in_year($yearA)
+{
+    $studentid = "";
+    $name = "";
+    $year = "";
+    $sql = "SELECT ID,Name FROM Student WHERE YearGroup = ? ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $yearA);
+    $stmt->execute();
+    $stmt->bind_result($studentid, $name);
+    $students = array();
+    while ($stmt->fetch()) {
+        $students[] = new Student($studentid);
+        //set the yeargroup of the student
+        $students[count($students) - 1]->setYear($yearA);
+        //set the name of the student
+        $students[count($students) - 1]->setName($name);
+    }
+    $stmt->close();
+    //mass add the classes
+    $Class = "";
+    $Student = "0";
+    $counter = -1;
+    $OldStudent = "-1";
+    $sql = "SELECT Class,Student 
+    FROM StudentClass 
+    JOIN Student s ON StudentClass.Student = s.ID
+    WHERE s.YearGroup = ?
+    ORDER BY Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $yearA);
+    $stmt->execute();
+    $stmt->bind_result($Class, $Student);
+    while ($stmt->fetch()) {
+        if ($Student != $OldStudent) {
+            $counter++;
+            $OldStudent = $Student;
+        }
+        $students[$counter]->addClass($Class);
+    }
+    $stmt->close();
+    //mass add the parents
+    //not all students have parents, so we need to check if the student has parents
+    $Parent = "";
+    $Student = "0";
+    $counter = -1;
+    $OldStudent = "-1";
+    $sql = "SELECT ps.Parent, ps.Student 
+    FROM ParentStudent ps
+    JOIN Student s ON ps.Student = s.ID
+    WHERE s.YearGroup = ? 
+    ORDER BY Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $yearA);
+    $stmt->execute();
+    $stmt->bind_result($Parent, $Student);
+    while ($stmt->fetch()) {
+        while ($Student != $OldStudent) {
+            $counter++;
+            //set the parent of the student to an empty array
+            $OldStudent = $students[$counter]->getId();
+        }
+        $students[$counter]->addParent($Parent);
+    }
+    $Teacher = "";
+    $counter = 0;
+    $stmt->close();
+    $sql = "SELECT sc.Student, tc.Teacher
+        FROM StudentClass sc
+        JOIN TeacherClass tc ON sc.Class = tc.Class
+        JOIN Student s ON sc.Student = s.ID
+        WHERE s.YearGroup = ?
+        ORDER BY sc.Student";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $yearA);
+    $stmt->execute();
+    $stmt->bind_result($Student, $Teacher);
+    while ($stmt->fetch()) {
+        while ($Student != $students[$counter]->getId()) {
+            $counter++;
+        }
+        $students[$counter]->addTeacher($Teacher);
+    }
+    return $students;
+}
+
+
 function get_all_teachers_of_classes($classes)
 {
     //format classes like (1,2,3)

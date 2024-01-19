@@ -1,6 +1,5 @@
 <?php
 require_once '../utils.php';
-//check if the user is logged in
 require_once('./putils.php');
 
 ?>
@@ -10,6 +9,8 @@ require_once('./putils.php');
 
 <head>
     <title>Parent</title>
+    <style>
+    </style>
 </head>
 <?php require_once '../parent/nav.php'; ?>
 
@@ -23,5 +24,8 @@ require_once('./putils.php');
         </div>
     </div>
 </body>
+<!--popup location-->
+
+<?php require_once './popup.php'; ?>
 
 </html>

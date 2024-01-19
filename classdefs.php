@@ -637,6 +637,7 @@ class Event
     private $endTime;
     private $slotDuration;
     private $year;
+    private $status;
     public function __construct(int $id)
     {
         $this->id = $id;
@@ -645,11 +646,11 @@ class Event
     {
         $id = $this->id;
         //sql for name
-        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event WHERE ID=?";
+        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup, Status FROM Event WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->slotDuration, $this->year);
+        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->slotDuration, $this->year, $this->status);
         $stmt->fetch();
         $stmt->close();
     }
@@ -680,6 +681,19 @@ class Event
     public function getID()
     {
         return $this->id;
+    }
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function isBookOpen()
+    {
+        //first bit of status, and no other bits are set
+        if (isset($status) && $status == 1)
+        {
+            return true;
+        }
+        return false;
     }
     public function setName($name)
     {

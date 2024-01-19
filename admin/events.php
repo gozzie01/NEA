@@ -7,13 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         $events = get_all_events();
         foreach ($events as $Event) {
             echo "<tr id=EventRow", $Event->getID(), ">";
-            echo "<td>", $Event->getID(), "</td>";
-            echo "<td>", $Event->getName(), "</td>";
-            echo "<td>", format_date($Event->getStartTime()), "</td>";
-            echo "<td>", format_date($Event->getEndTime()), "</td>";
+            echo "<td style='width: 6%;'>", $Event->getID(), "</td>";
+            echo "<td style='width: 14%;'>", $Event->getName(), "</td>";
+            echo "<td style='width: 13%;'>", format_date($Event->getStartTime()), "</td>";
+            echo "<td style='width: 14%;'>", format_date($Event->getEndTime()), "</td>";
             echo "<td>", format_date($Event->getOpenTime()), "</td>";
-            echo "<td  style='width: 10%;'>", $Event->getSlotDuration(), "</td>";
-            echo "<td style='width: 10%;'>", $Event->getYear(), "</td>";
+            echo "<td  style='width: 7%;'>", $Event->getSlotDuration(), "</td>";
+            echo "<td style='width: 7%;'>", $Event->getYear(), "</td>";
             //link to bookings page with event id
             echo "<td style='width: 10%;'><a href='/admin/bookings.php?event=", $Event->getID(), "'>View</a></td>";
             echo "<td style='width: 8.8%;'><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
@@ -460,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <table class="table table-striped table-scroll table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">Event ID</th>
+                                    <th scope="col" style='width: 6%;'>ID</th>
                                     <th scope="col">Event Name</th>
                                     <th scope="col">Start Time</th>
                                     <th scope="col">End Time</th>

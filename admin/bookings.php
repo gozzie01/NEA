@@ -36,13 +36,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
-    $students = get_all_students();
-    $output = "";
-    foreach ($students as $student) {
-        $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
+    if (isset($_POST['event'])) {
+        $event = $_POST['event'];
+        $eventc = new Event($event);
+        $eventc->update();
+        $students = get_all_students_in_year($eventc->getYear());
+        $output = "";
+        foreach ($students as $student) {
+            $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
+        }
+        echo $output;
+        die();
     }
-    echo $output;
-    die();
+    else
+    {
+        $students = get_all_students();
+        $output = "";
+        foreach ($students as $student) {
+            $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
+        }
+        echo $output;
+        die();
+    }
 }
 
 
@@ -149,7 +164,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateprefSlot'])) {
         }
     } catch (Exception $e) {
         $response = array(
-            "error" => "prefSlot could not be updated"
+            "error" => "prefSlot could not be updated",
+            "error2" => $e->getMessage()
         );
         echo json_encode($response);
         die();
@@ -226,60 +242,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //on document load
         $(document).ready(function() {
             //set the data in the select
-            let requests = [
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        getStudentSelector: true
-                    }
-                }),
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        getParentSelector: true
-                    }
-                }),
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        getEventSelector: true
-                    }
-                }),
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        getTeacherSelector: true
-                    }
-                }),
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        getClassSelector: true
-                    }
+            var event = -1;
+            try {
+                const searchParams = new URLSearchParams(window.location.search);
+                if (searchParams.has('event')) {
+                    event = searchParams.get('event');
+                }
+            } catch (error) {
+                alert(error);
+            }
+            let requests = [];
+            try {
+                requests = [
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            getStudentSelector: true,
+                            event: event
+                        }
+                    }),
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            getParentSelector: true
+                        }
+                    }),
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            getEventSelector: true
+                        }
+                    }),
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            getTeacherSelector: true
+                        }
+                    }),
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            getClassSelector: true,
+                            event: event
+                        }
 
-                }),
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/bookings.php",
-                    data: {
-                        gettabledata: true
-                    }
-                })
-            ];
+                    }),
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/bookings.php",
+                        data: {
+                            gettabledata: true
+                        }
+                    })
+                ];
+                alert("how did we get here")
+            } catch (error) {
+                alert(error);
+            }
+            try {
+                Promise.all(requests).then(function(responses) {
+                    $('#prefSlotStudent').html(responses[0]);
+                    $('#prefSlotParent').html(responses[1]);
+                    $('#prefSlotEvent').html(responses[2]);
+                    $('#prefSlotTeacher').html(responses[3]);
+                    $('#prefSlotClass').html(responses[4]);
+                    $('#mainbody').html(responses[5]);
+                });
+            } catch (error) {
+                alert(error);
+            }
 
-            Promise.all(requests).then(function(responses) {
-                $('#prefSlotStudent').html(responses[0]);
-                $('#prefSlotParent').html(responses[1]);
-                $('#prefSlotEvent').html(responses[2]);
-                $('#prefSlotTeacher').html(responses[3]);
-                $('#prefSlotClass').html(responses[4]);
-                $('#mainbody').html(responses[5]);
-            });
             //add the options to account selector and student selector
             //make the multiselects searchable and 
 
@@ -374,12 +411,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $(document).on('click', '#clear', function() {
             //remove the selected class from the table
             $('tr').removeClass('table-danger');
+            const searchParams = new URLSearchParams(window.location.search);
             //clear the edit form
             $('#prefSlotID').val("");
             $('#prefSlotStartTime').val("");
             $('#prefSlotEndTime').val("");
             $('#prefSlotTeacher').val("");
-            $('#prefSlotEvent').val("");
+            if (searchParams.has('event')) {
+                $('#prefSlotEvent').val(searchParams.get('event'));
+            } else {
+                $('#prefSlotEvent').val("");
+            }
             $('#prefSlotClass').val("");
             $('#prefSlotStudent').val("");
             $('#prefSlotParent').val("");
@@ -408,7 +450,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
         //on submit do nothing, let the button press function handle it
         $(document).on('submit', '#prefSlotUpdateForm', function(e) {
-            e.prprefSlotDefault();
+            e.preventDefault();
         });
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
