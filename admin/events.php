@@ -8,12 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         foreach ($events as $Event) {
             echo "<tr id=EventRow", $Event->getID(), ">";
             echo "<td style='width: 6%;'>", $Event->getID(), "</td>";
-            echo "<td style='width: 14%;'>", $Event->getName(), "</td>";
-            echo "<td style='width: 13%;'>", format_date($Event->getStartTime()), "</td>";
-            echo "<td style='width: 14%;'>", format_date($Event->getEndTime()), "</td>";
-            echo "<td>", format_date($Event->getOpenTime()), "</td>";
-            echo "<td  style='width: 7%;'>", $Event->getSlotDuration(), "</td>";
-            echo "<td style='width: 7%;'>", $Event->getYear(), "</td>";
+            echo "<td style='width: 16%;'>", $Event->getName(), "</td>";
+            echo "<td style='width: 15%;'>", format_date($Event->getStartTime()), "</td>";
+            echo "<td style='width: 15%;'>", format_date($Event->getEndTime()), "</td>";
+            echo "<td style='width: 15%;'>", format_date($Event->getOpenTime()), "</td>";
+            echo "<td style='width: 11%;'>", $Event->getSlotDuration(), "</td>";
+            echo "<td style='width: 12%;'>", $Event->getYear(), "</td>";
             //link to bookings page with event id
             echo "<td style='width: 10%;'><a href='/admin/bookings.php?event=", $Event->getID(), "'>View</a></td>";
             echo "<td style='width: 8.8%;'><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
