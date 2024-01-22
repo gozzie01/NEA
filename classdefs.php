@@ -646,7 +646,7 @@ class Event
     {
         $id = $this->id;
         //sql for name
-        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup, Status FROM Event WHERE ID=?";
+        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup, CStatus FROM Event WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -688,8 +688,9 @@ class Event
     }
     public function isBookOpen()
     {
-        //first bit of status, and no other bits are set
-        if (isset($status) && $status == 1)
+        $ttime = new DateTime($this->openTime);
+        $ntime= new DateTime();
+        if (!isset($status) && $ttime<$ntime)
         {
             return true;
         }

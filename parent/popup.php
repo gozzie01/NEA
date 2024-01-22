@@ -12,10 +12,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
     $student->update();
     $event = new Event((int)get_next_event_of_child($_GET['child']));
     $event->update();
-    $time = $event->getOpenTime();
-    $ttime = new DateTime($time);
-    $ntime = new DateTime();
-    if ($ttime < $ntime) {
+    if ($event->isBookOpen()) {
 
         //the form should be a simple with an earliest and latest time for arrival and departure, when one is ticked the other is greyed out
         //then the form should list below a list of classes and the associated teacher available for the child
