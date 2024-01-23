@@ -1769,3 +1769,4 @@ function get_next_event_of_year($yg)
     $stmt->close();
     return $eventid;
 }
+
