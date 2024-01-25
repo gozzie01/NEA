@@ -12,8 +12,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
     $student->update();
     $event = new Event((int)get_next_event_of_child($_GET['child']));
     $event->update();
-    if ($event->isBookOpen()) {
-
+    if ($event->isBookOpen() && !has_booked($_GET['child'], $event->getId())) {
         //the form should be a simple with an earliest and latest time for arrival and departure, when one is ticked the other is greyed out
         //then the form should list below a list of classes and the associated teacher available for the child
         //the parent can then select which classes that they want to see
@@ -50,6 +49,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                         <div style="display: flex; justify-content: space-between;">
                             <div>
                                 <h3>Book for: <?php echo $student->getName(); ?></h3>
+                                <h4>Event: <?php echo $event->getName(); ?>, <?php echo (new DateTime($event->getStartTime()))->format("D d M H:i") ?></h4>
                             </div>
                             <div>
                                 <span onclick="document.getElementById('popupbox').style.display='none'" style="color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
@@ -73,7 +73,26 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 </form>
                             </div>
                         </div>
-                        <h4>Classes</h4>
+                        <h4>Classes:</h4>
+                        <?php
+                        $classes = get_all_classes_of_student($student->getId());
+                        foreach ($classes as $class) {
+                            if (isset($class->getTeachers()[0])) {
+                                $teacher = new Teacher($class->getTeachers()[0]);
+                                $teacher->update();
+                                echo "<div style='display: flex; justify-content: space-between;'>";
+                                echo "<div>";
+                                echo "<h5>" . $class->getName() . "</h5>";
+                                echo "<h6>" . $teacher->getName() . "</h6>";
+                                echo "</div>";
+                                echo "<div>";
+                                echo "<input type='checkbox' id='" . $class->getId() . "' name='" . $class->getId() . "' value='" . $class->getId() . "'>";
+                                echo "</div>";
+                                echo "</div>";
+                            }
+                        }
+
+                        ?>
                     </div>
                 </div>
             </div>

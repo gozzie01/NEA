@@ -237,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#EventYear').val("");
 
             //change the text in the submit button to add
-            $('#submitFormButton').text("Add");
+            $('#submitFormButton').text("Update");
         });
         //on ready clear the edit form
         $(document).ready(function() {
@@ -259,41 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
             if ($(this).text() == "Add") {
-                //submit the form using xhttprequest
-                $id = $('#EventID').val();
-                $name = $('#EventName').val();
-                $startTime = $('#EventStartTime').val();
-                $endTime = $('#EventEndTime').val();
-                $openTime = $('#EventOpenTime').val();
-                $slotDuration = $('#EventSlotDuration').val();
-                $year = $('#EventYear').val();
-
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    //if the request is complete
-                    if (this.readyState == 4) {
-                        //if the request was successful
-                        if (this.status == 200) {
-                            //if the request was successful then we can redirect the user to the index page
-                            var response = JSON.parse(this.responseText);
-                            if (response.error) {
-                                $('#error').html(response.error);
-                            } else {
-                                if (response.success) {
-                                    $('#error').html(response.success);
-                                    $('#clear').click();
-                                    updateTable();
-                                }
-                            }
-                        } else {
-                            //if the request was not successful then we can display an error message
-                            alert(this.responseText);
-                        }
-                    }
-                };
-                xhttp.open("POST", "/admin/events.php", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("updateEvent=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
+                
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -317,6 +283,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $('#confirmText').text("Are you sure you want to update " + Event.name + "?");
                     }
                 });
+            }
+        });
+        $(document).on('click', '#addEventButton', function(){
+            e.preventDefault;
+            //get event id form
+            var EventID = $('#EventID').val();
+            //if its not null and an int go to admin/eventman.php?id=EventID
+            if (EventID != null && EventID != "" && !isNaN(EventID)) {
+                window.location.href = "/admin/eventman.php?id=" + EventID;
+            }
+            else{
+                //else go to admin/eventman.php
+                window.location.href = "/admin/eventman.php";
             }
         });
         //on click of the confirm button
@@ -482,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!--add a edit page on the right, non-functional for now-->
         <div class="container" style="max-width: 25%;">
             <div class="col">
-                <h1>Edit</h1>
+                <h1>Quick Edit</h1>
                 <form id="EventUpdateForm" class="EventForm">
                     <!--Event id, name, yeargroup, select multiclasses from a list of all classes, select  from a list of multi -->
                     <input type="text" class="form-control" placeholder="Event ID" id="EventID">
@@ -493,10 +472,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="datetime-local" class="form-control" placeholder="Open Time" id="EventOpenTime">
                     <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
                     <input type="number" class="form-control" placeholder="Year" id="EventYear">
-                    <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
+                    <button type="submit" id="submitFormButton" class="btn btn-primary">Update</button>
                     <!--clear button-->
                     <button type="button" id="clear" class="btn btn-primary">Clear</button>
                     <div id="error"></div>
+                    <div>
+                        <!-- add/edit page button-->
+                        <button type="button" id="addEventButton" class="btn btn-primary">Add</button>
+                    </div>
                 </form>
             </div>
         </div>

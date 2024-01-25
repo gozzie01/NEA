@@ -376,8 +376,10 @@ function get_all_classes_of_teacher($teacherid)
             $counter = 0;
             continue;
         }
-        //if the counter is too large try the next value
-        $classes[$counter]->addStudent($Student);
+        else{
+            //if the counter is too large try the next value
+            $classes[$counter]->addStudent($Student);
+        }
     }
     $stmt->close();
     //get the teachers
@@ -401,8 +403,9 @@ function get_all_classes_of_teacher($teacherid)
             $counter = 0;
             continue;
         }
-        //if the counter is too large try the next value
-        $classes[$counter]->addTeacher($Teacher);
+        else{
+            $classes[$counter]->addTeacher($Teacher);
+        }
     }
     $stmt->close();
     $counter = 0;
@@ -430,8 +433,87 @@ function get_all_classes_of_teacher($teacherid)
             $counter = 0;
             continue;
         }
+        else{
+            //if the counter is too large try the next value
+            $classes[$counter]->addParent($parent);
+        }
+    }
+    $stmt->close();
+    return $classes;
+}
+
+function get_all_classes_of_student($studentid){
+    $classid = "";
+    $name = "";
+    $sql = "SELECT sc.Class, c.Name
+    FROM StudentClass sc
+    JOIN Class c ON sc.Class = c.ID
+    WHERE sc.Student = ?
+    ORDER BY sc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $studentid);
+    $stmt->execute();
+    $stmt->bind_result($classid, $name);
+    $classes = array();
+    while ($stmt->fetch()) {
+        $classes[] = new Class_($classid);
+        //set the name of the class
+        $classes[count($classes) - 1]->setName($name);
+        $classes[count($classes) - 1]->addStudent($studentid);
+    }
+    $stmt->close();
+    //get the teachers
+    $Teacher = "";
+    $Class = "0";
+    $counter = 0;
+    $OldClass = "-1";
+    $sql = "SELECT Teacher,Class FROM TeacherClass ORDER BY Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Teacher, $Class);
+    while($stmt->fetch()){
+        while ($Class != $classes[$counter]->getID()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if ($counter >= count($classes)) {
+                break;
+            }
+        }
+        if ($counter >= count($classes)) {
+            $counter = 0;
+            continue;
+        }
+        else{
+            $classes[$counter]->addTeacher($Teacher);
+        }        
+    }
+    $stmt->close();
+    $counter = 0;
+    $parent = "";
+    $sql = "SELECT ps.Parent, sc.Class
+    FROM ParentStudent ps
+    JOIN StudentClass sc ON ps.Student = sc.Student
+    ORDER BY sc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parent, $Class);
+    while($stmt->fetch())
+    {
+        while($Class != $classes[$counter]->getID()){
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if ($counter >= count($classes)) {
+                break;
+            }
+        }
         //if the counter is too large try the next value
-        $classes[$counter]->addParent($parent);
+        if ($counter >= count($classes)) {
+            $counter = 0;
+            continue;
+        }
+        else{
+            $classes[$counter]->addParent($parent);
+        }
     }
     $stmt->close();
     return $classes;
@@ -1768,5 +1850,19 @@ function get_next_event_of_year($yg)
     $stmt->fetch();
     $stmt->close();
     return $eventid;
+}
+
+function has_booked($studentid, $eventid)
+{
+    $studentid = intval($studentid);
+    $eventid = intval($eventid);
+    $sql = "SELECT ID FROM PrefferedTime WHERE Student = ? AND Event = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $studentid, $eventid);
+    $stmt->execute();
+    $stmt->store_result();
+    $numrows = $stmt->num_rows;
+    $stmt->close();
+    return $numrows > 0;
 }
 
