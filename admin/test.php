@@ -1,4 +1,23 @@
-<?php
+<?
+require_once '../email.php';
+require_once '../utils.php';
+
+/*
+//send an email to gosdens025012@tbshs.org
+sendEmail("andersonr025361@tbshs.org", "email", "https://www.samgosden.tech/registration.php?token=a");
+//get all register, for each send an email with a link to https://www.samgosden.tech/register.php?token=token
+$registers = get_all_register();
+foreach ($registers as $register) {
+    $token = $register->getToken();
+    $email = $register->getEmail();
+    $name = $register->getName();
+    $subject = "Register for parents evening";
+    $message = "Dear $name, <br> Please click the link below to register for the parents evening system. https://www.samgosden.tech/registration.php?token=$token";
+    sendEmail($email, $subject, $message);
+}*/
+
+/*
+*/
 /*
 
 require_once '../utils.php';
@@ -10,6 +29,7 @@ foreach ($events as $event) {
     echo format_date($event->getStartTime()) . "<br>";
 
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">*/
@@ -40,7 +60,9 @@ $pdf->Ln();
 //output the pd
 $pdf->Output();
 */
-//test all the get all functions
+//test all the get all functions#
+
+/*
 require_once '../utils.php';
 
 require_once './autils.php';
@@ -86,4 +108,111 @@ if(isset($_GET['teacherid'])){
     <input type="submit">
 </form>
 </body>
+</html>
+*/
+//if its a post with the to subject and body, send the email
+if (isset($_POST['to']) && isset($_POST['subject']) && isset($_POST['body'])) {
+    $to = $_POST['to'];
+    $subject = $_POST['subject'];
+    $body = $_POST['body'];
+    if (isset($_POST['html'])) {
+        $html = $_POST['html'];
+    } else {
+        $html = false;
+    }
+    echo sendEmail($to, $subject, $body, $html);
+    echo "sent";
+    die();
+}
+//if its a post with sendAll, send all the emails
+if (isset($_POST['sendAll'])) {
+    $registers = get_all_toreset();
+    foreach ($registers as $register) {
+        $token = $register->getResetToken();
+        $email = $register->getEmail();
+        $name = $register->getName();
+        $subject = "Register for parents evening";
+        $message = " <head>
+        <style>
+            .register-link {
+                color: #ffffff;
+                background-color: #007BFF;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+    
+            .register-link:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    Dear $name, 
+    <br> 
+    Please click the link below to register for the parents evening system. <br> <br> <a href=https://www.samgosden.tech/registration.php?token=$token class='register-link'>Register</a> <br> <br> If the link does not work, please copy and paste the following link into your browser: <br> https://www.samgosden.tech/registration.php?token=$token";
+        echo sendEmail($email, $subject, $message, true);
+        echo $token . "<br>";
+    }
+    echo "sent " . count($registers) . " emails";
+    die();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<!-- email send testing -->
+
+<head>
+    <? include_once '../includes.php'; ?>
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <script>
+        //preventDefault send a post to the same page with the relevent data
+        function test() {
+            var to = document.getElementById("to").value;
+            var subject = document.getElementById("subject").value;
+            var body = document.getElementById("body").value;
+            var html = document.getElementById("html").checked;
+            $.post("test.php", {
+                to: to,
+                subject: subject,
+                body: body,
+                html: html
+            }, function(data) {
+                alert(data);
+            });
+        }
+        //overide button click
+    </script>
+</head>
+<!-- add a to subject and body-->
+
+<body>
+    <form>
+        <input type="text" name="to" id="to">
+        <input type="text" name="subject" id="subject">
+        <input type="text" name="body" id="body">
+        <input type="checkbox" name="html" id="html">
+    </form>
+    <button id="submit">Send</button>
+    <button id="sendAll">Send all</button>
+</body>
+<script>
+    window.onload = function() {
+        document.getElementById("submit").addEventListener("click", function(e) {
+            e.preventDefault();
+            test();
+        });
+        document.getElementById("sendAll").addEventListener("click", function(e) {
+            e.preventDefault();
+            $.post("test.php", {
+                sendAll: true
+            }, function(data) {
+                alert(data);
+            });
+        });
+    }
+</script>
+
 </html>

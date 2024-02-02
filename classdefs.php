@@ -519,13 +519,14 @@ class Class_
 }
 class Account
 {
-    private $id;
-    private $name;
-    private $email;
-    private $phone;
-    private $password;
-    private $teacherid;
-    private $parentid;
+    protected $id;
+    protected $name;
+    protected $email;
+    protected $resettoken;
+    protected $phone;
+    protected $password;
+    protected $teacherid;
+    protected $parentid;
     public function __construct(int $id)
     {
         $this->id = $id;
@@ -534,11 +535,11 @@ class Account
     {
         $id = $this->id;
         //sql for username
-        $sql = "SELECT Email, Password FROM User WHERE ID=?";
+        $sql = "SELECT Email, Password, resetToken FROM User WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->email, $this->password);
+        $stmt->bind_result($this->email, $this->password, $this->resettoken);
         $stmt->fetch();
         $stmt->close();
         //sql for teacherid
@@ -601,6 +602,13 @@ class Account
     public function getPhone()
     {
         return $this->phone;
+    }
+    public function getResetToken()
+    {
+        return $this->resettoken;
+    }
+    public function setResetToken($token){
+        $this->resettoken = $token;
     }
     public function setName($name)
     {

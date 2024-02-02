@@ -6,6 +6,7 @@
 session_start();
 require_once 'db.php';
 require_once 'classdefs.php';
+require_once 'email.php';
 function is_logged_in()
 {
     //if user session is set, return true
@@ -375,8 +376,7 @@ function get_all_classes_of_teacher($teacherid)
         if ($counter >= count($classes)) {
             $counter = 0;
             continue;
-        }
-        else{
+        } else {
             //if the counter is too large try the next value
             $classes[$counter]->addStudent($Student);
         }
@@ -402,8 +402,7 @@ function get_all_classes_of_teacher($teacherid)
         if ($counter >= count($classes)) {
             $counter = 0;
             continue;
-        }
-        else{
+        } else {
             $classes[$counter]->addTeacher($Teacher);
         }
     }
@@ -432,8 +431,7 @@ function get_all_classes_of_teacher($teacherid)
         if ($counter >= count($classes)) {
             $counter = 0;
             continue;
-        }
-        else{
+        } else {
             //if the counter is too large try the next value
             $classes[$counter]->addParent($parent);
         }
@@ -442,7 +440,8 @@ function get_all_classes_of_teacher($teacherid)
     return $classes;
 }
 
-function get_all_classes_of_student($studentid){
+function get_all_classes_of_student($studentid)
+{
     $classid = "";
     $name = "";
     $sql = "SELECT sc.Class, c.Name
@@ -471,7 +470,7 @@ function get_all_classes_of_student($studentid){
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($Teacher, $Class);
-    while($stmt->fetch()){
+    while ($stmt->fetch()) {
         while ($Class != $classes[$counter]->getID()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
@@ -482,10 +481,9 @@ function get_all_classes_of_student($studentid){
         if ($counter >= count($classes)) {
             $counter = 0;
             continue;
-        }
-        else{
+        } else {
             $classes[$counter]->addTeacher($Teacher);
-        }        
+        }
     }
     $stmt->close();
     $counter = 0;
@@ -497,9 +495,8 @@ function get_all_classes_of_student($studentid){
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($parent, $Class);
-    while($stmt->fetch())
-    {
-        while($Class != $classes[$counter]->getID()){
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->getID()) {
             $counter++;
             //if counter is too large then break out of the 2 loops
             if ($counter >= count($classes)) {
@@ -510,8 +507,7 @@ function get_all_classes_of_student($studentid){
         if ($counter >= count($classes)) {
             $counter = 0;
             continue;
-        }
-        else{
+        } else {
             $classes[$counter]->addParent($parent);
         }
     }
@@ -1866,3 +1862,185 @@ function has_booked($studentid, $eventid)
     return $numrows > 0;
 }
 
+
+function get_all_toreset()
+{
+    $accountid = "";
+    $name = "";
+    $resettoken = "";
+    $password = "";
+    $email = "";
+    $phone = "";
+    $sql = "SELECT ID, Name, Password, Email, Phone, ResetToken FROM User WHERE ResetToken IS NOT NULL ORDER BY ID ";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($accountid, $name, $password, $email, $phone, $resettoken);
+    $accounts = array();
+    while ($stmt->fetch()) {
+        $accounts[] = new Account($accountid);
+        //set the name of the account
+        $accounts[count($accounts) - 1]->setName($name);
+        //set the password of the account
+        $accounts[count($accounts) - 1]->setPassword($password);
+        $accounts[count($accounts) - 1]->setResetToken($resettoken);
+        //set the email of the account
+        $accounts[count($accounts) - 1]->setEmail($email);
+        //set the phone of the account
+        $accounts[count($accounts) - 1]->setPhone($phone);
+    }
+    $stmt->close();
+    //update the accounts
+    /*$parentid = "";
+    $id = "";
+    $counter = 0;
+    $sql = "SELECT ID, UserID FROM Parent WHERE UserID IS NOT NULL ORDER BY UserID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($parentid, $id);
+    while ($stmt->fetch()) {
+        while ($id != $accounts[$counter]->getID()) {
+            $counter++;
+        }
+        $accounts[$counter]->setParentID($parentid);
+    }
+    $stmt->close();
+    $teacherid = "";
+    $counter = 0;
+    $sql = "SELECT ID, UserID FROM Teacher WHERE UserID IS NOT NULL ORDER BY UserID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($teacherid, $id);
+    while ($stmt->fetch()) {
+        while ($id != $accounts[$counter]->getID()) {
+            $counter++;
+        }
+        $accounts[$counter]->setTeacherID($teacherid);
+    }
+    $stmt->close();*/
+    return $accounts;
+}
+
+function get_email_from_token($token)
+{
+    $email = "";
+    //check if token exists in registration table
+    $sql = "SELECT Email FROM User WHERE ResetToken = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param('s', $token);
+    $stmt->execute();
+    $stmt->bind_result($email);
+    $stmt->fetch();
+    $stmt->close();
+    return $email;
+}
+function is_token_valid($token)
+{
+    //strip whitespace
+    $token = trim($token);
+    //check if token exists in registration table
+    $sql = "SELECT ResetToken FROM User WHERE ResetToken = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param('s', $token);
+    $stmt->execute();
+    $stmt->store_result();
+    $numrows = $stmt->num_rows;
+    $stmt->close();
+    return $numrows > 0;
+}
+
+function generate_reset_email($name, $link)
+{
+    //this function generates the email to send to the user, it needs to be in html format look nice contain the link as a convinent button and as a link
+    $message = "
+    <html>
+        <head>
+            <style>
+                body{
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                a{
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Reset Password</h1>
+            <p>Dear " . $name . ",</p>
+            <p>Click the link below to reset your password</p>
+            <br>
+            <br>
+            <a href='" . $link . "'>Reset Password</a>
+            <br>
+            <br>
+            <p>Alternatively, copy and paste the following link into your browser</p>
+            <p>" . $link . "</p>
+        </body>
+    </html>";
+    return $message;
+}
+
+function generate_password_change($name)
+{
+    //this function generates the email to send to the user, it needs to be in html format look nice contain the link as a convinent button and as a link
+    $message = "
+    <html>
+        <head>
+            <style>
+                body{
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                div{
+                    height:1px important;
+                    width:1px important;
+                    border-width:0 !important;
+                    margin-top:0 !important;
+                    margin-bottom:0 !important;
+                    margin-right:0 !important;
+                    margin-left:0 !important;
+                    padding-top:0 !important;
+                    padding-bottom:0 !important;
+                    padding-right:0 !important;
+                    padding-left:0 !important;
+                }   
+            </style>
+        </head>
+        <body>
+            <h1>Password Changed</h1>
+            <p>Dear " . $name . ",</p>
+            <p>Your password has been changed</p>
+            <br>
+            <p>If you did not change your password, please contact the school</p>
+        </body>
+    </html>";
+    return $message;
+}
+//when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
+if (file_exists("autoemailtimer.txt")) {
+    $file = fopen("autoemailtimer.txt", "r");
+    $time = fgets($file);
+    fclose($file);
+    if (time() >= $time) {
+        //send emails
+        $file = fopen("autoemailtimer.txt", "w");
+        //15 minutes
+        fwrite($file, time() + 900);
+        fclose($file);
+        //send all the emails 
+        $accounts = get_all_toreset();
+        foreach ($accounts as $account) {
+            $email = $account->getEmail();
+            $token = $account->getResetToken();
+            $name = $account->getName();
+            $subject = "Password Reset";
+            $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
+            sendEmail($email, $subject, $message, true);
+        }
+    }
+}

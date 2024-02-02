@@ -1,4 +1,5 @@
 *.csv
 db.php
+email.php
 favicon.ico
 vendor/

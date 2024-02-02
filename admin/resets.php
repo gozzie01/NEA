@@ -12,142 +12,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     $Account->update();
     $Account_id = $Account->getID();
     $Account_name = $Account->getName();
+    $Account_resetToken = $Account->getResetToken();
     $Account_Email = $Account->getEmail();
-    $Account_Phone = $Account->getPhone();
-    $Account_ParentID = $Account->getParentID();
-    $Account_TeacherID = $Account->getTeacherID();
     //format the json response
     $response = array(
         "id" => $Account_id,
         "name" => $Account_name,
         "email" => $Account_Email,
-        "phone" => $Account_Phone,
-        "parentid" => $Account_ParentID,
-        "teacherid" => $Account_TeacherID
+        "resetToken" => $Account_resetToken
 
     );
     echo json_encode($response);
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
-    $Accounts = get_all_accounts();
+    $Accounts = get_all_toreset();
     foreach ($Accounts as $Account) {
         echo "<tr id=AccountRow", $Account->getID(), ">";
         echo "<td>", $Account->getID(), "</td>";
         echo "<td>", $Account->getName(), "</td>";
         echo "<td>", $Account->getEmail(), "</td>";
         echo "<td></td>";
-        echo "<td>", $Account->getPhone(), "</td>";
-        echo "<td>", $Account->getParentID(), "</td>";
-        echo "<td>", $Account->getTeacherID(), "</td>";
+        echo "<td>", $Account->getResetToken(), "</td>";
         echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
     die();
 }
 //get parent selector
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector'])) {
-    $Accounts = get_all_parents();
-    foreach ($Accounts as $Account) {
-        echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
-    }
-    die();
-}
-//get teacher selector
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
-    $Accounts = get_all_teachers();
-    foreach ($Accounts as $Account) {
-        echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
-    }
-    die();
-}
 //if the request is a post and the id is set, check if the Account exists, if it does update it, if not create it
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $parentid = $_POST['parentid'];
-    $teacherid = $_POST['teacherid'];
-
-    //check if the values passed are valid
-    //format the variables properly
-    $id = intval($id);
-    $name = strval($name);
-    //if accountID is empty set it to null
-    if ($email == "null" || $email == "") {
-        $email = null;
-    } else {
-        $email = strval($email);
-    }
-    //check phone
-    if ($phone == "null" || $phone == "") {
-        $phone = null;
-    } else {
-        $phone = strval($phone);
-    }
-    //check parentid
-    if ($parentid == "null" || $parentid == "") {
-        $parentid = null;
-    } else {
-        $parentid = intval($parentid);
-    }
-    //check teacherid
-    if ($teacherid == "null" || $teacherid == "") {
-        $teacherid = null;
-    } else {
-        $teacherid = intval($teacherid);
-    }
-    //check if the Account exists
-    if (account_exists($id)) {
-        //update the Account
-        $respon = update_account($id, $name, $email, $phone, $parentid, $teacherid);
-    } else {
-        //create the Accounts   
-        $respon = create_account($id, $name, $email, $phone, $parentid, $teacherid);
-    }
-    if ($respon) {
-        $response = array(
-            "success" => "Account updated successfully"
-        );
-        echo json_encode($response);
-        die();
-    } else {
-        $response = array(
-            "error" => "Account does not exist"
-        );
-        echo json_encode($response);
-        die();
-    }
-}
 //if the request is a post and the id is set, check if the Account exists, if it does delete it
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
-    $id = $_POST['id'];
-    //check if the Account exists
-    if (account_exists($id)) {
-        //delete the Account
-        $respon = delete_account($id);
-    } else {
-        $response = array(
-            "error" => "Account does not exist"
-        );
-        echo json_encode($response);
-        die();
-    }
-    if ($respon) {
-        $response = array(
-            "success" => "Account deleted successfully"
-        );
-        echo json_encode($response);
-        die();
-    } else {
-        $response = array(
-            "error" => "Account does not exist"
-        );
-        echo json_encode($response);
-        die();
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -176,11 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 }
             }
         }
-
+ 
         function updateTable() {
             $.ajax({
                 type: "POST",
-                url: "/admin/accounts.php",
+                url: "/admin/resets.php",
                 data: {
                     gettabledata: true
                 },
@@ -218,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             //get the Account object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/accounts.php",
+                url: "/admin/resets.php",
                 data: {
                     getAccountID: true,
                     id: AccountID
@@ -230,12 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     $('#AccountID').val(Account.id);
                     $('#AccountName').val(Account.name);
                     $('#AccountEmail').val(Account.email);
-                    $('#AccountPhone').val(Account.phone);
-                    $('#ParentSelector').val(Account.parentid);
-                    $('#TeacherSelector').val(Account.teacherid);
-                    //refresh the selects
-                    $('#ParentSelector').trigger('change');
-                    $('#TeacherSelector').trigger('change');
+                    $('#AccountResetToken').val(Account.resetToken);
                     //change the text in the submit button to update
                     $('#submitFormButton').text("Update");
                 }
@@ -249,12 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             $('#AccountID').val("");
             $('#AccountName').val("");
             $('#AccountEmail').val("");
-            $('#AccountPhone').val("");
-            $('#ParentSelector').val("");
-            $('#TeacherSelector').val("");
-            //change the text in the submit button to add
-            $('#ParentSelector').trigger('change');
-            $('#TeacherSelector').trigger('change');
+            $('#AccountResetToken').val("");
             $('#submitFormButton').text("Add");
         });
         //on ready clear the edit form
@@ -281,8 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 $name = $('#AccountName').val();
                 $email = $('#AccountEmail').val();
                 $phone = $('#AccountPhone').val();
-                $parentid = $('#ParentSelector').val();
-                $teacherid = $('#TeacherSelector').val();
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     //if the request is complete
@@ -305,9 +187,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                         }
                     }
                 };
-                xhttp.open("POST", "/admin/accounts.php", true);
+                xhttp.open("POST", "/admin/resets.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid);
+                xhttp.send("updateAccount=true" + "&id=" + $id + "&resettoken="+$resettoken);
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -319,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 //get the Account object from the database
                 $.ajax({
                     type: "POST",
-                    url: "/admin/accounts.php",
+                    url: "/admin/resets.php",
                     data: {
                         getAccountID: true,
                         id: AccountID
@@ -339,9 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             $id = $('#AccountID').val();
             $name = $('#AccountName').val();
             $email = $('#AccountEmail').val();
-            $phone = $('#AccountPhone').val();
-            $parentid = $('#ParentSelector').val();
-            $teacherid = $('#TeacherSelector').val();
+            $resetToken = $('#AccountResetToken').val();
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 //if the request is complete
@@ -367,9 +247,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     }
                 }
             };
-            xhttp.open("POST", "/admin/accounts.php", true);
+            xhttp.open("POST", "/admin/resets.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid);
+            xhttp.send("updateAccount=true" + "&id=" + $id + "&resettoken="+$resettoken);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -384,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/accounts.php",
+                url: "/admin/resets.php",
                 data: {
                     getAccountID: true,
                     id: AccountID
@@ -393,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     //parse the json response
                     var Account = JSON.parse(data);
                     //set the text of the confirmation popup
-                    $('#confirmDeletionText').text("Are you sure you want to delete " + Account.name + "?");
+                    $('#confirmDeletionText').text("Are you sure you want to delete reset token" + Account.name + "?");
                 }
             });
             //show the confirmation popup
@@ -408,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/accounts.php",
+                url: "/admin/resets.php",
                 data: {
                     deleteAccount: true,
                     id: AccountID
@@ -466,8 +346,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1>Accounts</h1>
-                    <p>Here you can view all the Accounts in the school</p>
+                    <h1>Resets</h1>
+                    <p>Here you can view all the Accounts that have requested a password reset in the school</p>
                     <input class="form-control" id="myInput" type="text" onkeyup="searchupdate()" placeholder="Search..">
                     <div class="well">
                         <table class="table table-striped table-scroll table-hover">
@@ -477,9 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                                     <th scope="col">Account Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col"></th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Parent ID</th>
-                                    <th scope="col">Teacher ID</th>
+                                    <th scope="col">Reset Token</th>
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
@@ -502,13 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     <input type="text" class="form-control" placeholder="Account ID" id="AccountID">
                     <input type="text" class="form-control" placeholder="Account Name" id="AccountName">
                     <input type="text" class="form-control" placeholder="Email" id="AccountEmail">
-                    <input type="text" class="form-control" placeholder="Phone" id="AccountPhone">
-                    <select class="form-control" id="ParentSelector">
-
-                    </select>
-                    <select class="form-control" id="TeacherSelector">
-
-                    </select>
+                    <input type="text" class="form-control" placeholder="ResetToken" id="AccountResetToken">
                     <!--submit button-->
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->

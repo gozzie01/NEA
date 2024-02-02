@@ -91,3 +91,6 @@ if (!isset($_GET['child'])) {
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</body>
