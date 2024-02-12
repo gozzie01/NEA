@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         body {
             font-family: Arial, sans-serif;
         }
+
         .header {
             background-color: #f8f9fa;
             padding: 10px;
@@ -12,6 +14,7 @@
             font-size: 24px;
             color: black;
         }
+
         .signature {
             margin-top: 50px;
             font-style: italic;
@@ -19,6 +22,7 @@
         }
     </style>
 </head>
+
 <body>
     <p>
         hello mya,<br><br>
@@ -29,4 +33,5 @@
         Sam Gosden
     </div>
 </body>
+
 </html>

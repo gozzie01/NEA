@@ -251,6 +251,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var height = $(window).height() - $('.table-scroll tbody').offset().top;
             //just tbody
             $('.table-scroll tbody').css('height', height);
+            //adjust size of well
+            var heightwell = $(window).height() - $('.well').offset().top   ;
+            $('.well').css('height', heightwell);
+
         });
         //on submit do nothing, let the button press function handle it
         $(document).on('submit', '#EventUpdateForm', function(e) {

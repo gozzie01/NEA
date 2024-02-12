@@ -150,7 +150,7 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                         if (this.status == 200) {
                             //if the request was successful then we can redirect the user to the index page
                             //send the password change email
-                            
+
                             window.location.replace("index.php");
                         } else {
                             //if the request was not successful then we can display an error message
@@ -163,8 +163,7 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 if (searchParams.has('token')) {
                     xhttp.send("email=" + email + "&password=" + password + "&phone=" + phone + "&ResetToken=" + token);
-                } else {
-                }
+                } else {}
             }
         </script>
     </head>

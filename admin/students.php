@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletestudent'])) {
         //on ready clear the edit form
         $(document).ready(function() {
             $('#clear').click();
-            var height = $(window).height() -  $('.table-scroll tbody').offset().top;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
             $('.table-scroll tbody').css('height', height);
             //get the table data
             $.ajax({

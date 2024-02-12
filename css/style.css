@@ -2,6 +2,16 @@ table {
     display: flex;
     flex-flow: column;
     width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0%;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
 }
 
 thead {
@@ -23,6 +33,8 @@ tr {
 
 /* make h1 and h2 smaller*/
 
-h1, h2 {
-    font-size: 1.5em; /* Adjust this value as needed */
+h1,
+h2 {
+    font-size: 1.5em;
+    /* Adjust this value as needed */
 }

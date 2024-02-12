@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
     }
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     die();
 }
 ?>
@@ -178,8 +178,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 type: "POST",
                 url: "/admin/parents.php",
                 getStudentSelector: true,
-                data: {
-                },
+                data: {},
                 success: function(data) {
                     $('#StudentSelector').html(data);
                 }

@@ -47,9 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])
         }
         echo $output;
         die();
-    }
-    else
-    {
+    } else {
         $students = get_all_students();
         $output = "";
         foreach ($students as $student) {
