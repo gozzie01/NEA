@@ -74,9 +74,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     //format the variables properly
     $id = intval($id);
     $name = strval($name);
+    //if the name is not set or is empty return an error
+    if ($name == "null" || $name == "") {
+        $response = array(
+            "error" => "Name is required"
+        );
+        echo json_encode($response);
+        die();
+    }
     //if accountID is empty set it to null
     if ($email == "null" || $email == "") {
-        $email = null;
+        //require it
+        $response = array(
+            "error" => "Email is required"
+        );
+        echo json_encode($response);
+        die();
     } else {
         $email = strval($email);
     }

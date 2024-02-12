@@ -1868,13 +1868,14 @@ function get_all_toreset()
     $accountid = "";
     $name = "";
     $resettoken = "";
+    $resetemailsenttime="";
     $password = "";
     $email = "";
     $phone = "";
-    $sql = "SELECT ID, Name, Password, Email, Phone, ResetToken FROM User WHERE ResetToken IS NOT NULL ORDER BY ID ";
+    $sql = "SELECT ID, Name, Password, Email, Phone, ResetToken, ResetEmailSentTime FROM User WHERE ResetToken IS NOT NULL ORDER BY ID ";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($accountid, $name, $password, $email, $phone, $resettoken);
+    $stmt->bind_result($accountid, $name, $password, $email, $phone, $resettoken, $resetemailsenttime);
     $accounts = array();
     while ($stmt->fetch()) {
         $accounts[] = new Account($accountid);
@@ -1883,6 +1884,7 @@ function get_all_toreset()
         //set the password of the account
         $accounts[count($accounts) - 1]->setPassword($password);
         $accounts[count($accounts) - 1]->setResetToken($resettoken);
+        $accounts[count($accounts) - 1]->setResetEmailSentTime($resetemailsenttime);
         //set the email of the account
         $accounts[count($accounts) - 1]->setEmail($email);
         //set the phone of the account
@@ -1996,19 +1998,6 @@ function generate_password_change($name)
                 body{
                     font-family: Arial, Helvetica, sans-serif;
                 }
-                div{
-                    height:1px important;
-                    width:1px important;
-                    border-width:0 !important;
-                    margin-top:0 !important;
-                    margin-bottom:0 !important;
-                    margin-right:0 !important;
-                    margin-left:0 !important;
-                    padding-top:0 !important;
-                    padding-bottom:0 !important;
-                    padding-right:0 !important;
-                    padding-left:0 !important;
-                }   
             </style>
         </head>
         <body>
@@ -2030,17 +2019,66 @@ if (file_exists("autoemailtimer.txt")) {
         //send emails
         $file = fopen("autoemailtimer.txt", "w");
         //15 minutes
-        fwrite($file, time() + 900);
+        fwrite($file, time() + 60);
         fclose($file);
         //send all the emails 
         $accounts = get_all_toreset();
         foreach ($accounts as $account) {
             $email = $account->getEmail();
             $token = $account->getResetToken();
+            $tokenSentTime = $account->getResetEmailSentTime();
             $name = $account->getName();
-            $subject = "Password Reset";
-            $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
-            sendEmail($email, $subject, $message, true);
+            $id = $account->getID();
+            if (!is_null($token)) {
+                //if the token was sent more than 24 hours ago, send another email
+                //token sent time is null or not set or "null" set to 0
+                if (is_null($tokenSentTime))
+                {
+                    $tokenSentTime = new DateTime("0000-00-00 00:00:00");
+                }
+                else
+                {
+                    $tokenSentTime = new DateTime($tokenSentTime);
+                }
+                $now = new DateTime();
+                $interval = $now->diff($tokenSentTime);
+                if ($interval->format('%a') >= 1) {
+                    //send email
+                    $subject = "Password Reset";
+                    $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
+                    sendEmail($email, $subject, $message, true);
+                    //set ResetTokenSentTime to now
+                    $sql = "UPDATE User SET ResetEmailSentTime = NOW() WHERE ID = ?";
+                    $stmt = $GLOBALS['db']->prepare($sql);
+                    $stmt->bind_param('i', $id);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            }
         }
     }
+}
+
+function update_token_email($id, $email, $token)
+{
+    //if the email is null just set token, if token is null dont set email
+    if (is_null($email)) {
+        $sql = "UPDATE User SET ResetToken = ? WHERE ID = ?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param('si', $token, $id);
+        $stmt->execute();
+        $stmt->close();
+    } else if (is_null($token)) {
+    } else {
+        $sql = "UPDATE User SET Email = ?, ResetToken = ? WHERE ID = ?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param('ssi', $email, $token, $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+//redirect to https
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
 }

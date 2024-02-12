@@ -523,6 +523,7 @@ class Account
     protected $name;
     protected $email;
     protected $resettoken;
+    protected $resettokensenttime;
     protected $phone;
     protected $password;
     protected $teacherid;
@@ -535,11 +536,11 @@ class Account
     {
         $id = $this->id;
         //sql for username
-        $sql = "SELECT Email, Password, resetToken FROM User WHERE ID=?";
+        $sql = "SELECT Email, Password, ResetToken, ResetEmailSentTime FROM User WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->email, $this->password, $this->resettoken);
+        $stmt->bind_result($this->email, $this->password, $this->resettoken, $this->resettokensenttime);
         $stmt->fetch();
         $stmt->close();
         //sql for teacherid
@@ -607,8 +608,17 @@ class Account
     {
         return $this->resettoken;
     }
-    public function setResetToken($token){
+    public function getResetEmailSentTime()
+    {
+        return $this->resettokensenttime;
+    }
+    public function setResetToken($token)
+    {
         $this->resettoken = $token;
+    }
+    public function setResetEmailSentTime($time)
+    {
+        $this->resettokensenttime = $time;
     }
     public function setName($name)
     {
@@ -697,9 +707,8 @@ class Event
     public function isBookOpen()
     {
         $ttime = new DateTime($this->openTime);
-        $ntime= new DateTime();
-        if (!isset($status) && $ttime<$ntime)
-        {
+        $ntime = new DateTime();
+        if (!isset($status) && $ttime < $ntime) {
             return true;
         }
         return false;
