@@ -39,20 +39,90 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                     }
                 });
             });
+
+            //exit button, Enter
+            //wait for the popupbox to load
+            window.addEventListener('DOMContentLoaded', () => {
+                const popupbox = document.getElementById('popupbox');
+                document.getElementById('exitButton').addEventListener("keypress", (e) => {
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        document.getElementById('popupbox').style.display = 'none';
+                    }
+                });
+            });
+
+
+
+            //on submit
+            function submitForm() {
+                const xhttp = new XMLHttpRequest();
+                const StCheck = document.getElementById('StCheck');
+                const EnCheck = document.getElementById('EnCheck');
+                const StTime = document.getElementById('StTime');
+                const EnTime = document.getElementById('EnTime');
+                const classes = [];
+                const checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+                checkboxes.forEach((checkbox) => {
+                    classes.push(checkbox.name);
+                });
+                if (StCheck.checked) {
+                    if (StTime.value === "") {
+                        alert("Please select a time");
+                        return;
+                    }
+                    if (classes.length === 0) {
+                        alert("Please select at least one class");
+                        return;
+                    }
+                    //post it using xhttp
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            alert(this.responseText);
+                            document.getElementById('popupbox').style.display = 'none';
+                        }
+                    };
+                    xhttp.open("POST", "/parent/book.php", true);
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send("student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?>&starttime=" + StTime.value + "&classes=" + classes);
+
+                } else if (EnCheck.checked) {
+                    if (EnTime.value === "") {
+                        alert("Please select a time");
+                        return;
+                    }
+                    if (classes.length === 0) {
+                        alert("Please select at least one class");
+                        return;
+                    }
+                } else {
+                    alert("Please select a time");
+                }
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        alert(this.responseText);
+                        document.getElementById('popupbox').style.display = 'none';
+                    }
+                };
+                xhttp.open("POST", "/parent/book.php", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?>&endtime=" + EnTime.value + "&classes=" + classes);
+            }
         </script>
 
         <body id="popup">
             <div id="popupbox" style=" position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4);">
                 <!--booking box-->
+
                 <div style="display: flex; justify-content: space-between;">
-                    <div style="background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 45%;">
+                    <!-- -->
+                    <div class="popupbook" style="background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; ">
                         <div style="display: flex; justify-content: space-between;">
                             <div>
                                 <h3>Book for: <?php echo $student->getName(); ?></h3>
                                 <h4>Event: <?php echo $event->getName(); ?>, <?php echo (new DateTime($event->getStartTime()))->format("D d M H:i") ?></h4>
                             </div>
                             <div>
-                                <span onclick="document.getElementById('popupbox').style.display='none'" style="color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                                <span id="exitButton" onclick="document.getElementById('popupbox').style.display='none'" style="color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer;" tabindex="0">&times;</span>
                             </div>
                         </div>
                         <h3>Times</h3>
@@ -91,8 +161,10 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 echo "</div>";
                             }
                         }
+                        //submit button
 
                         ?>
+                        <button onclick="submitForm()">Submit</button>
                     </div>
                 </div>
             </div>

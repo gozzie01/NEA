@@ -244,6 +244,6 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
     </body>
 
     </html>
-<?
+<?php
 }
 ?>

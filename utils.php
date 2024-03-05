@@ -86,6 +86,7 @@ function verify_login()
         exit();
     }
 }
+
 function verify_login_($user, $token)
 {
     //check if the users token is valid
@@ -1562,7 +1563,8 @@ function get_all_events()
     $OpenTime = "";
     $SlotDuration = "";
     $YearGroup = "";
-
+    $Classes = "";
+    $ClassID="";
     $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
@@ -1584,6 +1586,19 @@ function get_all_events()
         $events[count($events) - 1]->setYear($YearGroup);
     }
     $stmt->close();
+    //update the classes
+    $eventid = "";
+    $sql = "SELECT Class, Event FROM EventClass ORDER BY Event";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($ClassID, $eventid);
+    $counter = 0;
+    while ($stmt->fetch()) {
+        while ($eventid != $events[$counter]->getID() && $counter < count($events)) {
+            $counter++;
+        }
+        $events[$counter]->addClass($ClassID);
+    }
     return $events;
 }
 
@@ -1660,9 +1675,7 @@ function prefSlot_exists($id)
 function create_prefSlot($StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent)
 {
     //check if the values passed are valid
-    if (!is_string($StartTime) || !is_string($EndTime) || !is_string($Teacher) || !is_string($Event) || !is_string($Class) || !is_string($Student) || !is_string($Parent)) {
-        return false;
-    }
+
     //create the event
     $sql = "INSERT INTO PrefferedTime (StartTime, EndTime, Teacher, Event, Class, Student, Parent) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -1771,6 +1784,44 @@ function get_all_PrefSlots_of_event($event)
         $prefBooks[count($prefBooks) - 1]->setClass($Class);
         //set the year group of the event
         $prefBooks[count($prefBooks) - 1]->setStudent($Student);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setParent($Parent);
+    }
+    $stmt->close();
+    return $prefBooks;
+}
+
+function get_all_PrefSlots_of_event_of_student($event, $student)
+{
+    $id = "";
+    $StartTime = "";
+    $EndTime = "";
+    $Teacher = "";
+    $Event = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, Class, Parent FROM PrefferedTime WHERE Event=? AND Student=? ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $event, $student);
+    $stmt->execute();
+    $stmt->bind_result($id, $StartTime, $EndTime, $Teacher, $Class, $Parent);
+    $prefBooks = array();
+    while ($stmt->fetch()) {
+        $prefBooks[] = new PrefSlot((int)$id);
+        //set the name of the event
+        $prefBooks[count($prefBooks) - 1]->setStartTime($StartTime);
+        //set the date of the event
+        $prefBooks[count($prefBooks) - 1]->setEndTime($EndTime);
+        //set the end time of the event
+        $prefBooks[count($prefBooks) - 1]->setTeacher($Teacher);
+        //set the open time of the event
+        $prefBooks[count($prefBooks) - 1]->setEvent($event);
+        //set the slot duration of the event
+        $prefBooks[count($prefBooks) - 1]->setClass($Class);
+        //set the year group of the event
+        $prefBooks[count($prefBooks) - 1]->setStudent($student);
         //set the year group of the event
         $prefBooks[count($prefBooks) - 1]->setParent($Parent);
     }
@@ -2081,4 +2132,18 @@ function update_token_email($id, $email, $token)
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
     header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
+}
+
+function get_teacher_of_class_of_event($class, $event)
+{
+    //select teacher from EventClass where Class = ? and Event = ?
+    $teacher = "";
+    $sql = "SELECT Teacher FROM EventClass WHERE Class = ? AND Event = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $class, $event);
+    $stmt->execute();
+    $stmt->bind_result($teacher);
+    $stmt->fetch();
+    $stmt->close();
+    return $teacher;
 }

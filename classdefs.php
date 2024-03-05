@@ -655,6 +655,7 @@ class Event
     private $endTime;
     private $slotDuration;
     private $year;
+    private $classes;
     private $status;
     public function __construct(int $id)
     {
@@ -663,6 +664,7 @@ class Event
     public function update()
     {
         $id = $this->id;
+        $classid = -1;
         //sql for name
         $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup, CStatus FROM Event WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
@@ -670,6 +672,17 @@ class Event
         $stmt->execute();
         $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->slotDuration, $this->year, $this->status);
         $stmt->fetch();
+        $stmt->close();
+        //sql for classes get class IDs from EventClass
+        $sql = "SELECT Class FROM EventClass WHERE Event=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($classid);
+        $this->classes = array();
+        while ($stmt->fetch()) {
+            $this->classes[] = $classid;
+        }
         $stmt->close();
     }
     public function getName()
@@ -696,6 +709,10 @@ class Event
     {
         return $this->year;
     }
+    public function getClasses()
+    {
+        return $this->classes;
+    }
     public function getID()
     {
         return $this->id;
@@ -716,6 +733,12 @@ class Event
     public function setName($name)
     {
         $this->name = $name;
+    }
+    public function setClasses($classes){
+        $this->classes = $classes;
+    }
+    public function addClass($class){
+        $this->classes[] = $class;
     }
     public function setStartTime($startTime)
     {

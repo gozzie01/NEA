@@ -38,3 +38,16 @@ h2 {
     font-size: 1.5em;
     /* Adjust this value as needed */
 }
+/* 
+style for class popupbook 
+this is for a div that will be used as a popup, it needs to be full screen width on smaller devices
+*/
+.popupbook {
+    width: 45%;
+}
+
+@media (max-width: 600px) {
+    .popupbook {
+        width: 100%;
+    }
+}
