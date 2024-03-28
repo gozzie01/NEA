@@ -1,6 +1,7 @@
 <?
 require_once '../email.php';
 require_once '../utils.php';
+require_once './autils.php';
 
 /*
 //send an email to gosdens025012@tbshs.org
@@ -110,109 +111,359 @@ if(isset($_GET['teacherid'])){
 </body>
 </html>
 */
-//if its a post with the to subject and body, send the email
-if (isset($_POST['to']) && isset($_POST['subject']) && isset($_POST['body'])) {
-    $to = $_POST['to'];
-    $subject = $_POST['subject'];
-    $body = $_POST['body'];
-    if (isset($_POST['html'])) {
-        $html = $_POST['html'];
-    } else {
-        $html = false;
-    }
-    echo sendEmail($to, $subject, $body, $html);
-    echo "sent";
-    die();
-}
-//if its a post with sendAll, send all the emails
-if (isset($_POST['sendAll'])) {
-    $registers = get_all_toreset();
-    foreach ($registers as $register) {
-        $token = $register->getResetToken();
-        $email = $register->getEmail();
-        $name = $register->getName();
-        $subject = "Register for parents evening";
-        $message = " <head>
-        <style>
-            .register-link {
-                color: #ffffff;
-                background-color: #007BFF;
-                padding: 10px 20px;
-                text-decoration: none;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-    
-            .register-link:hover {
-                background-color: #0056b3;
-            }
-        </style>
-    </head>
-    Dear $name, 
-    <br> 
-    Please click the link below to register for the parents evening system. <br> <br> <a href=https://www.samgosden.tech/registration.php?token=$token class='register-link'>Register</a> <br> <br> If the link does not work, please copy and paste the following link into your browser: <br> https://www.samgosden.tech/registration.php?token=$token";
-        echo sendEmail($email, $subject, $message, true);
-        echo $token . "<br>";
-    }
-    echo "sent " . count($registers) . " emails";
-    die();
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<!-- email send testing -->
 
-<head>
-    <? include_once '../includes.php'; ?>
-    <meta charset="UTF-8">
-    <title>Test</title>
-
-    <script>
-        //preventDefault send a post to the same page with the relevent data
-        function test() {
-            var to = document.getElementById("to").value;
-            var subject = document.getElementById("subject").value;
-            var body = document.getElementById("body").value;
-            var html = document.getElementById("html").checked;
-            $.post("test.php", {
-                to: to,
-                subject: subject,
-                body: body,
-                html: html
-            }, function(data) {
-                alert(data);
-            });
+//get all the year 13 students
+/*{
+    "start": "17:00",
+    "end": "19:00",
+    "duration": 30,
+    "teachers": [
+        "1",
+        "2",
+        "3"
+    ],
+    "children": [
+        "1",
+        "2",
+        "3"
+    ],
+    "appointments": [
+        {
+            "child": "1",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "1",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "2",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "3",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "1",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "2",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "3",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "1",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "2",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "3",
+            "wanted": "1",
+            "available": [
+                "17:30",
+                "18:00"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "1",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "2",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "child": "3",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
         }
-        //overide button click
-    </script>
-</head>
-<!-- add a to subject and body-->
+    ],
+    "unavailable": [
+        {
+            "teacher": "1",
+            "unavailable": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "teacher": "1",
+            "unavailable": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "teacher": "2",
+            "unavailable": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "teacher": "2",
+            "unavailable": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "teacher": "3",
+            "unavailable": [
+                "17:00",
+                "17:30"
+            ]
+        },
+        {
+            "teacher": "3",
+            "unavailable": [
+                "18:00",
+                "18:30"
+            ]
+        }
+    ]
+} */
+$students = get_all_students_in_year(13);
+//for each student generate a test timetabling json
+//do not put any classes with Zz, Zy, 13T or Sz in the name
+//for each student, get all the classes
+//for each class, get all the teachers
+//get the teacher of the class
 
-<body>
-    <form>
-        <input type="text" name="to" id="to">
-        <input type="text" name="subject" id="subject">
-        <input type="text" name="body" id="body">
-        <input type="checkbox" name="html" id="html">
-    </form>
-    <button id="submit">Send</button>
-    <button id="sendAll">Send all</button>
-</body>
-<script>
-    window.onload = function() {
-        document.getElementById("submit").addEventListener("click", function(e) {
-            e.preventDefault();
-            test();
-        });
-        document.getElementById("sendAll").addEventListener("click", function(e) {
-            e.preventDefault();
-            $.post("test.php", {
-                sendAll: true
-            }, function(data) {
-                alert(data);
-            });
-        });
+//use 5 and 7:30 as the start and end times
+//use 5 as the duration
+
+//generate json
+//generate a json object with the following structure
+//start, end, duration, teachers, children, appointments, unavailable
+//start and end are the start and end times of the evening
+//duration is the duration of each appointment
+//teachers is an array of all the teachers
+//children is an array of all the children
+//appointments is an array of all the appointments
+//unavailable is an array of all the unavailable times of teachers
+$arr = array(
+    "start" => "17:00",
+    "end" => "19:30",
+    "duration" => 5,
+    "teachers" => array(),
+    "children" => array(),
+    "appointments" => array(),
+    "unavailable" => array()
+);
+$studentTeachers = array();
+//get all the teachers of the classes
+foreach ($students as $student) {
+    $classes = get_all_classes_of_student($student->getId());
+    $studentTeachers[$student->getId()] = array();
+    foreach ($classes as $class) {  
+        if (!str_contains($class->getName(), "Zz") && !str_contains($class->getName(), "Zy") && !str_contains($class->getName(), "13T") && !str_contains($class->getName(), "SZ")) {
+            $teachers = $class->getTeachers();
+            //add the teacher to array in the studentTeacher array
+            array_push($studentTeachers[$student->getId()], $teachers[0]);
+            foreach ($teachers as $teacher) {
+                if (!in_array($teacher, $arr["teachers"])) {
+                    array_push($arr["teachers"], (string)$teacher);
+                }
+            }
+        }
     }
-</script>
-
-</html>
+    array_push($arr["children"], (string)$student->getId());
+}
+//generate all the appointments
+foreach ($arr["children"] as $child) {
+    $studentTeacher = $studentTeachers[$child];
+    foreach ($studentTeacher as $teacher) {
+        $wanted = 0;
+        $available = array();
+        //just add 17:00, 19:30
+        array_push($available, "17:00");
+        array_push($available, "19:30");
+        $appointment = array(
+            "child" => (string)$child,
+            "teacher" => (string)$teacher,
+            "wanted" => (string)$wanted,
+            "available" => $available
+        );
+        array_push($arr["appointments"], $appointment);
+    }
+}
+//generate the json
+$json = json_encode($arr);
+echo $json;
