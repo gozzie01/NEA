@@ -3,7 +3,7 @@ require_once 'utils.php';
 //check if the user is logged in
 if (is_logged_in()) {
     header("Location: index.php");
-    die();
+    exit();
 }
 //if the form has been submitted then we can try to log the user in
 if (isset($_POST['email']) && isset($_POST['password'])) {
@@ -96,13 +96,13 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         }
         //redirect the user to the index page
         header("HTTP/1.1 200 OK");
-        die();
+        exit();
     } else {
         //if the password is incorrect then we can tell the user that the password is incorrect
         //what would be an appropriate error here
         header('HTTP/1.1 401 Unauthorized');
         echo "Incorrect email or password";
-        die();
+        exit();
     }
 }
 ?>

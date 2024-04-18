@@ -1986,6 +1986,7 @@ function get_email_from_token($token)
     $stmt->close();
     return $email;
 }
+
 function is_token_valid($token)
 {
     //strip whitespace

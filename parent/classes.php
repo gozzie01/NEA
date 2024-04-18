@@ -29,7 +29,7 @@ if (!isset($_GET['child'])) {
     require_once('../includes.php');
     ?>
     <title>Parent Classes</title>
-    <style type="text/css">
+    <style>
         .well {
             background: none;
             height: 320px;

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassID'])) {
         "teachers" => $class_teachers
     );
     echo json_encode($response);
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     $classes = get_all_classes();
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         $respon = str_replace("x" . $teacher->getID() . "<br>", $teacher->getName() . "<br>", $respon);
     }
     echo $respon;
-    die();
+    exit();
 }
 //get student selector
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentselector'])) {
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getstudentselector'])
     foreach ($students as $student) {
         echo "<option value='", $student->getId(), "'>", $student->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //get teacher selector
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])
     foreach ($teachers as $teacher) {
         echo "<option value='", $teacher->getID(), "'>", $teacher->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //if the request is a post and the id is set, check if the Class exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
@@ -120,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClass'])) {
             "success" => "Class updated successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Class does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if the request is a post and the id is set, check if the Class exists, if it does delete it
@@ -141,20 +141,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
             "error" => "Class does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
     if ($respon) {
         $response = array(
             "success" => "Class deleted successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Class does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 ?>
@@ -457,7 +457,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
             $('#confirmDeletion').hide();
         });
     </script>
-    <style type="text/css">
+    <style>
         .well {
             background: none;
             height: 320px;

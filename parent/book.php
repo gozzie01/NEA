@@ -44,5 +44,5 @@ if (isset($_POST['student']) && isset($_POST['event']) && (isset($_POST['endtime
             create_prefSlot($starttime, $endtime, $teacher, $event->getID(), $class, $student->getId(), $parent_id);
         }
     }
-    die();
+    exit();
 }

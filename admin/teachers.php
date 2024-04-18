@@ -27,13 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherID'])) {
             "students" => $teacher_students
         );
         echo json_encode($response);
-        die();
+        exit();
     } catch (Exception $e) {
         $response = array(
             "error" => "teacher does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
@@ -49,21 +49,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         echo "<td><button type='button' class='btn btn-danger' id='delete", $teacher->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getaccountdata'])) {
     $accounts = get_all_accounts();
     foreach ($accounts as $account) {
         echo "<option value='", $account->getID(), "'>", $account->getName(), "</option>";
     }
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getclassdata'])) {
     $classes = get_all_classes();
     foreach ($classes as $class) {
         echo "<option value='", $class->getID(), "'>", $class->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //if the request is a post and the id is set, check if the teacher exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateteacher'])) {
@@ -106,13 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateteacher'])) {
             "success" => "teacher updated successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "teacher does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
@@ -129,20 +129,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
             "error" => "teacher does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
     if ($respon) {
         $response = array(
             "success" => "teacher deleted successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "teacher does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 ?>
@@ -446,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
             $('#confirmDeletion').hide();
         });
     </script>
-    <style type="text/css">
+    <style>
         .well {
             background: none;
             height: 320px;

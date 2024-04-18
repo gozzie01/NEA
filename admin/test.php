@@ -432,7 +432,7 @@ $studentTeachers = array();
 foreach ($students as $student) {
     $classes = get_all_classes_of_student($student->getId());
     $studentTeachers[$student->getId()] = array();
-    foreach ($classes as $class) {  
+    foreach ($classes as $class) {
         if (!str_contains($class->getName(), "Zz") && !str_contains($class->getName(), "Zy") && !str_contains($class->getName(), "13T") && !str_contains($class->getName(), "SZ")) {
             $teachers = $class->getTeachers();
             //add the teacher to array in the studentTeacher array

@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
 
     );
     echo json_encode($response);
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
     $Accounts = get_all_accounts();
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
         echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
-    die();
+    exit();
 }
 //get parent selector
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector'])) {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getparentselector']))
     foreach ($Accounts as $Account) {
         echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //get teacher selector
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])) {
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getteacherselector'])
     foreach ($Accounts as $Account) {
         echo "<option value='", $Account->getID(), "'>", $Account->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //if the request is a post and the id is set, check if the Account exists, if it does update it, if not create it
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
             "error" => "Name is required"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
     //if accountID is empty set it to null
     if ($email == "null" || $email == "") {
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
             "error" => "Email is required"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $email = strval($email);
     }
@@ -124,13 +124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
             "success" => "Account updated successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Account does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if the request is a post and the id is set, check if the Account exists, if it does delete it
@@ -145,20 +145,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             "error" => "Account does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
     if ($respon) {
         $response = array(
             "success" => "Account deleted successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Account does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 ?>
@@ -450,7 +450,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             $('#confirmDeletion').hide();
         });
     </script>
-    <style type="text/css">
+    <style>
         .well {
             background: none;
             height: 320px;

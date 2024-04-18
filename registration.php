@@ -3,7 +3,7 @@ require_once 'utils.php';
 //check if the user is logged in
 if (is_logged_in()) {
     header("Location: index.php");
-    die();
+    exit();
 }
 //if the form has been submitted then we can try to log the user in
 if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['ResetToken'])) {
@@ -16,22 +16,22 @@ if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']
     if (strlen($phone) < 11) {
         header('HTTP/1.1 401 Unauthorized');
         echo "Phone number too short";
-        die();
+        exit();
     } else if (strlen($phone) > 14) {
         header('HTTP/1.1 401 Unauthorized');
         echo "Phone number too long";
-        die();
+        exit();
         //start with +44
     } else if (substr($phone, 0, 3) != "+44") {
         header('HTTP/1.1 401 Unauthorized');
         echo "Phone number must start with +44";
-        die();
+        exit();
     }
     //strip + and try to int
     else if (is_nan(intval(substr($phone, 1)))) {
         header('HTTP/1.1 401 Unauthorized');
         echo "Phone number invalid";
-        die();
+        exit();
     }
     //password hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -49,7 +49,7 @@ if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']
     if ($userID == -1) {
         header('HTTP/1.1 401 Unauthorized');
         echo "Incorrect token or email";
-        die();
+        exit();
     }
     //update the user
     $sql = "UPDATE User SET Password=?, Phone=?, ResetToken=NULL WHERE ID=?";
@@ -61,7 +61,7 @@ if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']
     //log the user in
     //redirect to login page
     header("Location: login.php");
-    die();
+    exit();
 }
 
 if (isset($_GET['token']) && is_token_valid($_GET['token'])) {

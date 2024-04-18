@@ -3,7 +3,7 @@ require_once 'utils.php';
 //check if the user is logged in
 if (!is_logged_in()) {
     header("Location: ../login.php");
-    die();
+    exit();
 } else {
     destroy_token();
 }
@@ -14,4 +14,4 @@ session_destroy();
 //unset the token on the database
 //redirect the user to the login page
 header("Location: ../login.php");
-die();
+exit();

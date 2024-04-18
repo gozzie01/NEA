@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         echo "<td><button type='button' class='btn btn-danger' id='delete", $Parent->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
-    die();
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])) {
@@ -21,14 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountSelector'])
     foreach ($accounts as $account) {
         echo "<option value=", $account->getID(), ">", $account->getName(), "</option>";
     }
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getStudentSelector'])) {
     $students = get_all_students();
     foreach ($students as $student) {
         echo "<option value=", $student->getId(), ">", $student->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //get the Parent id from the request
 //if its a post get the post id if not try to get it from get
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getParentID'])) {
         "students" => $Parent_students
     );
     echo json_encode($response);
-    die();
+    exit();
 }
 
 //if the request is a post and the id is set, check if the Parent exists, if it does update it, if not create it
@@ -92,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateParent'])) {
             "success" => "Parent updated successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Parent does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if the request is a post and the id is set, check if the Parent exists, if it does delete it
@@ -113,25 +113,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteParent'])) {
             "error" => "Parent does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
     if ($respon) {
         $response = array(
             "success" => "Parent deleted successfully"
         );
         echo json_encode($response);
-        die();
+        exit();
     } else {
         $response = array(
             "error" => "Parent does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    die();
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#confirmDeletion').hide();
         });
     </script>
-    <style type="text/css">
+    <style>
         .well {
             background: none;
             height: 320px;
