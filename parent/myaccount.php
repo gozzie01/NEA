@@ -4,8 +4,6 @@ require_once('./putils.php');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {
-    //write a file to make sure it works
-    //file_put_contents("test.txt", $_POST["name"] . " " . $_POST["email"] . " " . $_POST["phone"]);
     update_accountDetails($_SESSION['user'], $_POST["name"], $_POST["email"], $_POST["phone"]);
     //return 200 code
     header("HTTP/1.1 200 OK");
@@ -53,9 +51,9 @@ $account->update();
         });
     </script>
 </head>
-<br>
 
 <body>
+    <br>
     <?php require_once '../parent/nav.php'; ?>
     <div class="container">
         <!-- display update form filled with all information on file, which is  currently name email and phone number -->

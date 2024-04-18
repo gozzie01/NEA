@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //just tbody
             $('.table-scroll tbody').css('height', height);
             //adjust size of well
-            var heightwell = $(window).height() - $('.well').offset().top   ;
+            var heightwell = $(window).height() - $('.well').offset().top;
             $('.well').css('height', heightwell);
 
         });
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
             if ($(this).text() == "Add") {
-                
+
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -289,15 +289,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
         });
-        $(document).on('click', '#addEventButton', function(){
+        $(document).on('click', '#addEventButton', function() {
             e.preventDefault;
             //get event id form
             var EventID = $('#EventID').val();
             //if its not null and an int go to admin/eventman.php?id=EventID
             if (EventID != null && EventID != "" && !isNaN(EventID)) {
                 window.location.href = "/admin/eventman.php?id=" + EventID;
-            }
-            else{
+            } else {
                 //else go to admin/eventman.php
                 window.location.href = "/admin/eventman.php";
             }
@@ -471,9 +470,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" class="form-control" placeholder="Event ID" id="EventID">
                     <input type="text" class="form-control" placeholder="Event Name" id="EventName">
                     <!--date selector-->
-                    <input type="datetime-local" class="form-control" placeholder="Start Time" id="EventStartTime">
-                    <input type="datetime-local" class="form-control" placeholder="End Time" id="EventEndTime">
-                    <input type="datetime-local" class="form-control" placeholder="Open Time" id="EventOpenTime">
+                    <input type="datetime-local" class="form-control" id="EventStartTime" aria-label="Event Start Time">
+                    <input type="datetime-local" class="form-control" id="EventEndTime" aria-label="Event End Time">
+                    <input type="datetime-local" class="form-control" id="EventOpenTime" aria-label="Event Open Time">
                     <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
                     <input type="number" class="form-control" placeholder="Year" id="EventYear">
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Update</button>
