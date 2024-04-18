@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
 
     );
     echo json_encode($response);
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
     $Accounts = get_all_toreset();
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] && isset($_POST['gettabledata'])) {
         echo "<td><button type='button' class='btn btn-danger' id='delete", $Account->getID(), "'>Delete</button></td>";
         echo "</tr>";
     }
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     $id = $_POST['id'];
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         "success" => "Account updated"
     );
     echo json_encode($response);
-    die();
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAllAccounts'])) {
     //return the html for the select 2 
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAllAccounts'])) {
     foreach ($Accounts as $Account) {
         echo "<option value='", $Account->getID(), "'>", $Account->getID(), " ", $Account->getName(), "</option>";
     }
-    die();
+    exit();
 }
 //get parent selector
 //if the request is a post and the id is set, check if the Account exists, if it does update it, if not create it

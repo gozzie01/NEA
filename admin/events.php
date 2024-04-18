@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         }
     } catch (Exception $e) {
     }
-    die();
+    exit();
 }
 
 
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
         echo json_encode($response);
     } catch (Exception $e) {
     }
-    die();
+    exit();
 }
 
 //if the request is a post and the id is set, check if the Event exists, if it does update it, if not create it
@@ -84,20 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 "success" => "Event updated successfully"
             );
             echo json_encode($response);
-            die();
+            exit();
         } else {
             $response = array(
                 "error" => "Event could not be updated"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
     } catch (Exception $e) {
         $response = array(
             "error" => "Event could not be updated"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if the request is a post and the id is set, check if the Event exists, if it does delete it
@@ -113,32 +113,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
                 "error" => "Event does not exist"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
         if ($respon) {
             $response = array(
                 "success" => "Event deleted successfully"
             );
             echo json_encode($response);
-            die();
+            exit();
         } else {
             $response = array(
                 "error" => "Event does not exist"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
     } catch (Exception $e) {
         $response = array(
             "error" => "Event does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if its a post with no data just die :)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    die();
+    exit();
 }
 ?>
 <!DOCTYPE html>

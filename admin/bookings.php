@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         }
     } catch (Exception $e) {
     }
-    die();
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])) {
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])
             $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
         }
         echo $output;
-        die();
+        exit();
     } else {
         $students = get_all_students();
         $output = "";
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getStudentSelector'])
             $output = $output . "<option value=" . $student->getId() . ">" . $student->getName() . "</option>";
         }
         echo $output;
-        die();
+        exit();
     }
 }
 
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getEventSelector'])) 
         $output = $output . "<option value=" . $event->getId() . ">" . $event->getName() . "</option>";
     }
     echo $output;
-    die();
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getParentSelector'])) {
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getParentSelector']))
         $output = $output . "<option value=" . $parent->getId() . ">" . $parent->getName() . "</option>";
     }
     echo $output;
-    die();
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getTeacherSelector'])) {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getTeacherSelector'])
         $output = $output . "<option value=" . $teacher->getId() . ">" . $teacher->getName() . "</option>";
     }
     echo $output;
-    die();
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getClassSelector'])) {
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['getClassSelector'])) 
         $output = $output . "<option value=" . $class->getId() . ">" . $class->getName() . "</option>";
     }
     echo $output;
-    die();
+    exit();
 }
 
 
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getprefSlotID'])) {
         );
         echo json_encode($response);
     }
-    die();
+    exit();
 }
 
 //if the request is a post and the id is set, check if the prefSlot exists, if it does update it, if not create it
@@ -152,13 +152,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateprefSlot'])) {
                 "success" => "prefSlot updated successfully"
             );
             echo json_encode($response);
-            die();
+            exit();
         } else {
             $response = array(
                 "error" => "prefSlot could not be updated"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
     } catch (Exception $e) {
         $response = array(
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateprefSlot'])) {
             "error2" => $e->getMessage()
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if the request is a post and the id is set, check if the prefSlot exists, if it does delete it
@@ -182,32 +182,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteprefSlot'])) {
                 "error" => "prefSlot does not exist"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
         if ($respon) {
             $response = array(
                 "success" => "prefSlot deleted successfully"
             );
             echo json_encode($response);
-            die();
+            exit();
         } else {
             $response = array(
                 "error" => "prefSlot does not exist"
             );
             echo json_encode($response);
-            die();
+            exit();
         }
     } catch (Exception $e) {
         $response = array(
             "error" => "prefSlot does not exist"
         );
         echo json_encode($response);
-        die();
+        exit();
     }
 }
 //if its a post with no data just die :)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    die();
+    exit();
 }
 ?>
 <!DOCTYPE html>

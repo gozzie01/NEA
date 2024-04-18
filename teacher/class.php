@@ -4,7 +4,7 @@ require_once '../utils.php';
 require_once './tutils.php';
 if (!isset($_GET['id']) && class__exists(intval($_GET['id']))) {
     header("Location: /classes.php");
-    die();
+    exit();
 }
 $id = $_GET["id"];
 $class = new Class_($id);
