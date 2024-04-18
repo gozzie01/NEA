@@ -734,10 +734,12 @@ class Event
     {
         $this->name = $name;
     }
-    public function setClasses($classes){
+    public function setClasses($classes)
+    {
         $this->classes = $classes;
     }
-    public function addClass($class){
+    public function addClass($class)
+    {
         $this->classes[] = $class;
     }
     public function setStartTime($startTime)

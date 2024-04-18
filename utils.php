@@ -1564,7 +1564,7 @@ function get_all_events()
     $SlotDuration = "";
     $YearGroup = "";
     $Classes = "";
-    $ClassID="";
+    $ClassID = "";
     $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
@@ -1919,7 +1919,7 @@ function get_all_toreset()
     $accountid = "";
     $name = "";
     $resettoken = "";
-    $resetemailsenttime="";
+    $resetemailsenttime = "";
     $password = "";
     $email = "";
     $phone = "";
@@ -1986,6 +1986,7 @@ function get_email_from_token($token)
     $stmt->close();
     return $email;
 }
+
 function is_token_valid($token)
 {
     //strip whitespace
@@ -2083,12 +2084,9 @@ if (file_exists("autoemailtimer.txt")) {
             if (!is_null($token)) {
                 //if the token was sent more than 24 hours ago, send another email
                 //token sent time is null or not set or "null" set to 0
-                if (is_null($tokenSentTime))
-                {
+                if (is_null($tokenSentTime)) {
                     $tokenSentTime = new DateTime("0000-00-00 00:00:00");
-                }
-                else
-                {
+                } else {
                     $tokenSentTime = new DateTime($tokenSentTime);
                 }
                 $now = new DateTime();
