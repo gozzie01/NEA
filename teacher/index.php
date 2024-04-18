@@ -6,6 +6,9 @@ require_once './tutils.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <title>Teacher</title>
+</head>
 <?php require_once '../includes.php'; ?>
 <?php require_once './nav.php'; ?>
 

@@ -131,21 +131,21 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 <h4>After: </h4>
                                 <!-- start time selector, use event start time -->
                                 <form>
-                                    <input type="checkbox" id="StCheck" name="After: " value="After: " checked>
-                                    <input type="time" id="StTime" step="300" min="18:00" max="21:00" />
+                                    <input type="checkbox" id="StCheck" name="After: " value="After: " aria-label="after toggle" checked>
+                                    <input type="time" id="StTime" step="300" min="18:00" max="21:00" aria-label="available after time" />
                                 </form>
                             </div>
                             <div>
                                 <h4>Before: </h4>
                                 <form>
-                                    <input type="checkbox" id="EnCheck" name="Before: " value="Before: ">
-                                    <input type="time" id="EnTime" step="300" min="18:00" max="21:00" />
+                                    <input type="checkbox" id="EnCheck" name="Before: " value="Before: " aria-label="before toggle">
+                                    <input type="time" id="EnTime" step="300" min="18:00" max="21:00" aria-label="available before time" />
                                 </form>
                             </div>
                         </div>
                         <h4>Classes:</h4>
                         <?php
-                        $classes = get_all_classes_of_student($student->getId());
+                        $classes = get_all_classes_of_student_for_event($student->getId(), $event->getId());
                         foreach ($classes as $class) {
                             if (isset($class->getTeachers()[0])) {
                                 $teacher = new Teacher($class->getTeachers()[0]);
@@ -156,7 +156,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 echo "<h6>" . $teacher->getName() . "</h6>";
                                 echo "</div>";
                                 echo "<div>";
-                                echo "<input type='checkbox' id='" . $class->getId() . "' name='" . $class->getId() . "' value='" . $class->getId() . "'>";
+                                echo "<input type='checkbox' id='" . $class->getId() . "' name='" . $class->getId() . "' value='" . $class->getId() . "' aria-label='toggle" . $class->getName()."'>";
                                 echo "</div>";
                                 echo "</div>";
                             }

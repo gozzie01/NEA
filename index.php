@@ -20,7 +20,7 @@ if (is_parent()) {
     header("Location: /parent/index.php");
     die();
 }
-//if we are here something has gone wrong, this should never happen, but just in case we will display an error message and tell the user to try agajn later
+//if we are here something has gone wrong, this should never happen, but just in case we will display an error message and tell the user to try again later
 header("Location: /logout.php");
 echo "Something has gone wrong, please try again later";
 die();

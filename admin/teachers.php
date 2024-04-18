@@ -504,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                     </select>
                     <div class="d-flex">
                         <p style="margin: 1pt;">Pastoral:</p>
-                        <input type="checkbox" class="form-check-input" id="PastoralCheckbox" style="margin: 5pt;">
+                        <input type="checkbox" class="form-check-input" id="PastoralCheckbox" style="margin: 5pt;" aria-label="staff pastoral toggle">
                     </div>
                     <select class="form-select" id="ClassSelector" style="margin: 1pt">
 

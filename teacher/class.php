@@ -16,6 +16,40 @@ $class->update();
 
 <head>
     <title>Class <?php echo $class->getName(); ?></title>
+    <style>
+        .well {
+            background: none;
+            height: 320px;
+        }
+
+        .table-scroll tbody {
+            overflow-y: scroll;
+            height: 200px;
+        }
+
+        .table-scroll tr {
+            table-layout: fixed;
+            display: inline-table;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $('#clear').click();
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
+            $('.table-scroll tbody').css('height', height);
+            updateTable();
+        });
+        $(window).resize(function() {
+            //adjust the height of the table to fit the screen
+            var height = $(window).height() - $('.table-scroll tbody').offset().top;
+            //just tbody
+            $('.table-scroll tbody').css('height', height);
+            //adjust size of well
+            var heightwell = $(window).height() - $('.well').offset().top;
+            $('.well').css('height', heightwell);
+
+        });
+    </script>
 </head>
 <?php require_once './nav.php'; ?>
 
@@ -27,37 +61,39 @@ $class->update();
                 <h1>Class <?php echo $class->getName(); ?></h1>
                 <!--display a list of students in the class-->
                 <h2>Students</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Student ID</th>
-                            <th scope="col">Student Name</th>
-                            <?php if (get_next_event_of_class($class->getId()) != null) { ?>
-                                <th scope="col">Wanted</th>
-                            <?php } ?>
-                        <tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $students = $class->getStudents();
-                        foreach ($students as $student) {
-                            $student = new Student($student);
-                            $student->update();
-                        ?>
+                <div class="well">
+                    <table class="table table-striped table-scroll">
+                        <thead>
                             <tr>
-                                <th scope="row"><?php echo $student->getId(); ?></th>
-                                <td><?php echo $student->getName(); ?></td>
+                                <th scope="col">Student ID</th>
+                                <th scope="col">Student Name</th>
                                 <?php if (get_next_event_of_class($class->getId()) != null) { ?>
-                                    <td>
-                                        <form><input type="checkbox"></input></form>
-                                    </td>
+                                    <th scope="col">Wanted</th>
                                 <?php } ?>
-                            </tr>
-                        <?php
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                            <tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $students = $class->getStudents();
+                            foreach ($students as $student) {
+                                $student = new Student($student);
+                                $student->update();
+                            ?>
+                                <tr>
+                                    <th scope="row"><?php echo $student->getId(); ?></th>
+                                    <td><?php echo $student->getName(); ?></td>
+                                    <?php if (get_next_event_of_class($class->getId()) != null) { ?>
+                                        <td>
+                                            <form><input type="checkbox"></input></form>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -14,6 +14,10 @@ body {
     overflow: hidden
 }
 
+/* div with container class 4px top padding */
+.container {
+    padding-top: 4pt;
+}
 thead {
     flex: 0 0 auto;
 }

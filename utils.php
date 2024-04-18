@@ -1564,7 +1564,7 @@ function get_all_events()
     $SlotDuration = "";
     $YearGroup = "";
     $Classes = "";
-    $ClassID="";
+    $ClassID = "";
     $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
@@ -1588,7 +1588,7 @@ function get_all_events()
     $stmt->close();
     //update the classes
     $eventid = "";
-    $sql = "SELECT Class, Event FROM EventClass ORDER BY Event";
+    $sql = "SELECT Class, EventID FROM EventClass ORDER BY EventID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($ClassID, $eventid);
@@ -1677,7 +1677,7 @@ function create_prefSlot($StartTime, $EndTime, $Teacher, $Event, $Class, $Studen
     //check if the values passed are valid
 
     //create the event
-    $sql = "INSERT INTO PrefferedTime (StartTime, EndTime, Teacher, Event, Class, Student, Parent) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO PrefferedTime (StartTime, EndTime, Teacher, EventID, Class, Student, Parent) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("sssssss", $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent);
     $stmt->execute();
@@ -1694,7 +1694,7 @@ function update_prefSlot($id, $StartTime, $EndTime, $Teacher, $Event, $Class, $S
         return false;
     }
     //update the event
-    $sql = "UPDATE PrefferedTime SET StartTime=?, EndTime=?, Teacher=?, Event=?, Class=?, Student=?, Parent=? WHERE ID=?";
+    $sql = "UPDATE PrefferedTime SET StartTime=?, EndTime=?, Teacher=?, EventID=?, Class=?, Student=?, Parent=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("sssssssi", $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent, $id);
     $stmt->execute();
@@ -1726,7 +1726,7 @@ function get_all_PrefSlots()
     $Student = "";
     $Parent = "";
 
-    $sql = "SELECT ID, StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime ORDER BY ID";
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, EventID, Class, Student, Parent FROM PrefferedTime ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($id, $StartTime, $EndTime, $Teacher, $Event, $Class, $Student, $Parent);
@@ -1764,7 +1764,7 @@ function get_all_PrefSlots_of_event($event)
     $Student = "";
     $Parent = "";
 
-    $sql = "SELECT ID, StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime WHERE Event=? ORDER BY ID";
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, EventID, Class, Student, Parent FROM PrefferedTime WHERE Event=? ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $event);
     $stmt->execute();
@@ -1802,7 +1802,7 @@ function get_all_PrefSlots_of_event_of_student($event, $student)
     $Student = "";
     $Parent = "";
 
-    $sql = "SELECT ID, StartTime, EndTime, Teacher, Class, Parent FROM PrefferedTime WHERE Event=? AND Student=? ORDER BY ID";
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, Class, Parent FROM PrefferedTime WHERE EventID=? AND Student=? ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $event, $student);
     $stmt->execute();
@@ -1903,7 +1903,7 @@ function has_booked($studentid, $eventid)
 {
     $studentid = intval($studentid);
     $eventid = intval($eventid);
-    $sql = "SELECT ID FROM PrefferedTime WHERE Student = ? AND Event = ?";
+    $sql = "SELECT ID FROM PrefferedTime WHERE Student = ? AND EventID = ?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $studentid, $eventid);
     $stmt->execute();
@@ -1919,7 +1919,7 @@ function get_all_toreset()
     $accountid = "";
     $name = "";
     $resettoken = "";
-    $resetemailsenttime="";
+    $resetemailsenttime = "";
     $password = "";
     $email = "";
     $phone = "";
@@ -2083,12 +2083,9 @@ if (file_exists("autoemailtimer.txt")) {
             if (!is_null($token)) {
                 //if the token was sent more than 24 hours ago, send another email
                 //token sent time is null or not set or "null" set to 0
-                if (is_null($tokenSentTime))
-                {
+                if (is_null($tokenSentTime)) {
                     $tokenSentTime = new DateTime("0000-00-00 00:00:00");
-                }
-                else
-                {
+                } else {
                     $tokenSentTime = new DateTime($tokenSentTime);
                 }
                 $now = new DateTime();
@@ -2138,7 +2135,7 @@ function get_teacher_of_class_of_event($class, $event)
 {
     //select teacher from EventClass where Class = ? and Event = ?
     $teacher = "";
-    $sql = "SELECT Teacher FROM EventClass WHERE Class = ? AND Event = ?";
+    $sql = "SELECT Teacher FROM EventClass WHERE Class = ? AND EventID = ?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $class, $event);
     $stmt->execute();
@@ -2146,4 +2143,84 @@ function get_teacher_of_class_of_event($class, $event)
     $stmt->fetch();
     $stmt->close();
     return $teacher;
+}
+
+function get_all_classes_of_student_for_event($studentid, $eventid)
+{
+    $classid = "";
+    $name = "";
+    $sql = "SELECT sc.Class, c.Name
+    FROM StudentClass sc
+    JOIN Class c ON sc.Class = c.ID
+    JOIN EventClass ec ON sc.Class = ec.Class
+    WHERE sc.Student = ? AND ec.EventID = ?
+    ORDER BY sc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $studentid, $eventid);
+    $stmt->execute();
+    $stmt->bind_result($classid, $name);
+    $classes = array();
+    while ($stmt->fetch()) {
+        $classes[] = new Class_($classid);
+        //set the name of the class
+        $classes[count($classes) - 1]->setName($name);
+        $classes[count($classes) - 1]->addStudent($studentid);
+    }
+    $stmt->close();
+    //get the teachers
+    $Teacher = "";
+    $Class = "0";
+    $counter = 0;
+    $OldClass = "-1";
+    $sql = "SELECT Teacher,Class FROM EventClass WHERE EventID = ? ORDER BY Class ";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->bind_result($Teacher, $Class);
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->getID()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if ($counter >= count($classes)) {
+                break;
+            }
+        }
+        if ($counter >= count($classes)) {
+            $counter = 0;
+            continue;
+        } else {
+            $classes[$counter]->addTeacher($Teacher);
+        }
+    }
+    $stmt->close();
+    $counter = 0;
+    $parent = "";
+    $sql = "SELECT ps.Parent, sc.Class
+    FROM ParentStudent ps
+    JOIN StudentClass sc ON ps.Student = sc.Student
+    JOIN EventClass ec ON sc.Class = ec.Class
+    WHERE ec.EventID = ?
+    ORDER BY sc.Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->bind_result($parent, $Class);
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->getID()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if ($counter >= count($classes)) {
+                break;
+            }
+        }
+        //if the counter is too large try the next value
+        if ($counter >= count($classes)) {
+            $counter = 0;
+            continue;
+        } else {
+            $classes[$counter]->addParent($parent);
+        }
+    }
+    $stmt->close();
+    return $classes;
 }

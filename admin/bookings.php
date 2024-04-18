@@ -298,8 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     })
                 ];
-                alert("how did we get here")
-            } catch (error) {
+             } catch (error) {
                 alert(error);
             }
             try {

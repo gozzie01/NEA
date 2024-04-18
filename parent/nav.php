@@ -61,7 +61,7 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
                 </select>
             </form>
         </div>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAlt"> <span class="navbar-toggler-icon"></span> </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAlt" aria-label="toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
         <div class="collapse navbar-collapse" id="navbarNavAlt">
             <!-- right side of navbar -->
             <div class="navbar-nav ms-auto">

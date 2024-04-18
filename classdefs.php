@@ -674,7 +674,7 @@ class Event
         $stmt->fetch();
         $stmt->close();
         //sql for classes get class IDs from EventClass
-        $sql = "SELECT Class FROM EventClass WHERE Event=?";
+        $sql = "SELECT Class FROM EventClass WHERE EventID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -780,7 +780,7 @@ class PrefSlot
     {
         $id = $this->id;
         //sql for start time
-        $sql = "SELECT StartTime, EndTime, Teacher, Event, Class, Student, Parent FROM PrefferedTime WHERE ID=?";
+        $sql = "SELECT StartTime, EndTime, Teacher, EventID, Class, Student, Parent FROM PrefferedTime WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();

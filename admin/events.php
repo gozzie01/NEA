@@ -7,15 +7,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         $events = get_all_events();
         foreach ($events as $Event) {
             echo "<tr id=EventRow", $Event->getID(), ">";
-            echo "<td style='width: 6%;'>", $Event->getID(), "</td>";
-            echo "<td style='width: 16%;'>", $Event->getName(), "</td>";
-            echo "<td style='width: 15%;'>", format_date($Event->getStartTime()), "</td>";
+            echo "<td style='width: 3%;'>", $Event->getID(), "</td>";
+            echo "<td style='width: 14%;'>", $Event->getName(), "</td>";
+            echo "<td style='width: 13%;'>", format_date($Event->getStartTime()), "</td>";
             echo "<td style='width: 15%;'>", format_date($Event->getEndTime()), "</td>";
             echo "<td style='width: 15%;'>", format_date($Event->getOpenTime()), "</td>";
-            echo "<td style='width: 11%;'>", $Event->getSlotDuration(), "</td>";
-            echo "<td style='width: 12%;'>", $Event->getYear(), "</td>";
+            echo "<td style='width: 10%;'>", $Event->getSlotDuration(), "</td>";
+            echo "<td style='width: 10%;'>", $Event->getYear(), "</td>";
             //link to bookings page with event id
-            echo "<td style='width: 10%;'><a href='/admin/bookings.php?event=", $Event->getID(), "'>View</a></td>";
+            echo "<td style='width: 10%;'><button class='btn btn-primary' onclick="."location.href='/admin/bookings.php?event=". $Event->getID(). "' type='button'>View Bookings</button></td>";
             echo "<td style='width: 8.8%;'><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
             echo "</tr>";
         }
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
         });
-        $(document).on('click', '#addEventButton', function(){
+        $(document).on('click', '#addEventButton', function(e){
             e.preventDefault;
             //get event id form
             var EventID = $('#EventID').val();
@@ -443,7 +443,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <table class="table table-striped table-scroll table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col" style='width: 6%;'>ID</th>
+                                    <th scope="col" style='width: 3%;'>ID</th>
                                     <th scope="col">Event Name</th>
                                     <th scope="col">Start Time</th>
                                     <th scope="col">End Time</th>
@@ -482,7 +482,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div id="error"></div>
                     <div>
                         <!-- add/edit page button-->
-                        <button type="button" id="addEventButton" class="btn btn-primary">Add</button>
+                        <button type="button" id="addEventButton" class="btn btn-primary">Add / Edit</button>
                     </div>
                 </form>
             </div>
