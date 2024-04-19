@@ -1942,34 +1942,7 @@ function get_all_toreset()
         $accounts[count($accounts) - 1]->setPhone($phone);
     }
     $stmt->close();
-    //update the accounts
-    /*$parentid = "";
-    $id = "";
-    $counter = 0;
-    $sql = "SELECT ID, UserID FROM Parent WHERE UserID IS NOT NULL ORDER BY UserID";
-    $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->execute();
-    $stmt->bind_result($parentid, $id);
-    while ($stmt->fetch()) {
-        while ($id != $accounts[$counter]->getID()) {
-            $counter++;
-        }
-        $accounts[$counter]->setParentID($parentid);
-    }
-    $stmt->close();
-    $teacherid = "";
-    $counter = 0;
-    $sql = "SELECT ID, UserID FROM Teacher WHERE UserID IS NOT NULL ORDER BY UserID";
-    $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->execute();
-    $stmt->bind_result($teacherid, $id);
-    while ($stmt->fetch()) {
-        while ($id != $accounts[$counter]->getID()) {
-            $counter++;
-        }
-        $accounts[$counter]->setTeacherID($teacherid);
-    }
-    $stmt->close();*/
+
     return $accounts;
 }
 
@@ -2057,55 +2030,49 @@ function generate_password_change($name)
             <p>Dear " . $name . ",</p>
             <p>Your password has been changed</p>
             <br>
-            <p>If you did not change your password, please contact the school</p>
+            <p>If you did not change your password, please contact the administrator</p>
         </body>
     </html>";
     return $message;
 }
-//when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
-if (file_exists("autoemailtimer.txt")) {
-    $file = fopen("autoemailtimer.txt", "r");
-    $time = fgets($file);
-    fclose($file);
-    if (time() >= $time) {
-        //send emails
-        $file = fopen("autoemailtimer.txt", "w");
-        //15 minutes
-        fwrite($file, time() + 60);
-        fclose($file);
-        //send all the emails 
-        $accounts = get_all_toreset();
-        foreach ($accounts as $account) {
-            $email = $account->getEmail();
-            $token = $account->getResetToken();
-            $tokenSentTime = $account->getResetEmailSentTime();
-            $name = $account->getName();
-            $id = $account->getID();
-            if (!is_null($token)) {
-                //if the token was sent more than 24 hours ago, send another email
-                //token sent time is null or not set or "null" set to 0
-                if (is_null($tokenSentTime)) {
-                    $tokenSentTime = new DateTime("0000-00-00 00:00:00");
-                } else {
-                    $tokenSentTime = new DateTime($tokenSentTime);
+
+function generate_registration_email($name, $link)
+{
+    //this function generates the email to send to the user, it needs to be in html format look nice contain the link as a convinent button and as a link
+    $message = "
+    <html>
+        <head>
+            <style>
+                body{
+                    font-family: Arial, Helvetica, sans-serif;
                 }
-                $now = new DateTime();
-                $interval = $now->diff($tokenSentTime);
-                if ($interval->format('%a') >= 1) {
-                    //send email
-                    $subject = "Password Reset";
-                    $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
-                    sendEmail($email, $subject, $message, true);
-                    //set ResetTokenSentTime to now
-                    $sql = "UPDATE User SET ResetEmailSentTime = NOW() WHERE ID = ?";
-                    $stmt = $GLOBALS['db']->prepare($sql);
-                    $stmt->bind_param('i', $id);
-                    $stmt->execute();
-                    $stmt->close();
+                a{
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
                 }
-            }
-        }
-    }
+            </style>
+        </head>
+        <body>
+            <h1>Registration</h1>
+            <p>Dear " . $name . ",</p>
+            <p>Click the link below to register</p>
+            <br>
+            <br>
+            <a href='" . $link . "'>Register</a>
+            <br>
+            <br>
+            <p>Alternatively, copy and paste the following link into your browser</p>
+            <p>" . $link . "</p>
+        </body>
+    </html>";
+    return $message;
+
 }
 
 function update_token_email($id, $email, $token)
@@ -2117,19 +2084,13 @@ function update_token_email($id, $email, $token)
         $stmt->bind_param('si', $token, $id);
         $stmt->execute();
         $stmt->close();
-    } else if (is_null($token)) {
-    } else {
+    } else if (!is_null($token)) {
         $sql = "UPDATE User SET Email = ?, ResetToken = ? WHERE ID = ?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param('ssi', $email, $token, $id);
         $stmt->execute();
         $stmt->close();
     }
-}
-//redirect to https
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
-    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
 }
 
 function get_teacher_of_class_of_event($class, $event)
@@ -2224,4 +2185,89 @@ function get_all_classes_of_student_for_event($studentid, $eventid)
     }
     $stmt->close();
     return $classes;
+}
+
+//redirect to https
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
+
+function get_all_accounts_without_password()
+{
+    $accountid = "";
+    $name = "";
+    $email = "";
+    $phone = "";
+    $sql = "SELECT ID, Name, Email, Phone FROM User WHERE Password IS NULL ORDER BY ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($accountid, $name, $email, $phone);
+    $accounts = array();
+    while ($stmt->fetch()) {
+        $accounts[] = new Account($accountid);
+        //set the name of the account
+        $accounts[count($accounts) - 1]->setName($name);
+        //set the email of the account
+        $accounts[count($accounts) - 1]->setEmail($email);
+        //set the phone of the account
+        $accounts[count($accounts) - 1]->setPhone($phone);
+    }
+    $stmt->close();
+    return $accounts;
+}
+
+//when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
+if (file_exists("autoemailtimer.txt")) {
+    $file = fopen("autoemailtimer.txt", "r");
+    $time = fgets($file);
+    fclose($file);
+    if (time() >= $time) {
+        //send emails
+        $file = fopen("autoemailtimer.txt", "w");
+        //once per day
+        fwrite($file, time() + 86400);
+        fclose($file);
+        //send all the emails 
+        $accounts = get_all_toreset();
+        foreach ($accounts as $account) {
+            $email = $account->getEmail();
+            $token = $account->getResetToken();
+            $tokenSentTime = $account->getResetEmailSentTime();
+            $name = $account->getName();
+            $id = $account->getID();
+            if (!is_null($token)) {
+                //if the token was sent more than 24 hours ago, send another email
+                //token sent time is null or not set or "null" set to 0
+                if (is_null($tokenSentTime)) {
+                    $tokenSentTime = new DateTime("0000-00-00 00:00:00");
+                } else {
+                    $tokenSentTime = new DateTime($tokenSentTime);
+                }
+                $now = new DateTime();
+                $interval = $now->diff($tokenSentTime);
+                if ($interval->format('%a') >= 1) {
+                    //send email
+                    $subject = "Password Reset";
+                    $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
+                    sendEmail($email, $subject, $message, true);
+                    //set ResetTokenSentTime to now
+                    $sql = "UPDATE User SET ResetEmailSentTime = NOW() WHERE ID = ?";
+                    $stmt = $GLOBALS['db']->prepare($sql);
+                    $stmt->bind_param('i', $id);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            }
+        }
+        $toRegister = get_all_accounts_without_password();
+        foreach ($toRegister as $account) {
+            $email = $account->getEmail();
+            $name = $account->getName();
+            $id = $account->getID();
+            $subject = "Account Registration";
+            $message = generate_registration_email($name, "https://www.samgosden.tech/registration.php?token=" . $id);
+            sendEmail($email, $subject, $message, true);
+        }
+    }
 }

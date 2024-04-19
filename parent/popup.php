@@ -119,7 +119,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                         <div style="display: flex; justify-content: space-between;">
                             <div>
                                 <h3>Book for: <?php echo $student->getName(); ?></h3>
-                                <h4>Event: <?php echo $event->getName(); ?>, <?php echo (new DateTime($event->getStartTime()))->format("D d M H:i") ?></h4>
+                                <h4>Event: <?php echo $event->getName(); ?>, <?php echo (new DateTime($event->getStartTime()))->format("D d M H:i") . " to " . (new DateTime($event->getEndTime()))->format("H:i") ?> </h4>
                             </div>
                             <div>
                                 <span id="exitButton" onclick="document.getElementById('popupbox').style.display='none'" style="color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer;" tabindex="0">&times;</span>
@@ -132,14 +132,14 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 <!-- start time selector, use event start time -->
                                 <form>
                                     <input type="checkbox" id="StCheck" name="After: " value="After: " aria-label="after toggle" checked>
-                                    <input type="time" id="StTime" step="300" min="18:00" max="21:00" aria-label="available after time" />
+                                    <input type="time" id="StTime" step="300" aria-label="available after time" />
                                 </form>
                             </div>
                             <div>
                                 <h4>Before: </h4>
                                 <form>
                                     <input type="checkbox" id="EnCheck" name="Before: " value="Before: " aria-label="before toggle">
-                                    <input type="time" id="EnTime" step="300" min="18:00" max="21:00" aria-label="available before time" />
+                                    <input type="time" id="EnTime" step="300" aria-label="available before time" />
                                 </form>
                             </div>
                         </div>
@@ -164,7 +164,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                         //submit button
 
                         ?>
-                        <button onclick="submitForm()">Submit</button>
+                        <button onclick="submitForm()" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>

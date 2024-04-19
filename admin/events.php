@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
         exit();
     }
 }
-//if its a post with no data just die :)
+//if its a post with no data just die
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }

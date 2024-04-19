@@ -217,6 +217,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                 allowClear: true
             });
             updateTable();
+            $.ajax({
+                type: "POST",
+                url: "/admin/accounts.php",
+                data: {
+                    getparentselector: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#ParentSelector').html(data);
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/admin/accounts.php",
+                data: {
+                    getteacherselector: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    $('#TeacherSelector').html(data);
+                }
+            });
         });
         //when a Account is selected from the table, update the edit form to show the Account's details
         $(document).on('click', 'tr', function() {
@@ -549,4 +571,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
         </div>
     </div>
 </body>
-<!--7704-->
