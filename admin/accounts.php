@@ -161,6 +161,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
         exit();
     }
 }
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
+    sendAllEmails();
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -337,6 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                             }
                         } else {
                             //if the request was not successful then we can display an error message
+                            alert(this.responseText);
                         }
                     }
                 };
@@ -471,6 +476,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
             //hide the confirmation popup
             $('#confirmDeletion').hide();
         });
+        $(document).on('click', '#SendEmails', function() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/accounts.php",
+                data: {
+                    SendEmails: true
+                },
+                success: function(data) {
+                    //parse the json response
+                    var response = JSON.parse(data);
+                    //set the text of the confirmation popup
+                    if (response.error) {
+                        $('#error').html(response.error);
+                    } else {
+                        if (response.success) {
+                            $('#error').html(response.success);
+                        }
+                    }
+                }
+            });
+        });
     </script>
     <style>
         .well {
@@ -549,6 +575,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
                     <!--clear button-->
                     <button type="button" id="clear" class="btn btn-primary">Clear</button>
                     <div id="error"></div>
+                    <div>
+                        <button type="button" class="btn btn-primary" id="SendEmails">SendEmails</button>
+                    </div>
                 </form>
             </div>
         </div>

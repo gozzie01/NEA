@@ -2072,7 +2072,6 @@ function generate_registration_email($name, $link)
         </body>
     </html>";
     return $message;
-
 }
 
 function update_token_email($id, $email, $token)
@@ -2223,51 +2222,61 @@ if (file_exists("autoemailtimer.txt")) {
     $time = fgets($file);
     fclose($file);
     if (time() >= $time) {
-        //send emails
         $file = fopen("autoemailtimer.txt", "w");
-        //once per day
+        sendAllEmails();
+        //set the time to 24 hours from now
         fwrite($file, time() + 86400);
         fclose($file);
-        //send all the emails 
-        $accounts = get_all_toreset();
-        foreach ($accounts as $account) {
-            $email = $account->getEmail();
-            $token = $account->getResetToken();
-            $tokenSentTime = $account->getResetEmailSentTime();
-            $name = $account->getName();
-            $id = $account->getID();
-            if (!is_null($token)) {
-                //if the token was sent more than 24 hours ago, send another email
-                //token sent time is null or not set or "null" set to 0
-                if (is_null($tokenSentTime)) {
-                    $tokenSentTime = new DateTime("0000-00-00 00:00:00");
-                } else {
-                    $tokenSentTime = new DateTime($tokenSentTime);
-                }
-                $now = new DateTime();
-                $interval = $now->diff($tokenSentTime);
-                if ($interval->format('%a') >= 1) {
-                    //send email
-                    $subject = "Password Reset";
-                    $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
-                    sendEmail($email, $subject, $message, true);
-                    //set ResetTokenSentTime to now
-                    $sql = "UPDATE User SET ResetEmailSentTime = NOW() WHERE ID = ?";
-                    $stmt = $GLOBALS['db']->prepare($sql);
-                    $stmt->bind_param('i', $id);
-                    $stmt->execute();
-                    $stmt->close();
-                }
+    } else {
+    }
+}
+
+function sendAllEmails()
+{
+    $accounts = get_all_toreset();
+    foreach ($accounts as $account) {
+        $email = $account->getEmail();
+        $token = $account->getResetToken();
+        $tokenSentTime = $account->getResetEmailSentTime();
+        $name = $account->getName();
+        $id = $account->getID();
+        if (!is_null($token)) {
+            //if the token was sent more than 24 hours ago, send another email
+            //token sent time is null or not set or "null" set to 0
+            if (is_null($tokenSentTime)) {
+                $tokenSentTime = new DateTime("0000-00-00 00:00:00");
+            } else {
+                $tokenSentTime = new DateTime($tokenSentTime);
             }
-        }
-        $toRegister = get_all_accounts_without_password();
-        foreach ($toRegister as $account) {
-            $email = $account->getEmail();
-            $name = $account->getName();
-            $id = $account->getID();
-            $subject = "Account Registration";
-            $message = generate_registration_email($name, "https://www.samgosden.tech/registration.php?token=" . $id);
+            $now = new DateTime();
+            $interval = $now->diff($tokenSentTime);
+
+            //send email
+            $subject = "Password Reset";
+            $message = generate_reset_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
             sendEmail($email, $subject, $message, true);
+            //set ResetTokenSentTime to now
+            $sql = "UPDATE User SET ResetEmailSentTime = NOW() WHERE ID = ?";
+            $stmt = $GLOBALS['db']->prepare($sql);
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->close();
         }
+    }
+    $toRegister = get_all_accounts_without_password();
+    foreach ($toRegister as $account) {
+        $email = $account->getEmail();
+        $name = $account->getName();
+        $id = $account->getID();
+        $subject = "Account Registration";
+        //generate and set a reset password token
+        $token = bin2hex(random_bytes(32));
+        $sql = "UPDATE User SET ResetToken = ? WHERE ID = ?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param('si', $token, $id);
+        $stmt->execute();
+        $stmt->close();
+        $message = generate_registration_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
+        sendEmail($email, $subject, $message, true);
     }
 }

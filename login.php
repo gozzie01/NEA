@@ -5,6 +5,7 @@ if (is_logged_in()) {
     header("Location: index.php");
     exit();
 }
+
 //if the form has been submitted then we can try to log the user in
 if (isset($_POST['email']) && isset($_POST['password'])) {
     //get the email and password from the form
