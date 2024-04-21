@@ -1561,14 +1561,14 @@ function get_all_events()
     $StartTime = "";
     $EndTime = "";
     $OpenTime = "";
+    $CloseTime = "";
     $SlotDuration = "";
     $YearGroup = "";
-    $Classes = "";
     $ClassID = "";
-    $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
+    $sql = "SELECT ID, Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup FROM Event ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
-    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
+    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
     $events = array();
     while ($stmt->fetch()) {
         $events[] = new Event((int)$eventid);
@@ -1580,6 +1580,8 @@ function get_all_events()
         $events[count($events) - 1]->setEndTime($EndTime);
         //set the open time of the event
         $events[count($events) - 1]->setOpenTime($OpenTime);
+        //set the close time of the event
+        $events[count($events) - 1]->setCloseTime($CloseTime);
         //set the slot duration of the event
         $events[count($events) - 1]->setSlotDuration($SlotDuration);
         //set the year group of the event
@@ -1614,33 +1616,33 @@ function event_exists($id)
     return $numrows > 0;
 }
 
-function create_event($name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
+function create_event($name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup)
 {
     //check if the values passed are valid
-    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
+    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($CloseTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
         return false;
     }
     //create the event
-    $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssssi", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup);
+    $stmt->bind_param("sssssi", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
     $stmt->execute();
     $stmt->close();
     return true;
 }
-function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup)
+function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup)
 {
     if (!event_exists($id)) {
         return false;
     }
     //check if the values passed are valid
-    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
+    if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($CloseTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
         return false;
     }
     //update the event
-    $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, SlotDuration=?, YearGroup=? WHERE ID=?";
+    $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, CloseTime=? ,SlotDuration=?, YearGroup=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssssii", $name, $StartTime, $EndTime, $OpenTime, $SlotDuration, $YearGroup, $id);
+    $stmt->bind_param("ssssssii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup, $id);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -2185,11 +2187,85 @@ function get_all_classes_of_student_for_event($studentid, $eventid)
     $stmt->close();
     return $classes;
 }
+function get_all_classes_of_year($year)
+{
+    //Join one student onto all of the classes to get the year group
+    $classid = "";
+    $name = "";
+    $sql = "SELECT c.ID, c.Name
+    FROM Class c
+    JOIN StudentClass sc ON c.ID = sc.Class
+    JOIN Student s ON sc.Student = s.ID
+    WHERE s.YearGroup = ?
+    ORDER BY c.ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $year);
+    $stmt->execute();
+    $stmt->bind_result($classid, $name);
+    $classes = array();
+    while ($stmt->fetch()) {
+        if (count($classes) == 0 || $classes[count($classes) - 1]->getID() != $classid) {
+            $classes[] = new Class_($classid);
+            //set the name of the class
+            $classes[count($classes) - 1]->setName($name);
+        }
+    }
+    $stmt->close();
+    //get the teachers
+    $Teacher = "";
+    $Class = "0";
+    $counter = 0;
+    $sql = "SELECT Teacher,Class FROM TeacherClass ORDER BY Class";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($Teacher, $Class);
+    while ($stmt->fetch()) {
+        while ($Class != $classes[$counter]->getID()) {
+            $counter++;
+            //if counter is too large then break out of the 2 loops
+            if ($counter >= count($classes)) {
+                break;
+            }
+        }
+        if ($counter >= count($classes)) {
+            $counter = 0;
+            continue;
+        }
+        $classes[$counter]->addTeacher($Teacher);
+    }
+    $stmt->close();
+    return $classes;
+}
 
-//redirect to https
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
-    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
+function get_teachers_names($teachers)
+{
+    //teachers is an array of teacher ids
+    $names = array();
+
+    // Remove duplicates from teachers array for efficient querying
+    $unique_teachers = array_unique($teachers);
+
+    // Convert array to comma-separated string
+    $teacher_ids = implode(',', $unique_teachers);
+
+    // Prepare SQL query
+    $sql = "SELECT id, name FROM teacher WHERE id IN ($teacher_ids)";
+
+    // Execute SQL query and fetch results
+    $result = $GLOBALS['db']->query($sql);
+
+    // Create an associative array with teacher id as key and name as value
+    $teacher_names = array();
+    while ($row = $result->fetch_assoc()) {
+        $teacher_names[$row['id']] = $row['name'];
+    }
+
+    // Map teacher names back to original teachers array
+    foreach ($teachers as $teacher) {
+        $names[] = $teacher_names[$teacher];
+    }
+
+    return $names;
 }
 
 function get_all_accounts_without_password()
@@ -2216,6 +2292,33 @@ function get_all_accounts_without_password()
     return $accounts;
 }
 
+function update_event_classes($eventid, $classes, $teachers)
+{
+    //delete all classes from the event
+    $class = "";
+    $teacher = "";
+    $sql = "DELETE FROM EventClass WHERE EventID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->close();
+    //add all the classes to the event with the respective teachers
+    $sql = "INSERT INTO EventClass (EventID, Class, Teacher) VALUES (?, ?, ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("iii", $eventid, $class, $teacher);
+    for ($i = 0; $i < count($classes); $i++) {
+        $class = $classes[$i];
+        $teacher = $teachers[$i];
+        $stmt->execute();
+    }
+    $stmt->close();
+    return true;
+}
+
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
 //when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
 if (file_exists("autoemailtimer.txt")) {
     $file = fopen("autoemailtimer.txt", "r");

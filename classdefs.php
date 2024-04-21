@@ -651,11 +651,13 @@ class Event
     private $id;
     private $name;
     private $openTime;
+    private $closeTime;
     private $startTime;
     private $endTime;
     private $slotDuration;
     private $year;
     private $classes;
+    private $teachers;
     private $status;
     public function __construct(int $id)
     {
@@ -665,23 +667,25 @@ class Event
     {
         $id = $this->id;
         $classid = -1;
+        $teacherid = -1;
         //sql for name
-        $sql = "SELECT Name, StartTime, EndTime, OpenTime, SlotDuration, YearGroup, CStatus FROM Event WHERE ID=?";
+        $sql = "SELECT Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup, CStatus FROM Event WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->slotDuration, $this->year, $this->status);
+        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->closeTime, $this->slotDuration, $this->year, $this->status);
         $stmt->fetch();
         $stmt->close();
         //sql for classes get class IDs from EventClass
-        $sql = "SELECT Class FROM EventClass WHERE EventID=?";
+        $sql = "SELECT Class, Teacher FROM EventClass WHERE EventID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($classid);
+        $stmt->bind_result($classid, $teacherid);
         $this->classes = array();
         while ($stmt->fetch()) {
             $this->classes[] = $classid;
+            $this->teachers[] = $teacherid;
         }
         $stmt->close();
     }
@@ -701,6 +705,10 @@ class Event
     {
         return $this->openTime;
     }
+    public function getCloseTime()
+    {
+        return $this->closeTime;
+    }
     public function getSlotDuration()
     {
         return $this->slotDuration;
@@ -713,6 +721,10 @@ class Event
     {
         return $this->classes;
     }
+    public function getTeachers()
+    {
+        return $this->teachers;
+    }
     public function getID()
     {
         return $this->id;
@@ -724,8 +736,9 @@ class Event
     public function isBookOpen()
     {
         $ttime = new DateTime($this->openTime);
+        $ctime = new DateTime($this->closeTime);
         $ntime = new DateTime();
-        if (!isset($status) && $ttime < $ntime) {
+        if ($ntime > $ttime && $ntime < $ctime && ($this->status == null||$this->status == 0)) {
             return true;
         }
         return false;
@@ -737,6 +750,10 @@ class Event
     public function setClasses($classes)
     {
         $this->classes = $classes;
+    }
+    public function setTeachers($teachers)
+    {
+        $this->teachers = $teachers;
     }
     public function addClass($class)
     {
@@ -753,6 +770,10 @@ class Event
     public function setOpenTime($openTime)
     {
         $this->openTime = $openTime;
+    }
+    public function setCloseTime($closeTime)
+    {
+        $this->closeTime = $closeTime;
     }
     public function setSlotDuration($slotDuration)
     {

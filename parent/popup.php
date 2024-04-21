@@ -12,7 +12,8 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
     $student->update();
     $event = new Event((int)get_next_event_of_child($_GET['child']));
     $event->update();
-    if ($event->isBookOpen() && !has_booked($_GET['child'], $event->getId())) {
+    $show = $event->isBookOpen() && !has_booked($_GET['child'], $event->getId());
+    if (true) {
         //the form should be a simple with an earliest and latest time for arrival and departure, when one is ticked the other is greyed out
         //then the form should list below a list of classes and the associated teacher available for the child
         //the parent can then select which classes that they want to see
@@ -156,7 +157,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 echo "<h6>" . $teacher->getName() . "</h6>";
                                 echo "</div>";
                                 echo "<div>";
-                                echo "<input type='checkbox' id='" . $class->getId() . "' name='" . $class->getId() . "' value='" . $class->getId() . "' aria-label='toggle" . $class->getName()."'>";
+                                echo "<input type='checkbox' id='" . $class->getId() . "' name='" . $class->getId() . "' value='" . $class->getId() . "' aria-label='toggle" . $class->getName() . "'>";
                                 echo "</div>";
                                 echo "</div>";
                             }

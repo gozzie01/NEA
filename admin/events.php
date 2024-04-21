@@ -8,14 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
         foreach ($events as $Event) {
             echo "<tr id=EventRow", $Event->getID(), ">";
             echo "<td style='width: 3%;'>", $Event->getID(), "</td>";
-            echo "<td style='width: 14%;'>", $Event->getName(), "</td>";
-            echo "<td style='width: 13%;'>", format_date($Event->getStartTime()), "</td>";
-            echo "<td style='width: 15%;'>", format_date($Event->getEndTime()), "</td>";
-            echo "<td style='width: 15%;'>", format_date($Event->getOpenTime()), "</td>";
-            echo "<td style='width: 10%;'>", $Event->getSlotDuration(), "</td>";
-            echo "<td style='width: 10%;'>", $Event->getYear(), "</td>";
+            echo "<td >", $Event->getName(), "</td>";
+            echo "<td >", format_date($Event->getStartTime()), "</td>";
+            echo "<td>", format_date($Event->getEndTime()), "</td>";
+            echo "<td >", format_date($Event->getOpenTime()), "</td>";
+            echo "<td>", format_date($Event->getCloseTime()), "</td>";
+            echo "<td>", $Event->getSlotDuration(), "</td>";
+            echo "<td>", $Event->getYear(), "</td>";
             //link to bookings page with event id
-            echo "<td style='width: 10%;'><button class='btn btn-primary' onclick="."location.href='/admin/bookings.php?event=". $Event->getID(). "' type='button'>View Bookings</button></td>";
+            echo "<td><button class='btn btn-primary' onclick="."location.href='/admin/bookings.php?event=". $Event->getID(). "' type='button'>View Bookings</button></td>";
             echo "<td style='width: 8.8%;'><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
             echo "</tr>";
         }
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
         $Event_startTime = $Event->getStartTime();
         $Event_endTime = $Event->getEndTime();
         $Event_openTime = $Event->getOpenTime();
+        $Event_closeTime = $Event->getCloseTime();
         $Event_slotDuration = $Event->getSlotDuration();
         $Event_year = $Event->getYear();
         //format the json response
@@ -49,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
             "startTime" => $Event_startTime,
             "endTime" => $Event_endTime,
             "openTime" => $Event_openTime,
+            "closeTime" => $Event_closeTime,
             "slotDuration" => $Event_slotDuration,
             "year" => $Event_year
         );
@@ -66,18 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         $startTime = date('Y-m-d H:i:s', strtotime($_POST['startTime']));
         $endTime = date('Y-m-d H:i:s', strtotime($_POST['endTime']));
         $openTime = date('Y-m-d H:i:s', strtotime($_POST['openTime']));
+        $closeTime = date('Y-m-d H:i:s', strtotime($_POST['closeTime']));
         $slotDuration = $_POST['slotDuration'];
-        //date times are in the format yyyy-mm-ddTHH:mm
-        //convert to a format sql can understand
-
         $year = $_POST['year'];
         //check if the Event exists
         if (event_exists($id)) {
             //update the Event
-            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $slotDuration, $year);
+            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
         } else {
             //create the Event
-            $respon = create_event($name, $startTime, $endTime, $openTime, $slotDuration, $year);
+            $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
         }
         if ($respon) {
             $response = array(
@@ -138,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteEvent'])) {
 }
 //if its a post with no data just die
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    exit();
+    die();
 }
 ?>
 <!DOCTYPE html>
@@ -168,12 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-        //on document load
-        $(document).ready(function() {
-            //add the options to account selector and student selector
-            //make the multiselects searchable and 
-        });
-
         function updateTable() {
             $.ajax({
                 type: "POST",
@@ -213,6 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $('#EventStartTime').val(Event.startTime);
                     $('#EventEndTime').val(Event.endTime);
                     $('#EventOpenTime').val(Event.openTime);
+                    $('#EventCloseTime').val(Event.closeTime);
                     $('#EventSlotDuration').val(Event.slotDuration);
                     $('#EventYear').val(Event.year);
                     //refresh the selects
@@ -233,11 +229,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $('#EventStartTime').val("");
             $('#EventEndTime').val("");
             $('#EventOpenTime').val("");
+            $('#EventCloseTime').val("");
             $('#EventSlotDuration').val("");
             $('#EventYear').val("");
 
             //change the text in the submit button to add
-            $('#submitFormButton').text("Update");
+            $('#submitFormButton').text("Add");
         });
         //on ready clear the edit form
         $(document).ready(function() {
@@ -263,7 +260,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $(document).on('click', '#submitFormButton', function() {
             //if the button says add
             if ($(this).text() == "Add") {
-
+                //show the confirmation popup
+                $('#confirm').show();
+                //set the text of the confirmation popup
+                $('#confirmText').text("Are you sure you want to add this Event?");
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -309,6 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $startTime = $('#EventStartTime').val();
             $endTime = $('#EventEndTime').val();
             $openTime = $('#EventOpenTime').val();
+            $closeTime = $('#EventCloseTime').val();
             $slotDuration = $('#EventSlotDuration').val();
             $year = $('#EventYear').val();
 
@@ -338,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             };
             xhttp.open("POST", "/admin/events.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateEvent=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
+            xhttp.send("updateEvent=true" + "&id=" + $id + "&name=" + $name + "&startTime=" + $startTime + "&endTime=" + $endTime + "&openTime=" + $openTime + "&closeTime=" + $closeTime + "&slotDuration=" + $slotDuration + "&year=" + $year);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -444,13 +445,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <tr>
                                     <th scope="col" style='width: 3%;'>ID</th>
                                     <th scope="col">Event Name</th>
-                                    <th scope="col">Start Time</th>
-                                    <th scope="col">End Time</th>
+                                    <th scope="col">Start Time</th> 
+                                    <th scope="col"  >End Time</th>
                                     <th scope="col">Open Time</th>
-                                    <th scope="col" style="width: 10%;">Slot Len</th>
-                                    <th scope="col" style="width: 10%;">Year</th>
-                                    <th scope="col" style="width: 10%;">view</th>
-                                    <th scope="col" style="width: 10%;">Delete</th>
+                                    <th scope="col" >Close Time</th>
+                                    <th scope="col">Slot Len</th>
+                                    <th scope="col" >Year</th>
+                                    <th scope="col" >view</th>
+                                    <th scope="col" >Delete</th>
                                 </tr>
                             </thead>
                             <tbody id="mainbody">
@@ -470,9 +472,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" class="form-control" placeholder="Event ID" id="EventID">
                     <input type="text" class="form-control" placeholder="Event Name" id="EventName">
                     <!--date selector-->
-                    <input type="datetime-local" class="form-control" id="EventStartTime" aria-label="Event Start Time">
+                    <input type="datetime-local" class="form-control" id="EventStartTime" aria-label="Event Start Date">
                     <input type="datetime-local" class="form-control" id="EventEndTime" aria-label="Event End Time">
                     <input type="datetime-local" class="form-control" id="EventOpenTime" aria-label="Event Open Time">
+                    <input type="datetime-local" class="form-control" id="EventCloseTime" aria-label="Event Close Time">
                     <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
                     <input type="number" class="form-control" placeholder="Year" id="EventYear">
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Update</button>
