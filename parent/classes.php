@@ -51,7 +51,7 @@ if (!isset($_GET['child'])) {
     </style>
 </head>
 <?php require_once('../parent/nav.php'); ?>
-
+<br>
 <body>
     <div class="container-fluid" style="width: 100%;">
         <div class="row" style="width: 100%;">

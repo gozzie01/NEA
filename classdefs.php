@@ -659,6 +659,7 @@ class Event
     private $classes;
     private $teachers;
     private $status;
+    private $ParentBounds;
     public function __construct(int $id)
     {
         $this->id = $id;
@@ -669,11 +670,11 @@ class Event
         $classid = -1;
         $teacherid = -1;
         //sql for name
-        $sql = "SELECT Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup, CStatus FROM Event WHERE ID=?";
+        $sql = "SELECT Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup, CStatus, ParentBounds FROM Event WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->closeTime, $this->slotDuration, $this->year, $this->status);
+        $stmt->bind_result($this->name, $this->startTime, $this->endTime, $this->openTime, $this->closeTime, $this->slotDuration, $this->year, $this->status, $this->ParentBounds);
         $stmt->fetch();
         $stmt->close();
         //sql for classes get class IDs from EventClass
@@ -732,6 +733,10 @@ class Event
     public function getStatus()
     {
         return $this->status;
+    }
+    public function getParentBounds()
+    {
+        return $this->ParentBounds;
     }
     public function isBookOpen()
     {
@@ -871,5 +876,150 @@ class PrefSlot
     public function setParent($Parent)
     {
         $this->Parent = $Parent;
+    }
+}
+
+class Slot
+{
+    private $id;
+    private $StartTime;
+    private $Year;
+    private $Duration;
+    private $Teacher;
+    private $Event;
+    private $Class;
+    private $Student;
+    private $Parent;
+    private $TeacherName;
+    private $ClassName;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+    public function update()
+    {
+        $id = $this->id;
+        //sql for start time
+        $sql = "SELECT StartTime, YearGroup, Duration, Teacher, EventID, Class, Student, Parent, TeacherName, ClassName FROM Slot WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        //bind results to variables
+        $stmt->bind_result($this->StartTime, $this->Year, $this->Duration, $this->Teacher, $this->Event, $this->Class, $this->Student, $this->Parent, $this->TeacherName, $this->ClassName);
+        $stmt->fetch();
+        $stmt->close();
+        //sql for teacher name
+        $tempTeacherName = null;  
+        $sql = "SELECT Name FROM Teacher WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $this->Teacher);
+        $stmt->execute();
+        $stmt->bind_result($tempTeacherName);
+        $stmt->fetch();
+        $stmt->close();
+        //if teacher name is null leave as 
+        if($tempTeacherName != null)
+        {
+            $this->TeacherName = $tempTeacherName;
+        }
+        //sql for class name
+        $tempClassName = null;
+        $sql = "SELECT Name FROM Class WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $this->Class);
+        $stmt->execute();
+        $stmt->bind_result($tempClassName);
+        $stmt->fetch();
+        $stmt->close();
+        //if class name is null leave as
+        if($tempClassName != null)
+        {
+            $this->ClassName = $tempClassName;
+        }
+    }
+    public function getStartTime()
+    {
+        return $this->StartTime;
+    }
+    public function getYear()
+    {
+        return $this->Year;
+    }
+    public function getDuration()
+    {
+        return $this->Duration;
+    }
+    public function getTeacher()
+    {
+        return $this->Teacher;
+    }
+    public function getEvent()
+    {
+        return $this->Event;
+    }
+    public function getClass()
+    {
+        return $this->Class;
+    }
+    public function getStudent()
+    {
+        return $this->Student;
+    }
+    public function getParent()
+    {
+        return $this->Parent;
+    }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function getTeacherName()
+    {
+        return $this->TeacherName;
+    }
+    public function getClassName()
+    {
+        return $this->ClassName;
+    }
+    public function setStartTime($StartTime)
+    {
+        $this->StartTime = $StartTime;
+    }
+    public function setYear($Year)
+    {
+        $this->Year = $Year;
+    }
+    public function setDuration($Duration)
+    {
+        $this->Duration = $Duration;
+    }
+    public function setTeacher($Teacher)
+    {
+        $this->Teacher = $Teacher;
+    }
+    public function setEvent($Event)
+    {
+        $this->Event = $Event;
+    }
+    public function setClass($Class)
+    {
+        $this->Class = $Class;
+    }
+    public function setStudent($Student)
+    {
+        $this->Student = $Student;
+    }
+    public function setParent($Parent)
+    {
+        $this->Parent = $Parent;
+    }
+    public function setTeacherName($TeacherName)
+    {
+        $this->TeacherName = $TeacherName;
+    }
+    public function setClassName($ClassName)
+    {
+        $this->ClassName = $ClassName;
     }
 }

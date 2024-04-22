@@ -2130,7 +2130,7 @@ function get_all_events_of_student($student)
     $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
     $events = array();
     while ($stmt->fetch()) {
-        if ($events[count($events) - 1]->getID() == (int)$eventid) {
+        if (count($events) > 0 && $events[count($events) - 1]->getID() == (int)$eventid) {
             continue;
         }
         $events[] = new Event((int)$eventid);
@@ -2149,8 +2149,68 @@ function get_all_events_of_student($student)
         //set the year group of the event
         $events[count($events) - 1]->setYear($YearGroup);
     }
+    //use time to get more events, check they are not already in the array
+    $sql = "SELECT e.ID, e.Name, e.StartTime, e.EndTime, e.OpenTime, e.CloseTime, e.SlotDuration, e.YearGroup
+    FROM Event e
+    JOIN times t ON e.ID = t.Event
+    WHERE t.Student = ?
+    ORDER BY e.ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $student);
+    $stmt->execute();
+    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
+    //check the whole array
+    while ($stmt->fetch()) {
+        for ($i = 0; $i < count($events); $i++) {
+            if ($events[$i]->getID() == (int)$eventid) {
+                continue;
+            }
+        }
+        $events[] = new Event((int)$eventid);
+        //set the name of the event
+        $events[count($events) - 1]->setName($name);
+        //set the date of the event
+        $events[count($events) - 1]->setStartTime($StartTime);
+        //set the end time of the event
+        $events[count($events) - 1]->setEndTime($EndTime);
+        //set the open time of the event
+        $events[count($events) - 1]->setOpenTime($OpenTime);
+        //set the close time of the event
+        $events[count($events) - 1]->setCloseTime($CloseTime);
+        //set the slot duration of the event
+        $events[count($events) - 1]->setSlotDuration($SlotDuration);
+        //set the year group of the event
+        $events[count($events) - 1]->setYear($YearGroup);
+    }
+    $stmt->close();
+    return $events;
 }
 
+function get_number_of_prefSlots_of_event_of_student($eventid, $student)
+{
+    $number = 0;
+    $sql = "SELECT COUNT(*) FROM PrefferedTime WHERE EventID = ? AND Student = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $student);
+    $stmt->execute();
+    $stmt->bind_result($number);
+    $stmt->fetch();
+    $stmt->close();
+    return $number;
+}
+
+function get_number_of_slots_of_event_of_student($eventid, $student)
+{
+    $number = 0;
+    $sql = "SELECT COUNT(*) FROM times WHERE Event = ? AND Student = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $student);
+    $stmt->execute();
+    $stmt->bind_result($number);
+    $stmt->fetch();
+    $stmt->close();
+    return $number;
+}
 
 function get_all_classes_of_student_for_event($studentid, $eventid)
 {
@@ -2358,6 +2418,49 @@ function update_event_classes($eventid, $classes, $teachers)
     $stmt->close();
     return true;
 }
+
+function set_parent_bounds($eventid, $bound)
+{
+    $sql = "UPDATE Event SET ParentBound = ? WHERE ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $bound, $eventid);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+
+function get_all_slots_of_event($eventid)
+{
+    $ID = "";
+    $StartTime = "";
+    $Duration = "";
+    $Teacher = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+    $ClassName = "";
+    $TeacherName = "";
+    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Slot WHERE EventID = ? ORDER BY StartTime";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName);
+    $slots = array();
+    while ($stmt->fetch()) {
+        $slots[] = new Slot($ID);
+        $slots[count($slots) - 1]->setStartTime($StartTime);
+        $slots[count($slots) - 1]->setDuration($Duration);
+        $slots[count($slots) - 1]->setTeacher($Teacher);
+        $slots[count($slots) - 1]->setClass($Class);
+        $slots[count($slots) - 1]->setStudent($Student);
+        $slots[count($slots) - 1]->setParent($Parent);
+        $slots[count($slots) - 1]->setClassName($ClassName);
+        $slots[count($slots) - 1]->setTeacherName($TeacherName);
+    }
+    $stmt->close();
+    return $slots;
+}
+
 function sendAllEmails()
 {
     $accounts = get_all_toreset();

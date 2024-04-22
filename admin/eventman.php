@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClassesTableHTML']
         foreach ($teachers as $teachery) {
             $html .= '<option value="' . $teachery;
             if (in_array($class->getId(), $enabled)) {
-                if ($enteachers[$counter3-1] == $teachery) {
+                if ($enteachers[$counter3 - 1] == $teachery) {
                     $html .= '" selected ';
                 }
             }
@@ -283,6 +283,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 });
 
             });
+            // search update when the input is changed
+            $('#myInput').change(function() {
+                searchupdate();
+            });
             //on keyup, search the table
             function searchupdate() {
                 var input, filter, table, tr, td, i, txtValue;
@@ -291,16 +295,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 table = document.getElementsByClassName("table-scroll")[0];
                 tr = table.getElementsByTagName("tr");
                 for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName("td")[1];
-                    if (td) {
-                        txtValue = td.textContent || td.innerText;
-                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    td = tr[i].getElementsByTagName("td")[1]; // student column
+                    var tdTeacher = tr[i].getElementsByTagName("td")[2]; // teacher column
+                    if (td || tdTeacher) {
+                        var txtValueStudent = td ? (td.textContent || td.innerText) : "";
+                        var txtValueTeacher = tdTeacher ? (tdTeacher.textContent || tdTeacher.innerText) : "";
+                        if (txtValueStudent.toUpperCase().indexOf(filter) > -1 || txtValueTeacher.toUpperCase().indexOf(filter) > -1) {
                             tr[i].style.display = "";
                         } else {
                             tr[i].style.display = "none";
                         }
                     }
                 }
+
             }
             //get the class list and populate the table once the page has loaded and on year group change
 
