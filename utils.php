@@ -1625,7 +1625,7 @@ function create_event($name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotD
     //create the event
     $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssssi", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
+    $stmt->bind_param("ssssssi", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -2130,7 +2130,7 @@ function get_all_events_of_student($student)
     $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
     $events = array();
     while ($stmt->fetch()) {
-        if ($events[count($events) - 1]->getID() == (int)$eventid){
+        if ($events[count($events) - 1]->getID() == (int)$eventid) {
             continue;
         }
         $events[] = new Event((int)$eventid);
@@ -2358,26 +2358,6 @@ function update_event_classes($eventid, $classes, $teachers)
     $stmt->close();
     return true;
 }
-
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
-    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
-}
-//when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
-if (file_exists("autoemailtimer.txt")) {
-    $file = fopen("autoemailtimer.txt", "r");
-    $time = fgets($file);
-    fclose($file);
-    if (time() >= $time) {
-        $file = fopen("autoemailtimer.txt", "w");
-        sendAllEmails();
-        //set the time to 24 hours from now
-        fwrite($file, time() + 86400);
-        fclose($file);
-    } else {
-    }
-}
-
 function sendAllEmails()
 {
     $accounts = get_all_toreset();
@@ -2425,5 +2405,24 @@ function sendAllEmails()
         $stmt->close();
         $message = generate_registration_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
         sendEmail($email, $subject, $message, true);
+    }
+}
+
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
+//when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
+if (file_exists("autoemailtimer.txt")) {
+    $file = fopen("autoemailtimer.txt", "r");
+    $time = fgets($file);
+    fclose($file);
+    if (time() >= $time) {
+        $file = fopen("autoemailtimer.txt", "w");
+        sendAllEmails();
+        //set the time to 24 hours from now
+        fwrite($file, time() + 86400);
+        fclose($file);
+    } else {
     }
 }

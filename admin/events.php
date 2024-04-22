@@ -320,9 +320,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     //if the request was successful
                     if (this.status == 200) {
                         //if the request was successful then we can redirect the user to the index page
+                        alert(this.responseText);
                         var response = JSON.parse(this.responseText);
                         if (response.error) {
                             $('#error').html(response.error);
+                            
                         } else {
                             if (response.success) {
                                 $('#error').html(response.success);
@@ -472,9 +474,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" class="form-control" placeholder="Event ID" id="EventID">
                     <input type="text" class="form-control" placeholder="Event Name" id="EventName">
                     <!--date selector-->
+                    <label for="EventStartTime">Event Start Time:</label>
                     <input type="datetime-local" class="form-control" id="EventStartTime" aria-label="Event Start Date">
+                    <label for="EventEndTime">Event End Time:</label>
                     <input type="datetime-local" class="form-control" id="EventEndTime" aria-label="Event End Time">
+                    <label for="EventOpenTime">Event Open Time:</label>
                     <input type="datetime-local" class="form-control" id="EventOpenTime" aria-label="Event Open Time">
+                    <label for="EventCloseTime">Event Close Time:</label>
                     <input type="datetime-local" class="form-control" id="EventCloseTime" aria-label="Event Close Time">
                     <input type="number" class="form-control" placeholder="Slot Duration" id="EventSlotDuration">
                     <input type="number" class="form-control" placeholder="Year" id="EventYear">

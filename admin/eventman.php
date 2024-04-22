@@ -227,6 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 var startTime = $('#EventStartTime').val();
                 var endTime = $('#EventEndTime').val();
                 var slotDuration = $('#EventSlotDuration').val();
+                var parentBounds = $('#ParentBounds').val();
                 $.ajax({
                     type: "POST",
                     url: "eventman.php",
@@ -240,7 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                         closeTime: closeTime,
                         startTime: startTime,
                         endTime: endTime,
-                        slotDuration: slotDuration
+                        slotDuration: slotDuration,
+                        parentBounds: parentBounds
                     },
                     success: function(response) {
                         var data = JSON.parse(response);
@@ -395,10 +397,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                             <input type="time" class="form-control" id="EventEndTime" placeholder="Event Time">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-1">
                         <div class="form-group">
-                            <label for="EventSlotDuration">Event Slot Duration (minutes)</label>
+                            <label for="EventSlotDuration">Slot Len</label>
                             <input type="number" class="form-control" id="EventSlotDuration" placeholder="Event Slot Duration">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- selection for how many bounds to give the parent, none, only before or after or both -->
+                            <label for="ParentBounds">Parent Bounds</label>
+                            <select class="form-select" id="ParentBounds">
+                                <option value="0">None</option>
+                                <option value="1">One</option>
+                                <option value="2">Both</option>
+                            </select>
                         </div>
                     </div>
                 </div>
