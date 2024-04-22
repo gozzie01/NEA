@@ -2108,6 +2108,50 @@ function get_teacher_of_class_of_event($class, $event)
     return $teacher;
 }
 
+function get_all_events_of_student($student)
+{
+    //use prefSlots to get the events
+    $eventid = "";
+    $name = "";
+    $StartTime = "";
+    $EndTime = "";
+    $OpenTime = "";
+    $CloseTime = "";
+    $SlotDuration = "";
+    $YearGroup = "";
+    $sql = "SELECT e.ID, e.Name, e.StartTime, e.EndTime, e.OpenTime, e.CloseTime, e.SlotDuration, e.YearGroup
+    FROM Event e
+    JOIN PrefferedTime p ON e.ID = p.EventID
+    WHERE p.Student = ?
+    ORDER BY e.ID";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $student);
+    $stmt->execute();
+    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
+    $events = array();
+    while ($stmt->fetch()) {
+        if ($events[count($events) - 1]->getID() == (int)$eventid){
+            continue;
+        }
+        $events[] = new Event((int)$eventid);
+        //set the name of the event
+        $events[count($events) - 1]->setName($name);
+        //set the date of the event
+        $events[count($events) - 1]->setStartTime($StartTime);
+        //set the end time of the event
+        $events[count($events) - 1]->setEndTime($EndTime);
+        //set the open time of the event
+        $events[count($events) - 1]->setOpenTime($OpenTime);
+        //set the close time of the event
+        $events[count($events) - 1]->setCloseTime($CloseTime);
+        //set the slot duration of the event
+        $events[count($events) - 1]->setSlotDuration($SlotDuration);
+        //set the year group of the event
+        $events[count($events) - 1]->setYear($YearGroup);
+    }
+}
+
+
 function get_all_classes_of_student_for_event($studentid, $eventid)
 {
     $classid = "";
