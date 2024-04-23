@@ -2,6 +2,7 @@
     <div class="container-fluid">
         <!-- left side of navbar -->
         <div class="navbar-brand">
+
             <a class="nav-link" href="/teacher/index.php">Home</a>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAlt" aria-label="toggle navigation"> <span class="navbar-toggler-icon"></span> </button>

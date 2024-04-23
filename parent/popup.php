@@ -13,6 +13,12 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
     $event = new Event((int)get_next_event_of_child($_GET['child']));
     $event->update();
     $show = $event->isBookOpen() && !has_booked($_GET['child'], $event->getId());
+    //if parentbounds is null, set it to 2
+    if ($event->getParentBounds() === null) {
+        $parentBounds = 2;
+    } else {
+        $parentBounds = $event->getParentBounds();
+    }
     if ($show) {
         //the form should be a simple with an earliest and latest time for arrival and departure, when one is ticked the other is greyed out
         //then the form should list below a list of classes and the associated teacher available for the child
@@ -22,32 +28,33 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
             // when one is checked, the other is unchecked
             // when one is unchecked, the other is checked
             //on ready alert
+            const parentBounds = <?php echo $parentBounds  ?>;
+
             window.addEventListener('DOMContentLoaded', () => {
                 const EnCheck = document.getElementById('EnCheck');
                 const StCheck = document.getElementById('StCheck');
-                StCheck.addEventListener('change', () => {
-                    if (StCheck.checked) {
-                        EnCheck.checked = false;
-                    } else {
-                        EnCheck.checked = true;
-                    }
-                });
-                EnCheck.addEventListener('change', () => {
-                    if (EnCheck.checked) {
-                        StCheck.checked = false;
-                    } else {
-                        StCheck.checked = true;
-                    }
-                });
-            });
 
-            //exit button, Enter
-            //wait for the popupbox to load
-            window.addEventListener('DOMContentLoaded', () => {
-                const popupbox = document.getElementById('popupbox');
-                document.getElementById('exitButton').addEventListener("keypress", (e) => {
-                    if (e.key === 'Enter' || e.keyCode === 13) {
-                        document.getElementById('popupbox').style.display = 'none';
+                // Initial toggle based on parentBounds
+                if (parentBounds === 0) {
+                    EnCheck.checked = false;
+                    StCheck.checked = false;
+                    //disable both
+                    EnCheck.disabled = true;
+                    StCheck.disabled = true;
+                }
+                StCheck.addEventListener('change', () => {
+                    if (parentBounds === 1) {
+                        if (StCheck.checked) {
+                            EnCheck.checked = false;
+                        }
+                    }
+                });
+
+                EnCheck.addEventListener('change', () => {
+                    if (parentBounds === 1) {
+                        if (EnCheck.checked) {
+                            StCheck.checked = false;
+                        }
                     }
                 });
             });
@@ -66,6 +73,13 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                 checkboxes.forEach((checkbox) => {
                     classes.push(checkbox.name);
                 });
+                if (parentBounds === 0 && (StCheck.checked || EnCheck.checked)) {
+                    alert("No bounds can be set");
+                    return;
+                } else if (parentBounds === 1 && !(StCheck.checked ^ EnCheck.checked) && (StCheck.checked || EnCheck.checked)) {
+                    alert("Only one bound can be set");
+                    return;
+                }
                 if (StCheck.checked) {
                     if (StTime.value === "") {
                         alert("Please select a time");
@@ -75,18 +89,8 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                         alert("Please select at least one class");
                         return;
                     }
-                    //post it using xhttp
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            alert(this.responseText);
-                            document.getElementById('popupbox').style.display = 'none';
-                        }
-                    };
-                    xhttp.open("POST", "/parent/book.php", true);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send("student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?>&starttime=" + StTime.value + "&classes=" + classes);
-
-                } else if (EnCheck.checked) {
+                }
+                if (EnCheck.checked) {
                     if (EnTime.value === "") {
                         alert("Please select a time");
                         return;
@@ -95,18 +99,16 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                         alert("Please select at least one class");
                         return;
                     }
-                } else {
-                    alert("Please select a time");
                 }
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        alert(this.responseText);
                         document.getElementById('popupbox').style.display = 'none';
                     }
                 };
                 xhttp.open("POST", "/parent/book.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?>&endtime=" + EnTime.value + "&classes=" + classes);
+                var sendstring = "student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId();?> " + (StCheck.checked ? "&starttime=" + StTime.value : "") + (EnCheck.checked ? "&endtime=" + EnTime.value : "") + "&classes=" + classes;
+                xhttp.send(sendstring);
             }
         </script>
 
@@ -132,7 +134,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                                 <h4>After: </h4>
                                 <!-- start time selector, use event start time -->
                                 <form>
-                                    <input type="checkbox" id="StCheck" name="After: " value="After: " aria-label="after toggle" checked>
+                                    <input type="checkbox" id="StCheck" name="After: " value="After: " aria-label="after toggle">
                                     <input type="time" id="StTime" step="300" aria-label="available after time" />
                                 </form>
                             </div>

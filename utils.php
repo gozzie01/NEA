@@ -2123,7 +2123,7 @@ function get_all_events_of_student($student)
     FROM Event e
     JOIN PrefferedTime p ON e.ID = p.EventID
     WHERE p.Student = ?
-    ORDER BY e.ID";
+    ORDER BY e.ID ";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $student);
     $stmt->execute();
@@ -2154,7 +2154,7 @@ function get_all_events_of_student($student)
     FROM Event e
     JOIN times t ON e.ID = t.Event
     WHERE t.Student = ?
-    ORDER BY e.ID";
+    ORDER BY e.ID ";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $student);
     $stmt->execute();
@@ -2183,7 +2183,98 @@ function get_all_events_of_student($student)
         $events[count($events) - 1]->setYear($YearGroup);
     }
     $stmt->close();
+    //sort the array by date so that the first event is the next event
+    usort($events, function ($a, $b) {
+        return $a->getStartTime() > $b->getStartTime();
+    });
     return $events;
+}
+function get_all_events_of_teacher($teacher)
+{#
+    //use prefSlots to get the events
+    $eventid = "";
+    $name = "";
+    $StartTime = "";
+    $EndTime = "";
+    $OpenTime = "";
+    $CloseTime = "";
+    $SlotDuration = "";
+    $YearGroup = "";
+    $sql = "SELECT e.ID, e.Name, e.StartTime, e.EndTime, e.OpenTime, e.CloseTime, e.SlotDuration, e.YearGroup
+    FROM Event e
+    JOIN EventClass ec ON e.ID = ec.EventID
+    WHERE ec.Teacher = ?
+    ORDER BY e.ID ";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $teacher);
+    $stmt->execute();
+    $stmt->bind_result($eventid, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
+    $events = array();
+    while ($stmt->fetch()) {
+        if (count($events) > 0 && $events[count($events) - 1]->getID() == (int)$eventid) {
+            continue;
+        }
+        $events[] = new Event((int)$eventid);
+        //set the name of the event
+        $events[count($events) - 1]->setName($name);
+        //set the date of the event
+        $events[count($events) - 1]->setStartTime($StartTime);
+        //set the end time of the event
+        $events[count($events) - 1]->setEndTime($EndTime);
+        //set the open time of the event
+        $events[count($events) - 1]->setOpenTime($OpenTime);
+        //set the close time of the event
+        $events[count($events) - 1]->setCloseTime($CloseTime);
+        //set the slot duration of the event
+        $events[count($events) - 1]->setSlotDuration($SlotDuration);
+        //set the year group of the event
+        $events[count($events) - 1]->setYear($YearGroup);
+    }
+    //order the array by date
+    usort($events, function ($a, $b) {
+        return $a->getStartTime() > $b->getStartTime();
+    });
+    return $events;
+}
+
+function get_number_of_students_of_event_of_teacher($eventid, $teacher)
+{
+    //count the number of unique students in each class associated with the event and teacher
+    $number = 0;
+    $sql = "SELECT COUNT(DISTINCT Student) FROM StudentClass WHERE Class IN (SELECT Class FROM EventClass WHERE EventID = ? AND Teacher = ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $teacher);
+    $stmt->execute();
+    $stmt->bind_result($number);
+    $stmt->fetch();
+    $stmt->close();
+    return $number;
+}
+
+function get_number_of_prefSlots_of_event_of_teacher($eventid, $teacher)
+{
+    $number = 0;
+    $sql = "SELECT COUNT(*) FROM PrefferedTime WHERE EventID = ? AND Teacher = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $teacher);
+    $stmt->execute();
+    $stmt->bind_result($number);
+    $stmt->fetch();
+    $stmt->close();
+    return $number;
+}
+
+function get_number_of_slots_of_event_of_teacher($eventid, $teacher)
+{
+    $number = 0;
+    $sql = "SELECT COUNT(*) FROM times WHERE Event = ? AND Teacher = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $teacher);
+    $stmt->execute();
+    $stmt->bind_result($number);
+    $stmt->fetch();
+    $stmt->close();
+    return $number;
 }
 
 function get_number_of_prefSlots_of_event_of_student($eventid, $student)

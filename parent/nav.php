@@ -33,6 +33,7 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
     <div class="container-fluid">
         <!-- left side of navbar -->
         <div class="navbar-brand">
+
             <a class="nav-link" href="/parent/index.php">Home</a>
         </div>
         <div>

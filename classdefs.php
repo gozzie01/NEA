@@ -519,15 +519,15 @@ class Class_
 }
 class Account
 {
-    protected $id;
-    protected $name;
-    protected $email;
-    protected $resettoken;
-    protected $resettokensenttime;
-    protected $phone;
-    protected $password;
-    protected $teacherid;
-    protected $parentid;
+    private $id;
+    private $name;
+    private $email;
+    private $resettoken;
+    private $resettokensenttime;
+    private $phone;
+    private $password;
+    private $teacherid;
+    private $parentid;
     public function __construct(int $id)
     {
         $this->id = $id;
