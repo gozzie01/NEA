@@ -44,7 +44,7 @@ $child->update();
 
         .table-scroll tbody {
             overflow-y: scroll;
-            height: 400px;
+            height: 320px;
         }
 
         .table-scroll tr {
@@ -95,7 +95,61 @@ $child->update();
                             <input type="text" class="form-control" id="endtime" value="<?php echo date('H:i', strtotime($event->getEndTime())); ?>" readonly>
                         </div>
                     </div>
-
-
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1>Classes</h1>
+                <div class="well">
+                    <table class="table table-striped table-scroll">
+                        <thead>
+                            <tr>
+                                <th scope="col">Class</th>
+                                <th scope="col">Teacher</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $classes = get_all_classes_of_student_for_event($_GET['child'], $_GET['event']);
+                            foreach ($classes as $class) {
+                                $class->update();
+                                $teachers = $class->getTeachers();
+                            ?>
+                                <tr>
+                                    <td><?php echo $class->getName(); ?></td>
+                                    <td>
+                                        <?php
+                                        //print with comma if more than one teacher
+                                        $first = true;
+                                        foreach ($teachers as $teacher) {
+                                            $teacher = new Teacher($teacher);
+                                            $teacher->update();
+                                            if ($first) {
+                                                echo $teacher->getName();
+                                                $first = false;
+                                            } else {
+                                                echo ", " . $teacher->getName();
+                                            }
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <!-- show popup button -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="document.getElementById('popupbox').style.display=''">
+                        View Popup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- popup -->
+<?php
+include_once 'popup2.php';
+?>

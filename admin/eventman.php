@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventDetails'])) {
         "openTime" => (new DateTime($event->getOpenTime()))->format('Y-m-d H:i'),
         "closeTime" => (new DateTime($event->getCloseTime()))->format('Y-m-d H:i'),
         "slotDuration" => $event->getSlotDuration(),
-        "year" => $event->getYear()
+        "year" => $event->getYear(),
+        "parentBounds" => $event->getParentBounds()
     );
     echo json_encode($response);
     exit();
@@ -128,7 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         } else {
             //create the Event
             $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
-            
         }
         if ($respon) {
             $response = array(
@@ -207,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     date = date.toISOString().split('T')[0];
                     $('#EventDate').val(date);
                     $('#EventStartTime').val(time);
+                    $('#ParentBounds').val(data.parentBounds);
                     updateTable();
 
                 },
@@ -242,6 +243,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
 
             //update the event
             $('#updateEvent').click(function() {
+                var success = true;
+                var msg = '';
                 var name = $('#EventName').val();
                 var year = $('#EventYearGroup').val();
                 var date = $('#EventDate').val();
@@ -270,9 +273,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     success: function(response) {
                         var data = JSON.parse(response);
                         if (data.success) {} else {
-                            alert(data.error);
+                            success = false;
+                            msg += data.error;
                         }
+                    },
+                    //failure
+                    error: function() {
+                        success = false;
                     }
+
                 });
                 //get the selected classes
                 var classes = [];
@@ -288,22 +297,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     }
                 });
                 //update the classes
-                $.ajax({
-                    type: "POST",
-                    url: "eventman.php",
-                    data: {
-                        updateClasses: true,
-                        id: <?php echo $_GET['id']; ?>,
-                        classes: classes,
-                        teachers: teachers
-                    },
-                    success: function(response) {
-                        var data = JSON.parse(response);
-                        if (data.success) {} else {
-                            alert(data.error);
+                if (classes.length == teachers.length){
+                    $.ajax({
+                        type: "POST",
+                        url: "eventman.php",
+                        data: {
+                            updateClasses: true,
+                            id: <?php echo $_GET['id']; ?>,
+                            classes: classes,
+                            teachers: teachers
+                        },
+                        success: function(response) {
+                            var data = JSON.parse(response);
+                            if (data.success) {} else {
+                                success = false;
+                                msg += data.error;
+                            }
+                        },
+                        //failure
+                        error: function() {
+                            success = false;
                         }
-                    }
-                });
+
+                    });
+                } else {
+                    success = false;
+                    msg += 'Classes and teachers do not match';
+                }
+                //if successful, display a success message
+                if (success) {
+                    $('#message').html('<div class="alert alert-success" role="alert">Event updated successfully</div>');
+                } else {
+                    $('#message').html('<div class="alert alert-danger" role="alert">Event could not be updated'+ msg +'</div>');
+                }
 
             });
             // search update when the input is changed
@@ -355,6 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
             }
 
         }
+
         function enableAll() {
             var checked = $('#enableAll').is(':checked');
             $('.table-scroll tbody tr').each(function() {
@@ -447,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                             <label for="ParentBounds">Parent Bounds</label>
                             <select class="form-select" id="ParentBounds">
                                 <option value="0">None</option>
-                                <option value="1">One</option>
+                                <option value="1">Start or End</option>
                                 <option value="2">Both</option>
                             </select>
                         </div>
@@ -477,8 +504,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                         </div>
                     </div>
                 </div>
+                <!--
                 <button type="button" class="btn btn-primary" id="updateEvent">Update Event</button>
                 <button type="button" class="btn btn-danger" id="generateTimetable">Generate Timetable</button>
+                error/success message 
+                <div id="message"></div>-->
+                <!-- put in columns -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" id="updateEvent">Update Event</button>
+                        <button type="button" class="btn btn-danger" id="generateTimetable">Generate Timetable</button>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="message"></div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

@@ -5,6 +5,9 @@ require_once('./putils.php');
 //this is where the post for the form is handled
 /*                xhttp.send("student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?>&time=" + EnTime.value + "&classes=" + classes);*/
 if (isset($_POST['student']) && isset($_POST['event'])  && isset($_POST['classes'])) {
+    if(isset($_POST['resend'])){
+        destroy_all_prefSlots_of_student_of_event($_POST['student'], $_POST['event']);
+    }
     $student = new Student($_POST['student']);
     $student->update();
     $event = new Event($_POST['event']);

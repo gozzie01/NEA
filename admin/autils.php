@@ -8,3 +8,7 @@ if (!is_admin()) {
     header("Location: /index.php");
     exit();
 }
+//check for a complete.json file in root
+if (file_exists("../complete.json")) {
+
+}

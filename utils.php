@@ -2510,9 +2510,19 @@ function update_event_classes($eventid, $classes, $teachers)
     return true;
 }
 
+function destroy_all_prefSlots_of_student_of_event($student, $event)
+{
+    $sql = "DELETE FROM PrefferedTime WHERE Student = ? AND EventID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $student, $event);
+    $stmt->execute();
+    $stmt->close();
+    return true;
+}
+
 function set_parent_bounds($eventid, $bound)
 {
-    $sql = "UPDATE Event SET ParentBound = ? WHERE ID = ?";
+    $sql = "UPDATE Event SET ParentBounds = ? WHERE ID = ?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $bound, $eventid);
     $stmt->execute();
