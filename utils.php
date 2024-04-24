@@ -2552,6 +2552,8 @@ function get_all_slots_of_event($eventid)
     return $slots;
 }
 
+
+
 function sendAllEmails()
 {
     $accounts = get_all_toreset();

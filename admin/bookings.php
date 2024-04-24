@@ -298,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     })
                 ];
-             } catch (error) {
+            } catch (error) {
                 alert(error);
             }
             try {

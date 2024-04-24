@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteAccount'])) {
         exit();
     }
 }
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
     sendAllEmails();
     exit();
 }

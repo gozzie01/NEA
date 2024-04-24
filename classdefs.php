@@ -743,7 +743,7 @@ class Event
         $ttime = new DateTime($this->openTime);
         $ctime = new DateTime($this->closeTime);
         $ntime = new DateTime();
-        if ($ntime > $ttime && $ntime < $ctime && ($this->status == null||$this->status == 0)) {
+        if ($ntime > $ttime && $ntime < $ctime && ($this->status == null || $this->status == 0)) {
             return true;
         }
         return false;
@@ -910,7 +910,7 @@ class Slot
         $stmt->fetch();
         $stmt->close();
         //sql for teacher name
-        $tempTeacherName = null;  
+        $tempTeacherName = null;
         $sql = "SELECT Name FROM Teacher WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $this->Teacher);
@@ -919,8 +919,7 @@ class Slot
         $stmt->fetch();
         $stmt->close();
         //if teacher name is null leave as 
-        if($tempTeacherName != null)
-        {
+        if ($tempTeacherName != null) {
             $this->TeacherName = $tempTeacherName;
         }
         //sql for class name
@@ -933,8 +932,7 @@ class Slot
         $stmt->fetch();
         $stmt->close();
         //if class name is null leave as
-        if($tempClassName != null)
-        {
+        if ($tempClassName != null) {
             $this->ClassName = $tempClassName;
         }
     }

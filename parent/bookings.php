@@ -56,6 +56,7 @@ if (!isset($_GET['child'])) {
 </head>
 <?php require_once('../parent/nav.php'); ?>
 <br>
+
 <body>
     <div class="container-fluid" style="width: 100%;">
         <div class="row" style="width: 100%;">
@@ -68,6 +69,7 @@ if (!isset($_GET['child'])) {
                                 <th scope="col">Event</th>
                                 <th scope="col">Number of selected</th>
                                 <th scope="col">Number Booked</th>
+                                <th scope="col">View Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,6 +84,17 @@ if (!isset($_GET['child'])) {
                                     <td><?php echo $event->getName(); ?></td>
                                     <td><?php echo $numberSelected; ?></td>
                                     <td><?php echo $numberBooked; ?></td>
+                                    <?php
+                                    if ($event->isBookOpen()) {
+                                    ?>
+                                        <td><a href="details.php?event=<?php echo $event->getID(); ?>&child=<?php echo $child; ?>">View Details</a></td>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <td><a href="detailsBooked.php?event=<?php echo $event->getID(); ?>&child=<?php echo $child; ?>">View Details</a></td>
+                                    <?php
+                                    }
+                                    ?>
                                 </tr>
                             <?php
                             }

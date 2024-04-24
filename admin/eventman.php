@@ -115,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         $openTime = date('Y-m-d H:i:s', strtotime($_POST['openTime']));
         $closeTime = date('Y-m-d H:i:s', strtotime($_POST['closeTime']));
         $slotDuration = $_POST['slotDuration'];
+        $parentBounds = $_POST['parentBounds'];
         //date times are in the format yyyy-mm-ddTHH:mm
         //convert to a format sql can understand
 
@@ -123,9 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         if (event_exists($id)) {
             //update the Event
             $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            set_parent_bounds($id, $parentBounds);
         } else {
             //create the Event
             $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            
         }
         if ($respon) {
             $response = array(
@@ -217,6 +220,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 $('.well').height(h - 325);
                 $('.table-scroll tbody').height(h - 360);
             });
+            //enable all button
+            $('#enableAll').click(function() {
+                enableAll();
+            });
+            //when any of the checkboxes are clicked, uncheck the enable all button
+            // they all have class in thier id
+            $('.table-scroll tbody').on('click', 'input', function() {
+                $('#enableAll').prop('checked', false);
+            });
+            //if they are all checked, check the enable all button
+            $('.table-scroll tbody').on('click', 'input', function() {
+                var allChecked = true;
+                $('.table-scroll tbody tr').each(function() {
+                    if (!$(this).find('input').is(':checked')) {
+                        allChecked = false;
+                    }
+                });
+                $('#enableAll').prop('checked', allChecked);
+            });
+
             //update the event
             $('#updateEvent').click(function() {
                 var name = $('#EventName').val();
@@ -310,27 +333,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 updateTable();
             });
         });
+
         function searchupdate() {
-                var input, filter, table, tr, td, i, txtValue;
-                input = document.getElementById("myInput");
-                filter = input.value.toUpperCase();
-                table = document.getElementsByClassName("table-scroll")[0];
-                tr = table.getElementsByTagName("tr");
-                for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName("td")[1]; // student column
-                    var tdTeacher = tr[i].getElementsByTagName("td")[2]; // teacher column
-                    if (td || tdTeacher) {
-                        var txtValueStudent = td ? (td.textContent || td.innerText) : "";
-                        var txtValueTeacher = tdTeacher ? (tdTeacher.textContent || tdTeacher.innerText) : "";
-                        if (txtValueStudent.toUpperCase().indexOf(filter) > -1 || txtValueTeacher.toUpperCase().indexOf(filter) > -1) {
-                            tr[i].style.display = "";
-                        } else {
-                            tr[i].style.display = "none";
-                        }
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementsByClassName("table-scroll")[0];
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1]; // student column
+                var tdTeacher = tr[i].getElementsByTagName("td")[2]; // teacher column
+                if (td || tdTeacher) {
+                    var txtValueStudent = td ? (td.textContent || td.innerText) : "";
+                    var txtValueTeacher = tdTeacher ? (tdTeacher.textContent || tdTeacher.innerText) : "";
+                    if (txtValueStudent.toUpperCase().indexOf(filter) > -1 || txtValueTeacher.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
                     }
                 }
-
             }
+
+        }
+        function enableAll() {
+            var checked = $('#enableAll').is(':checked');
+            $('.table-scroll tbody tr').each(function() {
+                $(this).find('input').prop('checked', checked);
+            });
+        }
     </script>
 </head>
 <?php include_once '../admin/nav.php'; ?>
@@ -435,7 +465,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                                         <th scope="col">Class ID</th>
                                         <th scope="col">Class Name</th>
                                         <th scope="col">Teachers</th>
-                                        <th scope="col">Enabled</th>
+                                        <th scope="col">Enabled <input type="checkbox" id="enableAll"></th>
                                         <th scope="col">Teacher</th>
                                     </tr>
                                 </thead>
@@ -450,3 +480,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 <button type="button" class="btn btn-primary" id="updateEvent">Update Event</button>
                 <button type="button" class="btn btn-danger" id="generateTimetable">Generate Timetable</button>
             </form>
+        </div>
+    </div>
+</body>

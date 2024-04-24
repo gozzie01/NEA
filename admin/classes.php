@@ -476,7 +476,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteClass'])) {
         .ClassForm input {
             margin: 2px;
         }
-
     </style>
 </head>
 <?php include_once '../admin/nav.php'; ?>

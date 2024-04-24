@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div id="error"></div>
                     <div>
                         <!-- add/edit page button-->
-                        <button type="button" id="addEventButton" class="btn btn-primary">Add / Edit</button>
+                        <button type="button" id="addEventButton" class="btn btn-primary">Edit</button>
                     </div>
                 </form>
             </div>
