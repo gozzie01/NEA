@@ -32,7 +32,7 @@ if (!isset($_GET['child'])) {
     <?php
     require_once('../includes.php');
     ?>
-    <title>Past Events</title>
+    <title>Event Details</title>
     <style>
         .well {
             background: none;

@@ -101,13 +101,20 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
                     }
                 }
                 xhttp.onreadystatechange = function() {
+
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById('popupbox').style.display = 'none';
                     }
                 };
                 xhttp.open("POST", "/parent/book.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                var sendstring = "student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId();?> " + (StCheck.checked ? "&starttime=" + StTime.value : "") + (EnCheck.checked ? "&endtime=" + EnTime.value : "") + "&classes=" + classes;
+                var sendstring = "student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?> " + "&classes=" + classes;
+                if (StCheck.checked) {
+                    sendstring += "&starttime=" + StTime.value;
+                }
+                if (EnCheck.checked) {
+                    sendstring += "&endtime=" + EnTime.value;
+                }
                 xhttp.send(sendstring);
             }
         </script>

@@ -107,11 +107,13 @@ $child->update();
                             <tr>
                                 <th scope="col">Class</th>
                                 <th scope="col">Teacher</th>
+                                <th scope="col">Selected</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $classes = get_all_classes_of_student_for_event($_GET['child'], $_GET['event']);
+                            $slots = get_all_prefslots_of_event_of_student($_GET['child'], $_GET['event']);
                             foreach ($classes as $class) {
                                 $class->update();
                                 $teachers = $class->getTeachers();
@@ -133,6 +135,16 @@ $child->update();
                                             }
                                         }
                                         ?>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox"
+                                        <?php
+                                        foreach ($slots as $slot) {
+                                            if ($slot->getClass() == $class->getId()) {
+                                                echo "checked";
+                                            }
+                                        }
+                                        ?> disabled >
                                     </td>
                                 </tr>
                             <?php

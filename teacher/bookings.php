@@ -26,7 +26,7 @@ $teacher = $_SESSION['teacher'];
     <?php
     require_once('../includes.php');
     ?>
-    <title>Past Events</title>
+    <title>Event Details</title>
     <style>
         .well {
             background: none;
@@ -64,6 +64,7 @@ $teacher = $_SESSION['teacher'];
                                 <th scope="col">Number of students</th>
                                 <th scope="col">Number of attempted</th>
                                 <th scope="col">Number Booked</th>
+                                <th scope="col">View</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,6 +81,7 @@ $teacher = $_SESSION['teacher'];
                                     <td><?php echo $numberTotal; ?></td>
                                     <td><?php echo $numberAttempted; ?></td>
                                     <td><?php echo $numberBooked; ?></td>
+                                    <td><a href="./details.php?event=<?php echo $event->getID(); ?>">View</a></td>
                                 </tr>
                             <?php
                             }

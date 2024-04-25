@@ -101,18 +101,25 @@ if (isset($_GET['child'])) {
                     }
                 }
                 xhttp.onreadystatechange = function() {
+                    alert(this.responseText);
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById('popupbox').style.display = 'none';
                     }
                 };
                 xhttp.open("POST", "/parent/book.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                var sendstring = "student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId();?> " + (StCheck.checked ? "&starttime=" + StTime.value : "") + (EnCheck.checked ? "&endtime=" + EnTime.value : "") + "&classes=" + classes + "&resend=1";
+                var sendstring = "student=<?php echo $student->getId(); ?>&event=<?php echo $event->getId(); ?> " + "&classes=" + classes + "&resend=1";
+                if (StCheck.checked) {
+                    sendstring += "&starttime=" + StTime.value;
+                }
+                if (EnCheck.checked) {
+                    sendstring += "&endtime=" + EnTime.value;
+                }
                 xhttp.send(sendstring);
             }
         </script>
 
-        <body id="popup" >
+        <body id="popup">
             <div id="popupbox" style=" position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4); display: none;">
                 <!--booking box-->
 

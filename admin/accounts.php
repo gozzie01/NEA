@@ -114,10 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     //check if the Account exists
     if (account_exists($id)) {
         //update the Account
+        remove_user_from_teachers($id);
+        remove_user_from_parents($id);
         $respon = update_account($id, $name, $email, $phone, $parentid, $teacherid);
     } else {
         //create the Accounts   
         $respon = create_account($id, $name, $email, $phone, $parentid, $teacherid);
+        
     }
     if ($respon) {
         $response = array(

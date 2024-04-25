@@ -2,6 +2,16 @@
 require_once '../utils.php';
 //check if the user is logged in
 require_once './tutils.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setWanted'])) {
+    try {
+        set_wanted_for_class($_POST['class'], $_POST['students']);
+    } catch (Exception $e) {
+        header("HTTP/1.1 500 Internal Server Error");
+        echo $e->getMessage();
+        exit();
+    }
+    exit();
+}
 if (!isset($_GET['id']) && class__exists(intval($_GET['id']))) {
     header("Location: /classes.php");
     exit();
@@ -9,6 +19,10 @@ if (!isset($_GET['id']) && class__exists(intval($_GET['id']))) {
 $id = $_GET["id"];
 $class = new Class_($id);
 $class->update();
+$event = get_next_event_of_class($class->getId());
+if ($event != null) {
+    $wanted = get_wanted_for_class($class->getId());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,18 +48,51 @@ $class->update();
     </style>
     <script>
         $(document).ready(function() {
-            $('#clear').click();
-            var height = $(window).height() - $('.table-scroll tbody').offset().top;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top - 60;
             $('.table-scroll tbody').css('height', height);
             updateTable();
+            //on click of the save button
+
+        });
+        $(document).ready(function() {
+            $('#save').click(function() {
+                var students = [];
+                //get all the students
+                $('.table-scroll tbody tr').each(function() {
+                    if ($(this).find('input').prop('checked')) {
+                        students.push($(this).find('th').text());
+                    }
+                });
+                //send the data to the server
+                $.ajax({
+                    url: '/teacher/class.php',
+                    type: 'POST',
+                    data: {
+                        setWanted: true,
+                        students: students,
+                        class: <?php echo $_GET['id']; ?>
+                    },
+                    success: function(data) {
+                    },
+                    error: function(data) {
+                        alert(data.responseText)
+                    }
+
+                });
+            });
+            $('#clear').click(function() {
+                $('.table-scroll tbody tr').each(function() {
+                    $(this).find('input').prop('checked', false);
+                });
+            });
         });
         $(window).resize(function() {
             //adjust the height of the table to fit the screen
-            var height = $(window).height() - $('.table-scroll tbody').offset().top;
+            var height = $(window).height() - $('.table-scroll tbody').offset().top - 60;
             //just tbody
             $('.table-scroll tbody').css('height', height);
             //adjust size of well
-            var heightwell = $(window).height() - $('.well').offset().top;
+            var heightwell = $(window).height() - $('.well').offset().top - 60;
             $('.well').css('height', heightwell);
 
         });
@@ -60,7 +107,6 @@ $class->update();
             <div class="col-md-12">
                 <h1>Class <?php echo $class->getName(); ?></h1>
                 <!--display a list of students in the class-->
-                <h2>Students</h2>
                 <div class="well">
                     <table class="table table-striped table-scroll">
                         <thead>
@@ -82,9 +128,15 @@ $class->update();
                                 <tr>
                                     <th scope="row"><?php echo $student->getId(); ?></th>
                                     <td><?php echo $student->getName(); ?></td>
-                                    <?php if (get_next_event_of_class($class->getId()) != null) { ?>
+                                    <?php if ($event != null) { ?>
                                         <td>
-                                            <form><input type="checkbox"></input></form>
+                                            <form>
+                                                <input type="checkbox" <?php
+                                                                        if ($wanted != null) {
+                                                                            echo in_array($student->getId(), $wanted) ? 'checked' : '';
+                                                                        }
+                                                                        ?>>
+                                            </form>
                                         </td>
                                     <?php } ?>
                                 </tr>
@@ -93,6 +145,10 @@ $class->update();
                             ?>
                         </tbody>
                     </table>
+                    <div>
+                        <button class="btn btn-primary" id="clear">Clear</button>
+                        <button class="btn btn-primary" id="save">Save</button>
+                    </div>
                 </div>
             </div>
         </div>

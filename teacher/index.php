@@ -6,6 +6,7 @@ require_once './tutils.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Teacher</title>
 </head>
@@ -19,6 +20,17 @@ require_once './tutils.php';
                 <h1>Welcome Teacher</h1>
             </div>
         </div>
+        <?php
+        if (is_pastoral()) {
+            $students = get_wanted_students_without_prefslot(4);
+            foreach ($students as $student) {
+                echo $student;
+        ?>
+                <!-- students marked as wanted who are yet to book -->
+        <?php
+            }
+        }
+        ?>
     </div>
 </body>
 

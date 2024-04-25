@@ -56,7 +56,6 @@ if (!isset($_GET['child'])) {
     <div class="container-fluid" style="width: 100%;">
         <div class="row" style="width: 100%;">
             <div class="col-md-6" style="width: 100%;">
-                <h1>Classes</h1>
                 <div class="well">
                     <table class="table table-striped table-scroll">
                         <thead>
