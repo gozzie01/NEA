@@ -1,5 +1,6 @@
 <?php
 require_once '../utils.php';
+require_once '../classdefs.php';
 /*$classteachstudent = fopen("classteachstudent.csv", "r");
 $currentclassid = 0;
 //layour is class id teacher id student id

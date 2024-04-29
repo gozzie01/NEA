@@ -1,5 +1,6 @@
 <?php
 require_once 'utils.php';
+require_once 'classdefs.php';
 //check if the user is logged in
 if (!is_logged_in()) {
     header("Location: login.php");

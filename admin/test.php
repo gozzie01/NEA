@@ -1,6 +1,7 @@
 <?
 require_once '../email.php';
 require_once '../utils.php';
+require_once '../classdefs.php';
 require_once './autils.php';
 //stress test the get classes function of the classes page
 ?>
@@ -48,6 +49,7 @@ foreach ($registers as $register) {
 /*
 
 require_once '../utils.php';
+require_once '../classdefs.php';
 //check if the user is logged in
 require_once './autils.php';
 $events = get_all_events();
@@ -63,6 +65,7 @@ foreach ($events as $event) {
 /*
 //test pdf generation
 require_once '../utils.php';
+require_once '../classdefs.php';
 require_once '../fpdf.php';
 //make a new pdf
 $pdf = new FPDF();
@@ -91,6 +94,7 @@ $pdf->Output();
 
 /*
 require_once '../utils.php';
+require_once '../classdefs.php';
 
 require_once './autils.php';
 require_once '../tcpdf/tcpdf.php';

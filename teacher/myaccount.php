@@ -1,5 +1,6 @@
 <?php
 require_once '../utils.php';
+require_once '../classdefs.php';
 require_once './tutils.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"])) {

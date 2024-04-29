@@ -1,5 +1,6 @@
 <?php
 require_once '../utils.php';
+require_once '../classdefs.php';
 require_once './putils.php';
 //event and child details check
 if (!isset($_GET['child'])) {

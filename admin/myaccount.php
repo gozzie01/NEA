@@ -1,6 +1,7 @@
 <?php
 //admin/myaccount.php
 require_once '../utils.php';
+require_once '../classdefs.php';
 //check if the user is logged in
 require_once './autils.php';
 //if the request is a post request
