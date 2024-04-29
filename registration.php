@@ -5,6 +5,7 @@ if (is_logged_in()) {
     header("Location: index.php");
     exit();
 }
+$Emailfromtoken=get_email_from_token($_GET['token']);
 //if the form has been submitted then we can try to log the user in
 if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['ResetToken'])) {
     //get the email and password from the form
@@ -178,7 +179,7 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                     <form id="registerForm" class="mb-6" action="registration.php" method="post">
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input id="email" name="email" type="email" class="form-control" placeholder="<?php echo get_email_from_token($_GET['token']); ?>" value="<?php echo get_email_from_token($_GET['token']); ?>" disabled>
+                            <input id="email" name="email" type="email" class="form-control" placeholder="<?php echo $Emailfromtoken; ?>" value="<?php echo $Emailfromtoken; ?>" disabled>
                             <small id="emailHelp" class="form-text text-muted mb-2">We'll never share your email with anyone else.</small>
                             <div class="invalid-feedback">
                                 Please enter a valid email address.
