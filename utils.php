@@ -4,8 +4,8 @@
 //is_teacher() checks if the user is a teacher
 //is_parent() checks if the user is a parent
 session_start();
-require_once 'db.php';
 require_once 'classdefs.php';
+require_once 'db.php';
 require_once 'email.php';
 function is_logged_in()
 {
