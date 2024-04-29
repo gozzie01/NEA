@@ -1,6 +1,6 @@
 *.csv
-db.php
-email.php
+db.details
+sg.api
 favicon.ico
 SCHOOL_TIMETABLE.sql
 vendor/
