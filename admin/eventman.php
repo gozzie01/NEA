@@ -2,7 +2,7 @@
 require_once '../utils.php';
 //check if the user is logged in
 require_once './autils.php';
-
+$id = $_GET['id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventDetails'])) {
     $id = $_POST['id'];
     $event = new Event($id);
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 url: "https://www.samgosden.tech/admin/eventman.php",
                 data: {
                     getEventDetails: true,
-                    id: <?php echo $_GET['id']; ?>
+                    id: <?php echo $id; ?>
                 },
                 success: function(response) {
                     var data = JSON.parse(response);
@@ -259,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     url: "eventman.php",
                     data: {
                         updateEvent: true,
-                        id: <?php echo $_GET['id']; ?>,
+                        id: <?php echo $id; ?>,
                         name: name,
                         year: year,
                         date: date,
@@ -303,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                         url: "eventman.php",
                         data: {
                             updateClasses: true,
-                            id: <?php echo $_GET['id']; ?>,
+                            id: <?php echo $id; ?>,
                             classes: classes,
                             teachers: teachers
                         },
@@ -348,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     data: {
                         getClassesTableHTML: true,
                         year: year,
-                        eventID: <?php echo $_GET['id']; ?>
+                        eventID: <?php echo $id; ?>
                     },
                     success: function(response) {
                         $('#mainbody').html(response);

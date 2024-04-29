@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getClasses'])) {
     foreach ($classes as $class) {
         $class->update();
         echo "<option value='" . $class->getID() . "'>" . $class->getName() . "</option>";
-    }   
+    }
     die();
 }
 
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addWanted'])) {
         $response = create_prefslot($arriveTime, $leaveTime, $teacher, $event->getID(), $class, $student, $parent);
     }
 
-    if ($response) {
+    if (isset($response) && $response) {
         echo "success";
     } else {
         echo "error";
@@ -246,6 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //on table row click load student and event into form
             document.getElementById("mainbody").addEventListener("click", function(e) {
                 if (e.target.tagName == "TD") {
+
                     var studentID = e.target.parentElement.children[0].textContent;
                     var eventID = e.target.id;
                     var studentSelect = document.getElementById("studentID");

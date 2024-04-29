@@ -2,6 +2,7 @@
 require_once '../utils.php';
 //check if the user is logged in
 require_once './tutils.php';
+$id = $_GET['id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setWanted'])) {
     try {
         set_wanted_for_class($_POST['class'], $_POST['students']);
@@ -70,10 +71,9 @@ if ($event != null) {
                     data: {
                         setWanted: true,
                         students: students,
-                        class: <?php echo $_GET['id']; ?>
+                        class: <?php echo $id; ?>
                     },
-                    success: function(data) {
-                    },
+                    success: function(data) {},
                     error: function(data) {
                         alert(data.responseText)
                     }
@@ -132,7 +132,7 @@ if ($event != null) {
                                         <td>
                                             <form>
                                                 <input type="checkbox" <?php
-                                                                        if ($wanted != null) {
+                                                                        if (isset($wanted) &&   $wanted != null) {
                                                                             echo in_array($student->getId(), $wanted) ? 'checked' : '';
                                                                         }
                                                                         ?>>

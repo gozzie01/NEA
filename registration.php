@@ -236,7 +236,8 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                     <br>
                     <h6 class="text-center"> if errors persist contact support at admin@samgosden.tech
                         <?php if (isset($_GET['token'])) {
-                            echo $_GET['token'];
+                            $token = (string)($_GET['token']);
+                            echo $token;
                         } ?></h6>
                 </div>
             </div>
