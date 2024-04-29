@@ -1,3 +1,9 @@
 {
-    "php.version": "8.1.2-1ubuntu2.14"
+    "php.version": "8.1.2-1ubuntu2.14",
+    "grammarly.selectors": [
+        {
+            "language": "php",
+            "scheme": "file"
+        }
+    ]
 }

@@ -13,6 +13,9 @@
                 <a class="nav-link" href="/teacher/myaccount.php">My Account</a>
                 <a class="nav-link" href="/teacher/bookings.php">Bookings</a>
                 <?php
+                if (is_pastoral()) {
+                    echo '<a class="nav-link" href="/teacher/pastoral.php">Pastoral</a>';
+                }
                 if (is_admin()) {
                     echo '<a class="nav-link" href="/admin/index.php">Admin</a>';
                 }

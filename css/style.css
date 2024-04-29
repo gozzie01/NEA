@@ -13,6 +13,7 @@ table {
 .container {
     padding-top: 4pt;
 }
+
 thead {
     flex: 0 0 auto;
 }
@@ -37,6 +38,7 @@ h2 {
     font-size: 1.5em;
     /* Adjust this value as needed */
 }
+
 /* 
 style for class popupbook 
 this is for a div that will be used as a popup, it needs to be full screen width on smaller devices
@@ -45,8 +47,12 @@ this is for a div that will be used as a popup, it needs to be full screen width
     width: 45%;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
     .popupbook {
         width: 100%;
     }
+    .hide-on-small {
+        display: none;
+    }
 }
+

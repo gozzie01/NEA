@@ -177,8 +177,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $.ajax({
                 type: "POST",
                 url: "/admin/parents.php",
-                getStudentSelector: true,
-                data: {},
+                data: {
+                    getStudentSelector: true
+                },
                 success: function(data) {
                     $('#StudentSelector').html(data);
                 }

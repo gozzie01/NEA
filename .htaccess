@@ -5,6 +5,8 @@ Options -Indexes
 # disable directory listing
 IndexIgnore *
 
+DirectoryIndex index.php
+
 # disallow includes.php db.php and utils.php
 <FilesMatch "^(includes\.php|db\.php|utils\.php)$">
     Order allow,deny

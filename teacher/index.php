@@ -22,12 +22,25 @@ require_once './tutils.php';
         </div>
         <?php
         if (is_pastoral()) {
-            $students = get_wanted_students_without_prefslot(4);
-            foreach ($students as $student) {
-                echo $student;
+            foreach (get_all_events() as $event) {
+                //check the event has started
+                if (new DateTime($event->getStartTime()) < new DateTime()) {
+                    continue;
+                }
+                $wantedStudents = get_wanted_students_without_prefslot($event->getID());
+                //if count is not zero display a warning with the number of students left to book and the name of the event
+                if (count($wantedStudents) > 0) {
         ?>
-                <!-- students marked as wanted who are yet to book -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading">Warning!</h4>
+                                <p><?php echo count($wantedStudents); ?> student(s) have been marked as wanted for <?php echo $event->getName(); ?> but have not yet booked. Please contact them and book for them if necessary.</p>
+                            </div>
+                        </div>
+                    </div>
         <?php
+                }
             }
         }
         ?>

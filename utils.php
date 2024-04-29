@@ -1150,6 +1150,13 @@ function update_teacher($id, $name, $pastoral, $classes, $account)
             }
         }
     }
+    //clear the database of userids
+    $sql = "UPDATE Teacher SET UserID=NULL WHERE UserID=?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $account);
+    $stmt->execute();
+    $stmt->close();
+
     //update the teacher
     $sql = "UPDATE Teacher SET Name=?, Pastoral=?, UserID=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
@@ -2003,11 +2010,29 @@ function get_wanted_students_without_prefslot($event)
         $numrows = $stmt->num_rows;
         $stmt->close();
         if ($numrows == 0) {
-            $wantedstudents[] = $students[$i];
+            //check if the student is already in the array
+            if (!in_array($students[$i], $wantedstudents)) {
+                $wantedstudents[] = $students[$i];
+            }
         }
     }
     return $wantedstudents;
+}
 
+function get_wanted_classids_of_student($student)
+{
+    $classid = "";
+    $classes = array();
+    $sql = "SELECT ClassID FROM Wanted WHERE StudentID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $student);
+    $stmt->execute();
+    $stmt->bind_result($classid);
+    while ($stmt->fetch()) {
+        $classes[] = $classid;
+    }
+    $stmt->close();
+    return $classes;
 }
 
 function format_date($inputdate)
@@ -2684,6 +2709,9 @@ function get_all_accounts_without_password()
 function update_event_classes($eventid, $classes, $teachers)
 {
     //delete all classes from the event
+    if (count($classes) != count($teachers)) {
+        return false;
+    }
     $class = "";
     $teacher = "";
     $sql = "DELETE FROM EventClass WHERE EventID = ?";

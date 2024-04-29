@@ -2,7 +2,33 @@
 require_once '../email.php';
 require_once '../utils.php';
 require_once './autils.php';
+//stress test the get classes function of the classes page
+?>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script>
+        //post get table data to classes.php
+        function test() {
+            fetch("www.samgosden.tech/admin/classes.php", {
+                method: "POST",
+                body
+            }).then(response => response.text()).then(data => {
+                document.getElementById("table").innerHTML = data;
+            });
+        }
+    </script>
+</head>
+
+<body>
+<?php
+//write the json to the page of the prefslot
+?>
+</body>
+<?php
 /*
 //send an email to gosdens025012@tbshs.org
 sendEmail("andersonr025361@tbshs.org", "email", "https://www.samgosden.tech/registration.php?token=a");
@@ -418,6 +444,7 @@ $students = get_all_students_in_year(13);
 //children is an array of all the children
 //appointments is an array of all the appointments
 //unavailable is an array of all the unavailable times of teachers
+/*
 $arr = array(
     "start" => "17:00",
     "end" => "19:30",
@@ -467,3 +494,4 @@ foreach ($arr["children"] as $child) {
 //generate the json
 $json = json_encode($arr);
 echo $json;
+*/
