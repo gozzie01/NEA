@@ -2,7 +2,7 @@
 //db details
 
 //read details from db.details
-$file = fopen("db.details", "r");
+$file = fopen("E:\projects\php\php\src\db.details", "r");
 $dbHost = trim(fgets($file));
 $dbUsername = trim(fgets($file));
 $dbpassword = trim(fgets($file));
