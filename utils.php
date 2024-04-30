@@ -1772,7 +1772,7 @@ function create_event($name, $StartTime, $EndTime, $OpenTime, $CloseTime, $statu
     //create the event
     $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, CloseTime, CStatus, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssssiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status ,$SlotDuration, $YearGroup);
+    $stmt->bind_param("sssssiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status, $SlotDuration, $YearGroup);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -1799,7 +1799,7 @@ function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $
     //update the event
     $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, CloseTime=?, CStatus=? ,SlotDuration=?, YearGroup=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssssiiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status ,$SlotDuration, $YearGroup, $id);
+    $stmt->bind_param("sssssiiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status, $SlotDuration, $YearGroup, $id);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -2838,7 +2838,6 @@ function get_all_slots()
     }
     $stmt->close();
     return $slots;
-
 }
 
 

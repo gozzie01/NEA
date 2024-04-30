@@ -6,7 +6,7 @@ if (is_logged_in()) {
     header("Location: index.php");
     exit();
 }
-$Emailfromtoken=get_email_from_token($_GET['token']);
+$Emailfromtoken = get_email_from_token($_GET['token']);
 //if the form has been submitted then we can try to log the user in
 if (isset($_POST['password']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['ResetToken'])) {
     //get the email and password from the form

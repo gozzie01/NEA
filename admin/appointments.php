@@ -546,7 +546,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             };
             xhttp.open("POST", "/admin/appointments.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateprefSlot=true&id=" + $id + "&startTime=" + $startTime  + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
+            xhttp.send("updateprefSlot=true&id=" + $id + "&startTime=" + $startTime + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
