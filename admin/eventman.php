@@ -3,7 +3,9 @@ require_once '../utils.php';
 require_once '../classdefs.php';
 //check if the user is logged in
 require_once './autils.php';
-$id = $_GET['id'];
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventDetails'])) {
     $id = $_POST['id'];
     $event = new Event($id);
@@ -17,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventDetails'])) {
         "openTime" => (new DateTime($event->getOpenTime()))->format('Y-m-d H:i'),
         "closeTime" => (new DateTime($event->getCloseTime()))->format('Y-m-d H:i'),
         "slotDuration" => $event->getSlotDuration(),
+        "status" => $event->getStatus(),
         "year" => $event->getYear(),
         "parentBounds" => $event->getParentBounds()
     );
@@ -116,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         $endTime = date('Y-m-d H:i:s', strtotime($date->format('Y-m-d') . ' ' . $_POST['endTime']));
         $openTime = date('Y-m-d H:i:s', strtotime($_POST['openTime']));
         $closeTime = date('Y-m-d H:i:s', strtotime($_POST['closeTime']));
+        $status = $_POST['status'];
         $slotDuration = $_POST['slotDuration'];
         $parentBounds = $_POST['parentBounds'];
         //date times are in the format yyyy-mm-ddTHH:mm
@@ -125,11 +129,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         //check if the Event exists
         if (event_exists($id)) {
             //update the Event
-            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, $status ,$slotDuration, $year);
             set_parent_bounds($id, $parentBounds);
         } else {
             //create the Event
-            $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $status ,$slotDuration, $year);
         }
         if ($respon) {
             $response = array(
@@ -203,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     $('#EventCloseTime').val(data.closeTime);
                     $('#EventEndTime').val(data.endTime);
                     $('#EventSlotDuration').val(data.slotDuration);
+                    $('#EventStatus').val(data.status);
                     var date = new Date(data.startTime);
                     var time = date.toTimeString().split(' ')[0];
                     date = date.toISOString().split('T')[0];
@@ -213,7 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
 
                 },
                 //otherwise display an error
-                error: function() {}
+                error: function() {
+                    $('#message').html('<div class="alert alert-danger" role="alert">Event could not be loaded</div>');
+                }
             });
             //when the page resizes, resize the table and well
             $(window).resize(function() {
@@ -253,6 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 var closeTime = $('#EventCloseTime').val();
                 var startTime = $('#EventStartTime').val();
                 var endTime = $('#EventEndTime').val();
+                var status = $('#EventStatus').val();
                 var slotDuration = $('#EventSlotDuration').val();
                 var parentBounds = $('#ParentBounds').val();
                 $.ajax({
@@ -268,12 +276,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                         closeTime: closeTime,
                         startTime: startTime,
                         endTime: endTime,
+                        status: status,
                         slotDuration: slotDuration,
                         parentBounds: parentBounds
                     },
                     success: function(response) {
                         var data = JSON.parse(response);
-                        if (data.success) {} else {
+                        if (!data.success) {
                             success = false;
                             msg += data.error;
                         }
@@ -298,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     }
                 });
                 //update the classes
-                if (classes.length == teachers.length){
+                if (classes.length == teachers.length) {
                     $.ajax({
                         type: "POST",
                         url: "eventman.php",
@@ -329,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                 if (success) {
                     $('#message').html('<div class="alert alert-success" role="alert">Event updated successfully</div>');
                 } else {
-                    $('#message').html('<div class="alert alert-danger" role="alert">Event could not be updated'+ msg +'</div>');
+                    $('#message').html('<div class="alert alert-danger" role="alert">Event could not be updated' + msg + '</div>');
                 }
 
             });
@@ -451,16 +460,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                             <input type="date" class="form-control" id="EventDate" placeholder="Event Date">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="EventStartTime">Event Start Time</label>
                             <input type="time" class="form-control" id="EventStartTime" placeholder="Event Time">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="EventEndTime">Event End Time</label>
                             <input type="time" class="form-control" id="EventEndTime" placeholder="Event Time">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="EventStatus">Event Status</label>
+                            <select class="form-select" id="EventStatus">
+                                <option value="0">Open</option>
+                                <option value="1">Closed for parents</option>
+                                <option value="2">Closed for all</option>
+                                <option value="3">Booking</option>
+                                <option value="4">Booked</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-1">

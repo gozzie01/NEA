@@ -1763,21 +1763,21 @@ function event_exists($id)
     return $numrows > 0;
 }
 
-function create_event($name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup)
+function create_event($name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status, $SlotDuration, $YearGroup)
 {
     //check if the values passed are valid
     if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($CloseTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
         return false;
     }
     //create the event
-    $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, CloseTime, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Event (Name, StartTime, EndTime, OpenTime, CloseTime, CStatus, SlotDuration, YearGroup) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("ssssssi", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup);
+    $stmt->bind_param("sssssiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status ,$SlotDuration, $YearGroup);
     $stmt->execute();
     $stmt->close();
     return true;
 }
-function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup)
+function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status, $SlotDuration, $YearGroup)
 {
     if (!event_exists($id)) {
         return false;
@@ -1786,10 +1786,20 @@ function update_event($id, $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $
     if (!is_string($name) || !is_string($StartTime) || !is_string($EndTime) || !is_string($OpenTime) || !is_string($CloseTime) || !is_string($SlotDuration) || !is_string($YearGroup)) {
         return false;
     }
+    //if status is null set it to the current status
+    if (is_null($status)) {
+        $sql = "SELECT CStatus FROM Event WHERE ID=?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($status);
+        $stmt->fetch();
+        $stmt->close();
+    }
     //update the event
-    $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, CloseTime=? ,SlotDuration=?, YearGroup=? WHERE ID=?";
+    $sql = "UPDATE Event SET Name=?, StartTime=?, EndTime=?, OpenTime=?, CloseTime=?, CStatus=? ,SlotDuration=?, YearGroup=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("ssssssii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $SlotDuration, $YearGroup, $id);
+    $stmt->bind_param("sssssiiii", $name, $StartTime, $EndTime, $OpenTime, $CloseTime, $status ,$SlotDuration, $YearGroup, $id);
     $stmt->execute();
     $stmt->close();
     return true;
@@ -2097,7 +2107,7 @@ function get_next_event_of_year($yg)
     $stmt->bind_result($eventid);
     $stmt->fetch();
     $stmt->close();
-    return $eventid;
+    return (int)$eventid;
 }
 
 function has_booked($studentid, $eventid)
@@ -2791,9 +2801,44 @@ function get_all_slots_of_event($eventid)
         $slots[count($slots) - 1]->setParent($Parent);
         $slots[count($slots) - 1]->setClassName($ClassName);
         $slots[count($slots) - 1]->setTeacherName($TeacherName);
+        $slots[count($slots) - 1]->setEventID($eventid);
     }
     $stmt->close();
     return $slots;
+}
+
+function get_all_slots()
+{
+    $ID = "";
+    $StartTime = "";
+    $Duration = "";
+    $Teacher = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+    $ClassName = "";
+    $TeacherName = "";
+    $EventID = "";
+    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName, EventID FROM Slot ORDER BY StartTime";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->execute();
+    $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName, $EventID);
+    $slots = array();
+    while ($stmt->fetch()) {
+        $slots[] = new Slot($ID);
+        $slots[count($slots) - 1]->setStartTime($StartTime);
+        $slots[count($slots) - 1]->setDuration($Duration);
+        $slots[count($slots) - 1]->setTeacher($Teacher);
+        $slots[count($slots) - 1]->setClass($Class);
+        $slots[count($slots) - 1]->setStudent($Student);
+        $slots[count($slots) - 1]->setParent($Parent);
+        $slots[count($slots) - 1]->setClassName($ClassName);
+        $slots[count($slots) - 1]->setTeacherName($TeacherName);
+        $slots[count($slots) - 1]->setEventID($EventID);
+    }
+    $stmt->close();
+    return $slots;
+
 }
 
 

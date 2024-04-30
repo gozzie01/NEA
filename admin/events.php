@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
     try {
-        $id = $_POST['id'];
+        $id = $_POST['id']; 
         $id = intval($id);
         //get the Event object from the database
         $Event = new Event($id);
@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         //check if the Event exists
         if (event_exists($id)) {
             //update the Event
-            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, null , $slotDuration, $year);
         } else {
             //create the Event
-            $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, $slotDuration, $year);
+            $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, 0, $slotDuration, $year);
         }
         if ($respon) {
             $response = array(

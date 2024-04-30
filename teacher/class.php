@@ -114,9 +114,14 @@ if ($event != null) {
                             <tr>
                                 <th scope="col">Student ID</th>
                                 <th scope="col">Student Name</th>
-                                <?php if (get_next_event_of_class($class->getId()) != null) { ?>
-                                    <th scope="col">Wanted</th>
-                                <?php } ?>
+                                <?php if (get_next_event_of_class($class->getId()) != null) {
+                                    $event = new Event(get_next_event_of_class($class->getID()));
+                                    $event->update();
+                                    if ($event->getStatus() < 2) {
+                                ?>
+                                        <th scope="col">Wanted</th>
+                                <?php }
+                                } ?>
                             <tr>
                         </thead>
                         <tbody>
@@ -129,11 +134,11 @@ if ($event != null) {
                                 <tr>
                                     <th scope="row"><?php echo $student->getId(); ?></th>
                                     <td><?php echo $student->getName(); ?></td>
-                                    <?php if ($event != null) { ?>
+                                    <?php if ($event != null && $event->getStatus()<2) { ?>
                                         <td>
                                             <form>
                                                 <input type="checkbox" <?php
-                                                                        if (isset($wanted) &&   $wanted != null) {
+                                                                        if (isset($wanted) &&  $wanted != null ) {
                                                                             echo in_array($student->getId(), $wanted) ? 'checked' : '';
                                                                         }
                                                                         ?>>

@@ -952,7 +952,7 @@ class Slot
     {
         return $this->Teacher;
     }
-    public function getEvent()
+    public function getEventID()
     {
         return $this->Event;
     }
@@ -996,7 +996,7 @@ class Slot
     {
         $this->Teacher = $Teacher;
     }
-    public function setEvent($Event)
+    public function setEventID($Event)
     {
         $this->Event = $Event;
     }
