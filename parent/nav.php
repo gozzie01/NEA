@@ -2,17 +2,17 @@
 //pages needed, classes, my account, bookings, logout
 //the nav bar also needs a home button that links to /parent/index.php
 //this nav bar is special because it will have a separate dropdown to the left of all the links where
-//the parent selects the child they want to view
-$_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
+//the parent selects the student they want to view
+$_SESSION['student'] = isset($_GET['student']) ? intval($_GET['student']) : null;
 
 ?>
 
 <head>
     <script>
-        //this function will be called when the user selects a child from the dropdown, it simply redirects the user to the same page but with the child id in the url
+        //this function will be called when the user selects a student from the dropdown, it simply redirects the user to the same page but with the student id in the url
 
         $(document).ready(function() {
-            //this function will be called when the user selects a child from the dropdown, it simply redirects the user to the same page but with the child id in the url
+            //this function will be called when the user selects a student from the dropdown, it simply redirects the user to the same page but with the student id in the url
             $('#StudentSel').select2({
                 theme: "bootstrap-5",
                 minimumResultsForSearch: -1
@@ -21,7 +21,7 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
                 if (data.id == -1) {
                     return;
                 }
-                window.location.href = "/parent/index.php?child=" + data.id;
+                window.location.href = "/parent/index.php?student=" + data.id;
             });
             //remove search bar from StudentSel
 
@@ -42,20 +42,20 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
                     <?php
                     $parent_id = intval($_SESSION['parent']);
                     $children = get_parent_students($parent_id);
-                    if (isset($_SESSION['child']) && in_array($_SESSION['child'], $children)) {
-                        echo "<option value=-1>Select Child</option>";
+                    if (isset($_SESSION['student']) && in_array($_SESSION['student'], $children)) {
+                        echo "<option value=-1>Select student</option>";
                     } else {
-                        echo "<option selected value=-1>Select Child</option>";
+                        echo "<option selected value=-1>Select student</option>";
                     }
                     ?>
                     <?php
                     //get the children of the parent
                     //loop through the children and display them as options
-                    foreach ($children as $child) {
-                        if (isset($_SESSION['child']) && $_SESSION['child'] == $child) {
-                            echo "<option selected value=", strval($child), ">", get_student_name(intval($child)), "</option>";
+                    foreach ($children as $student) {
+                        if (isset($_SESSION['student']) && $_SESSION['student'] == $student) {
+                            echo "<option selected value=", strval($student), ">", get_student_name(intval($student)), "</option>";
                         } else {
-                            echo "<option value=", strval($child), ">", get_student_name(intval($child)), "</option>";
+                            echo "<option value=", strval($student), ">", get_student_name(intval($student)), "</option>";
                         }
                     }
                     ?>
@@ -67,22 +67,22 @@ $_SESSION['child'] = isset($_GET['child']) ? intval($_GET['child']) : null;
             <!-- right side of navbar -->
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href='/parent/classes.php<?php
-                                                                if (isset($_SESSION['child'])) {
-                                                                    $childid = intval($_SESSION['child']);
-                                                                    echo ("?child=" . $childid . "");
+                                                                if (isset($_SESSION['student'])) {
+                                                                    $childid = intval($_SESSION['student']);
+                                                                    echo ("?student=" . $childid . "");
                                                                 } ?>
                 '>Classes</a>
                 <a class="nav-link" href="/parent/myaccount.php<?php
-                                                                if (isset($_SESSION['child'])) {
-                                                                    $childid = intval($_SESSION['child']);
-                                                                    echo ("?child=" . $childid . "");
+                                                                if (isset($_SESSION['student'])) {
+                                                                    $childid = intval($_SESSION['student']);
+                                                                    echo ("?student=" . $childid . "");
                                                                 }
                                                                 ?>
                 ">My Account</a>
                 <a class="nav-link" href="/parent/bookings.php<?php
-                                                                if (isset($_SESSION['child'])) {
-                                                                    $childid = intval($_SESSION['child']);
-                                                                    echo ("?child=" . $childid . "");
+                                                                if (isset($_SESSION['student'])) {
+                                                                    $childid = intval($_SESSION['student']);
+                                                                    echo ("?student=" . $childid . "");
                                                                 } ?>">Bookings</a>
                 <?php
                 if (boolval(is_admin())) {

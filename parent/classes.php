@@ -1,7 +1,7 @@
 <?php
 require_once('../utils.php');
 require_once('./putils.php');
-if (!isset($_GET['child'])) {
+if (!isset($_GET['student'])) {
     header('Location: ../parent/index.php');
     exit();
 }
@@ -66,7 +66,7 @@ if (!isset($_GET['child'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $student = new Student(intval($_GET['child']));
+                            $student = new Student(intval($_GET['student']));
                             $student->update();
                             $classes = $student->getClasses();
                             foreach ($classes as $class) {

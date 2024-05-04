@@ -1,18 +1,18 @@
 <?php
 //this is the popup.php file, it is included on the parent/index.php page but only when it is needed
-//the popup is to display when the parent has an event (parents evening), to book for the currently selected child
+//the popup is to display when the parent has an event (parents evening), to book for the currently selected student
 //the popup is a form that allows the parent to select an eariliest OR latest time for arrival/departure for the event
 //the form is then submitted to this page which will update the database with the new times
 
 //check if the user is logged in
 require_once('../utils.php');
 require_once('./putils.php');
-if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
-    $student = new Student($_GET['child']);
+if (isset($_GET['student']) && get_next_event_of_child($_GET['student']) !== null) {
+    $student = new Student($_GET['student']);
     $student->update();
-    $event = new Event((int)get_next_event_of_child($_GET['child']));
+    $event = new Event((int)get_next_event_of_child($_GET['student']));
     $event->update();
-    $show = $event->isBookOpen() && !has_booked($_GET['child'], $event->getId());
+    $show = $event->isBookOpen() && !has_booked($_GET['student'], $event->getId());
     //if parentbounds is null, set it to 2
     if ($event->getParentBounds() === null) {
         $parentBounds = 2;
@@ -21,7 +21,7 @@ if (isset($_GET['child']) && get_next_event_of_child($_GET['child']) !== null) {
     }
     if ($show) {
         //the form should be a simple with an earliest and latest time for arrival and departure, when one is ticked the other is greyed out
-        //then the form should list below a list of classes and the associated teacher available for the child
+        //then the form should list below a list of classes and the associated teacher available for the student
         //the parent can then select which classes that they want to see
 ?>
         <script>

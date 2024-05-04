@@ -3,7 +3,7 @@ include_once('../utils.php');
 //check if the user is logged in
 include_once('./putils.php');
 //display the previous events of the parent
-if (!isset($_GET['child'])) {
+if (!isset($_GET['student'])) {
     header('Location: ../parent/index.php');
     exit();
 }
@@ -74,11 +74,11 @@ if (!isset($_GET['child'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $child = $_GET['child'];
-                            $events = get_all_events_of_student($child);
+                            $student = $_GET['student'];
+                            $events = get_all_events_of_student($student);
                             foreach ($events as $event) {
-                                $numberSelected = get_number_of_prefSlots_of_event_of_student($event->getID(), $child);
-                                $numberBooked = get_number_of_slots_of_event_of_student($event->getID(), $child);
+                                $numberSelected = get_number_of_prefSlots_of_event_of_student($event->getID(), $student);
+                                $numberBooked = get_number_of_slots_of_event_of_student($event->getID(), $student);
                             ?>
                                 <tr>
                                     <td><?php echo $event->getName(); ?></td>
@@ -87,11 +87,11 @@ if (!isset($_GET['child'])) {
                                     <?php
                                     if ($event->isBookOpen()) {
                                     ?>
-                                        <td><a href="details.php?event=<?php echo $event->getID(); ?>&child=<?php echo $child; ?>">View Details</a></td>
+                                        <td><a href="details.php?event=<?php echo $event->getID(); ?>&student=<?php echo $student; ?>">View Details</a></td>
                                     <?php
                                     } else {
                                     ?>
-                                        <td><a href="detailsBooked.php?event=<?php echo $event->getID(); ?>&child=<?php echo $child; ?>">View Details</a></td>
+                                        <td><a href="detailsBooked.php?event=<?php echo $event->getID(); ?>&student=<?php echo $student; ?>">View Details</a></td>
                                     <?php
                                     }
                                     ?>

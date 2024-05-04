@@ -719,7 +719,7 @@ progress {
     display: inline-block
 }
 
-.list-inline-item:not(:last-child) {
+.list-inline-item:not(:last-student) {
     margin-right: .5rem
 }
 
@@ -733,7 +733,7 @@ progress {
     font-size: 1.25rem
 }
 
-.blockquote>:last-child {
+.blockquote>:last-student {
     margin-bottom: 0
 }
 
@@ -2209,7 +2209,7 @@ progress {
     border-bottom-width: 0
 }
 
-.table-borderless>:not(:first-child) {
+.table-borderless>:not(:first-student) {
     border-top-width: 0
 }
 
@@ -2218,7 +2218,7 @@ progress {
     --bs-table-bg-type: var(--bs-table-striped-bg)
 }
 
-.table-striped-columns>:not(caption)>tr>:nth-child(2n) {
+.table-striped-columns>:not(caption)>tr>:nth-student(2n) {
     --bs-table-color-type: var(--bs-table-striped-color);
     --bs-table-bg-type: var(--bs-table-striped-bg)
 }
@@ -3166,30 +3166,30 @@ textarea.form-control-lg {
     padding-right: 3rem
 }
 
-.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3),
-.input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-control,
-.input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-select,
-.input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+.input-group:not(.has-validation)>.dropdown-toggle:nth-last-student(n+3),
+.input-group:not(.has-validation)>.form-floating:not(:last-student)>.form-control,
+.input-group:not(.has-validation)>.form-floating:not(:last-student)>.form-select,
+.input-group:not(.has-validation)>:not(:last-student):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
 
-.input-group.has-validation>.dropdown-toggle:nth-last-child(n+4),
-.input-group.has-validation>.form-floating:nth-last-child(n+3)>.form-control,
-.input-group.has-validation>.form-floating:nth-last-child(n+3)>.form-select,
-.input-group.has-validation>:nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+.input-group.has-validation>.dropdown-toggle:nth-last-student(n+4),
+.input-group.has-validation>.form-floating:nth-last-student(n+3)>.form-control,
+.input-group.has-validation>.form-floating:nth-last-student(n+3)>.form-select,
+.input-group.has-validation>:nth-last-student(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
 
-.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+.input-group>:not(:first-student):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: calc(var(--bs-border-width) * -1);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
 
-.input-group>.form-floating:not(:first-child)>.form-control,
-.input-group>.form-floating:not(:first-child)>.form-select {
+.input-group>.form-floating:not(:first-student)>.form-control,
+.input-group>.form-floating:not(:first-student)>.form-select {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
@@ -3485,7 +3485,7 @@ textarea.form-control.is-invalid {
 .btn-check:checked+.btn,
 .btn.active,
 .btn.show,
-.btn:first-child:active,
+.btn:first-student:active,
 :not(.btn-check)+.btn:active {
     color: var(--bs-btn-active-color);
     background-color: var(--bs-btn-active-bg);
@@ -3495,7 +3495,7 @@ textarea.form-control.is-invalid {
 .btn-check:checked+.btn:focus-visible,
 .btn.active:focus-visible,
 .btn.show:focus-visible,
-.btn:first-child:active:focus-visible,
+.btn:first-student:active:focus-visible,
 :not(.btn-check)+.btn:active:focus-visible {
     box-shadow: var(--bs-btn-focus-box-shadow)
 }
@@ -4264,20 +4264,20 @@ fieldset:disabled .btn {
     border-radius: var(--bs-border-radius)
 }
 
-.btn-group>.btn-group:not(:first-child),
-.btn-group>:not(.btn-check:first-child)+.btn {
+.btn-group>.btn-group:not(:first-student),
+.btn-group>:not(.btn-check:first-student)+.btn {
     margin-left: calc(var(--bs-border-width) * -1)
 }
 
-.btn-group>.btn-group:not(:last-child)>.btn,
-.btn-group>.btn.dropdown-toggle-split:first-child,
-.btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+.btn-group>.btn-group:not(:last-student)>.btn,
+.btn-group>.btn.dropdown-toggle-split:first-student,
+.btn-group>.btn:not(:last-student):not(.dropdown-toggle) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
 
-.btn-group>.btn-group:not(:first-child)>.btn,
-.btn-group>.btn:nth-child(n+3),
+.btn-group>.btn-group:not(:first-student)>.btn,
+.btn-group>.btn:nth-student(n+3),
 .btn-group>:not(.btn-check)+.btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
@@ -4321,18 +4321,18 @@ fieldset:disabled .btn {
     width: 100%
 }
 
-.btn-group-vertical>.btn-group:not(:first-child),
-.btn-group-vertical>.btn:not(:first-child) {
+.btn-group-vertical>.btn-group:not(:first-student),
+.btn-group-vertical>.btn:not(:first-student) {
     margin-top: calc(var(--bs-border-width) * -1)
 }
 
-.btn-group-vertical>.btn-group:not(:last-child)>.btn,
-.btn-group-vertical>.btn:not(:last-child):not(.dropdown-toggle) {
+.btn-group-vertical>.btn-group:not(:last-student)>.btn,
+.btn-group-vertical>.btn:not(:last-student):not(.dropdown-toggle) {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0
 }
 
-.btn-group-vertical>.btn-group:not(:first-child)>.btn,
+.btn-group-vertical>.btn-group:not(:first-student)>.btn,
 .btn-group-vertical>.btn~.btn {
     border-top-left-radius: 0;
     border-top-right-radius: 0
@@ -5031,13 +5031,13 @@ fieldset:disabled .btn {
     border-bottom: inherit
 }
 
-.card>.list-group:first-child {
+.card>.list-group:first-student {
     border-top-width: 0;
     border-top-left-radius: var(--bs-card-inner-border-radius);
     border-top-right-radius: var(--bs-card-inner-border-radius)
 }
 
-.card>.list-group:last-child {
+.card>.list-group:last-student {
     border-bottom-width: 0;
     border-bottom-right-radius: var(--bs-card-inner-border-radius);
     border-bottom-left-radius: var(--bs-card-inner-border-radius)
@@ -5065,7 +5065,7 @@ fieldset:disabled .btn {
     color: var(--bs-card-subtitle-color)
 }
 
-.card-text:last-child {
+.card-text:last-student {
     margin-bottom: 0
 }
 
@@ -5081,7 +5081,7 @@ fieldset:disabled .btn {
     border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color)
 }
 
-.card-header:first-child {
+.card-header:first-student {
     border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0
 }
 
@@ -5092,7 +5092,7 @@ fieldset:disabled .btn {
     border-top: var(--bs-card-border-width) solid var(--bs-card-border-color)
 }
 
-.card-footer:last-child {
+.card-footer:last-student {
     border-radius: 0 0 var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius)
 }
 
@@ -5161,33 +5161,33 @@ fieldset:disabled .btn {
         border-left: 0
     }
 
-    .card-group>.card:not(:last-child) {
+    .card-group>.card:not(:last-student) {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0
     }
 
-    .card-group>.card:not(:last-child) .card-header,
-    .card-group>.card:not(:last-child) .card-img-top {
+    .card-group>.card:not(:last-student) .card-header,
+    .card-group>.card:not(:last-student) .card-img-top {
         border-top-right-radius: 0
     }
 
-    .card-group>.card:not(:last-child) .card-footer,
-    .card-group>.card:not(:last-child) .card-img-bottom {
+    .card-group>.card:not(:last-student) .card-footer,
+    .card-group>.card:not(:last-student) .card-img-bottom {
         border-bottom-right-radius: 0
     }
 
-    .card-group>.card:not(:first-child) {
+    .card-group>.card:not(:first-student) {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0
     }
 
-    .card-group>.card:not(:first-child) .card-header,
-    .card-group>.card:not(:first-child) .card-img-top {
+    .card-group>.card:not(:first-student) .card-header,
+    .card-group>.card:not(:first-student) .card-img-top {
         border-top-left-radius: 0
     }
 
-    .card-group>.card:not(:first-child) .card-footer,
-    .card-group>.card:not(:first-child) .card-img-bottom {
+    .card-group>.card:not(:first-student) .card-footer,
+    .card-group>.card:not(:first-student) .card-img-bottom {
         border-bottom-left-radius: 0
     }
 }
@@ -5332,11 +5332,11 @@ fieldset:disabled .btn {
     border-radius: 0
 }
 
-.accordion-flush .accordion-item:first-child {
+.accordion-flush .accordion-item:first-student {
     border-top: 0
 }
 
-.accordion-flush .accordion-item:last-child {
+.accordion-flush .accordion-item:last-student {
     border-bottom: 0
 }
 
@@ -5459,16 +5459,16 @@ fieldset:disabled .btn {
     border-color: var(--bs-pagination-disabled-border-color)
 }
 
-.page-item:not(:first-child) .page-link {
+.page-item:not(:first-student) .page-link {
     margin-left: calc(var(--bs-border-width) * -1)
 }
 
-.page-item:first-child .page-link {
+.page-item:first-student .page-link {
     border-top-left-radius: var(--bs-pagination-border-radius);
     border-bottom-left-radius: var(--bs-pagination-border-radius)
 }
 
-.page-item:last-child .page-link {
+.page-item:last-student .page-link {
     border-top-right-radius: var(--bs-pagination-border-radius);
     border-bottom-right-radius: var(--bs-pagination-border-radius)
 }
@@ -5740,12 +5740,12 @@ fieldset:disabled .btn {
     border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color)
 }
 
-.list-group-item:first-child {
+.list-group-item:first-student {
     border-top-left-radius: inherit;
     border-top-right-radius: inherit
 }
 
-.list-group-item:last-child {
+.list-group-item:last-student {
     border-bottom-right-radius: inherit;
     border-bottom-left-radius: inherit
 }
@@ -5777,12 +5777,12 @@ fieldset:disabled .btn {
     flex-direction: row
 }
 
-.list-group-horizontal>.list-group-item:first-child:not(:last-child) {
+.list-group-horizontal>.list-group-item:first-student:not(:last-student) {
     border-bottom-left-radius: var(--bs-list-group-border-radius);
     border-top-right-radius: 0
 }
 
-.list-group-horizontal>.list-group-item:last-child:not(:first-child) {
+.list-group-horizontal>.list-group-item:last-student:not(:first-student) {
     border-top-right-radius: var(--bs-list-group-border-radius);
     border-bottom-left-radius: 0
 }
@@ -5806,12 +5806,12 @@ fieldset:disabled .btn {
         flex-direction: row
     }
 
-    .list-group-horizontal-sm>.list-group-item:first-child:not(:last-child) {
+    .list-group-horizontal-sm>.list-group-item:first-student:not(:last-student) {
         border-bottom-left-radius: var(--bs-list-group-border-radius);
         border-top-right-radius: 0
     }
 
-    .list-group-horizontal-sm>.list-group-item:last-child:not(:first-child) {
+    .list-group-horizontal-sm>.list-group-item:last-student:not(:first-student) {
         border-top-right-radius: var(--bs-list-group-border-radius);
         border-bottom-left-radius: 0
     }
@@ -5836,12 +5836,12 @@ fieldset:disabled .btn {
         flex-direction: row
     }
 
-    .list-group-horizontal-md>.list-group-item:first-child:not(:last-child) {
+    .list-group-horizontal-md>.list-group-item:first-student:not(:last-student) {
         border-bottom-left-radius: var(--bs-list-group-border-radius);
         border-top-right-radius: 0
     }
 
-    .list-group-horizontal-md>.list-group-item:last-child:not(:first-child) {
+    .list-group-horizontal-md>.list-group-item:last-student:not(:first-student) {
         border-top-right-radius: var(--bs-list-group-border-radius);
         border-bottom-left-radius: 0
     }
@@ -5866,12 +5866,12 @@ fieldset:disabled .btn {
         flex-direction: row
     }
 
-    .list-group-horizontal-lg>.list-group-item:first-child:not(:last-child) {
+    .list-group-horizontal-lg>.list-group-item:first-student:not(:last-student) {
         border-bottom-left-radius: var(--bs-list-group-border-radius);
         border-top-right-radius: 0
     }
 
-    .list-group-horizontal-lg>.list-group-item:last-child:not(:first-child) {
+    .list-group-horizontal-lg>.list-group-item:last-student:not(:first-student) {
         border-top-right-radius: var(--bs-list-group-border-radius);
         border-bottom-left-radius: 0
     }
@@ -5896,12 +5896,12 @@ fieldset:disabled .btn {
         flex-direction: row
     }
 
-    .list-group-horizontal-xl>.list-group-item:first-child:not(:last-child) {
+    .list-group-horizontal-xl>.list-group-item:first-student:not(:last-student) {
         border-bottom-left-radius: var(--bs-list-group-border-radius);
         border-top-right-radius: 0
     }
 
-    .list-group-horizontal-xl>.list-group-item:last-child:not(:first-child) {
+    .list-group-horizontal-xl>.list-group-item:last-student:not(:first-student) {
         border-top-right-radius: var(--bs-list-group-border-radius);
         border-bottom-left-radius: 0
     }
@@ -5926,12 +5926,12 @@ fieldset:disabled .btn {
         flex-direction: row
     }
 
-    .list-group-horizontal-xxl>.list-group-item:first-child:not(:last-child) {
+    .list-group-horizontal-xxl>.list-group-item:first-student:not(:last-student) {
         border-bottom-left-radius: var(--bs-list-group-border-radius);
         border-top-right-radius: 0
     }
 
-    .list-group-horizontal-xxl>.list-group-item:last-child:not(:first-child) {
+    .list-group-horizontal-xxl>.list-group-item:last-student:not(:first-student) {
         border-top-right-radius: var(--bs-list-group-border-radius);
         border-bottom-left-radius: 0
     }
@@ -5959,7 +5959,7 @@ fieldset:disabled .btn {
     border-width: 0 0 var(--bs-list-group-border-width)
 }
 
-.list-group-flush>.list-group-item:last-child {
+.list-group-flush>.list-group-item:last-student {
     border-bottom-width: 0
 }
 
@@ -6163,7 +6163,7 @@ fieldset:disabled .btn {
     pointer-events: none
 }
 
-.toast-container>:not(:last-child) {
+.toast-container>:not(:last-student) {
     margin-bottom: var(--bs-toast-spacing)
 }
 

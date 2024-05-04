@@ -159,7 +159,7 @@ if(isset($_GET['teacherid'])){
     ],
     "appointments": [
         {
-            "child": "1",
+            "student": "1",
             "teacher": "1",
             "wanted": "0",
             "available": [
@@ -168,7 +168,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
+            "student": "1",
             "teacher": "2",
             "wanted": "0",
             "available": [
@@ -177,7 +177,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
+            "student": "1",
             "teacher": "3",
             "wanted": "0",
             "available": [
@@ -186,7 +186,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "1",
             "wanted": "0",
             "available": [
@@ -195,7 +195,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "2",
             "wanted": "0",
             "available": [
@@ -204,7 +204,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "3",
             "wanted": "0",
             "available": [
@@ -213,7 +213,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "1",
             "wanted": "0",
             "available": [
@@ -222,7 +222,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "2",
             "wanted": "0",
             "available": [
@@ -231,7 +231,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "3",
             "wanted": "0",
             "available": [
@@ -240,7 +240,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
+            "student": "1",
             "teacher": "1",
             "wanted": "1",
             "available": [
@@ -249,7 +249,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
+            "student": "1",
             "teacher": "2",
             "wanted": "1",
             "available": [
@@ -258,7 +258,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
+            "student": "1",
             "teacher": "3",
             "wanted": "1",
             "available": [
@@ -267,7 +267,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "1",
             "wanted": "1",
             "available": [
@@ -276,7 +276,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "2",
             "wanted": "1",
             "available": [
@@ -285,7 +285,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "2",
             "teacher": "3",
             "wanted": "1",
             "available": [
@@ -294,7 +294,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "1",
             "wanted": "1",
             "available": [
@@ -303,7 +303,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "2",
             "wanted": "1",
             "available": [
@@ -312,7 +312,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "3",
             "teacher": "3",
             "wanted": "1",
             "available": [
@@ -321,34 +321,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "1",
-            "teacher": "1",
-            "wanted": "0",
-            "available": [
-                "18:00",
-                "18:30"
-            ]
-        },
-        {
-            "child": "1",
-            "teacher": "2",
-            "wanted": "0",
-            "available": [
-                "18:00",
-                "18:30"
-            ]
-        },
-        {
-            "child": "1",
-            "teacher": "3",
-            "wanted": "0",
-            "available": [
-                "18:00",
-                "18:30"
-            ]
-        },
-        {
-            "child": "2",
+            "student": "1",
             "teacher": "1",
             "wanted": "0",
             "available": [
@@ -357,7 +330,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "1",
             "teacher": "2",
             "wanted": "0",
             "available": [
@@ -366,7 +339,7 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "2",
+            "student": "1",
             "teacher": "3",
             "wanted": "0",
             "available": [
@@ -375,7 +348,34 @@ if(isset($_GET['teacherid'])){
             ]
         },
         {
-            "child": "3",
+            "student": "2",
+            "teacher": "1",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "student": "2",
+            "teacher": "2",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "student": "2",
+            "teacher": "3",
+            "wanted": "0",
+            "available": [
+                "18:00",
+                "18:30"
+            ]
+        },
+        {
+            "student": "3",
             "teacher": "1",
             "wanted": "0",
             "available": [
@@ -478,8 +478,8 @@ foreach ($students as $student) {
     array_push($arr["children"], (string)$student->getId());
 }
 //generate all the appointments
-foreach ($arr["children"] as $child) {
-    $studentTeacher = $studentTeachers[$child];
+foreach ($arr["children"] as $student) {
+    $studentTeacher = $studentTeachers[$student];
     foreach ($studentTeacher as $teacher) {
         $wanted = 0;
         $available = array();
@@ -487,7 +487,7 @@ foreach ($arr["children"] as $child) {
         array_push($available, "17:00");
         array_push($available, "19:30");
         $appointment = array(
-            "child" => (string)$child,
+            "student" => (string)$student,
             "teacher" => (string)$teacher,
             "wanted" => (string)$wanted,
             "available" => $available

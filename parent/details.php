@@ -2,8 +2,8 @@
 require_once '../utils.php';
 require_once '../classdefs.php';
 require_once './putils.php';
-//event and child details check
-if (!isset($_GET['child'])) {
+//event and student details check
+if (!isset($_GET['student'])) {
     header('Location: ../parent/index.php');
     exit();
 }
@@ -12,9 +12,9 @@ if (!isset($_GET['event'])) {
     exit();
 }
 $event = new Event($_GET['event']);
-$child = new Student($_GET['child']);
+$student = new Student($_GET['student']);
 $event->update();
-$child->update();
+$student->update();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,8 +113,8 @@ $child->update();
                         </thead>
                         <tbody>
                             <?php
-                            $classes = get_all_classes_of_student_for_event($_GET['child'], $_GET['event']);
-                            $slots = get_all_prefslots_of_event_of_student($_GET['child'], $_GET['event']);
+                            $classes = get_all_classes_of_student_for_event($_GET['student'], $_GET['event']);
+                            $slots = get_all_prefslots_of_event_of_student($_GET['student'], $_GET['event']);
                             foreach ($classes as $class) {
                                 $class->update();
                                 $teachers = $class->getTeachers();

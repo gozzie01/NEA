@@ -993,7 +993,7 @@ class Slot
         $this->Duration = $Duration;
     }
     public function setTeacher($Teacher)
-    {f
+    {
         $this->Teacher = $Teacher;
     }
     public function setEventID($Event)
