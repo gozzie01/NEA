@@ -1,0 +1,54 @@
+{
+    "appointments": [
+        {
+            "parent": 3,
+            "slot": 1,
+            "teacher": 95
+        },
+        {
+            "parent": 3,
+            "slot": 3,
+            "teacher": 32
+        },
+        {
+            "parent": 3,
+            "slot": 2,
+            "teacher": 95
+        },
+        {
+            "parent": 9470,
+            "slot": 0,
+            "teacher": 11319
+        },
+        {
+            "parent": 3,
+            "slot": 4,
+            "teacher": 13640
+        },
+        {
+            "parent": 3,
+            "slot": -2,
+            "teacher": 11319
+        },
+        {
+            "parent": 3,
+            "slot": 0,
+            "teacher": 19629
+        },
+        {
+            "parent": 3,
+            "slot": 3,
+            "teacher": 30071
+        },
+        {
+            "parent": 3,
+            "slot": 4,
+            "teacher": 13641
+        },
+        {
+            "parent": 3,
+            "slot": 2,
+            "teacher": 13641
+        }
+    ]
+}

@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     try {
         $events = get_all_events();
         foreach ($events as $Event) {
+            $Event->update();
             echo "<tr id=EventRow", $Event->getID(), ">";
             echo "<td style='width: 3%;'>", $Event->getID(), "</td>";
             echo "<td >", $Event->getName(), "</td>";
@@ -17,7 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
             echo "<td>", $Event->getSlotDuration(), "</td>";
             echo "<td>", $Event->getYear(), "</td>";
             //link to bookings page with event id
-            echo "<td><button class='btn btn-primary' onclick="."location.href='/admin/bookings.php?event=". $Event->getID(). "' type='button'>View Bookings</button></td>";
+            //link to bookings if its less than 3
+            //else link to booked page
+            if ($Event->getStatus() < 3) {
+                $link = 'bookings.php?event=' . $Event->getID();
+            } else {
+                $link = 'booked.php?event=' . $Event->getID();
+            }
+            echo "<td><button class='btn btn-primary' onclick=" . "location.href='", $link, "' type='button'>View Bookings</button></td>";
             echo "<td style='width: 8.8%;'><button type='button' class='btn btn-danger' id='delete", $Event->getID(), "'>Delete</button></td>";
             echo "</tr>";
         }
@@ -26,13 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
     exit();
 }
 
-
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generateTimetable'])) {
+}
 //get the Event id from the request
 //if its a post get the post id if not try to get it from get
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventID'])) {
     try {
-        $id = $_POST['id']; 
+        $id = $_POST['id'];
         $id = intval($id);
         //get the Event object from the database
         $Event = new Event($id);
@@ -76,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
         //check if the Event exists
         if (event_exists($id)) {
             //update the Event
-            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, null , $slotDuration, $year);
+            $respon = update_event($id, $name, $startTime, $endTime, $openTime, $closeTime, null, $slotDuration, $year);
         } else {
             //create the Event
             $respon = create_event($name, $startTime, $endTime, $openTime, $closeTime, 0, $slotDuration, $year);
@@ -170,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+
         function updateTable() {
             $.ajax({
                 type: "POST",
@@ -290,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
         });
-        $(document).on('click', '#addEventButton', function(e){
+        $(document).on('click', '#addEventButton', function(e) {
             e.preventDefault;
             //get event id form
             var EventID = $('#EventID').val();
@@ -325,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         var response = JSON.parse(this.responseText);
                         if (response.error) {
                             $('#error').html(response.error);
-                            
+
                         } else {
                             if (response.success) {
                                 $('#error').html(response.success);
@@ -448,14 +457,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <tr>
                                     <th scope="col" style='width: 3%;'>ID</th>
                                     <th scope="col">Event Name</th>
-                                    <th scope="col">Start Time</th> 
-                                    <th scope="col"  >End Time</th>
+                                    <th scope="col">Start Time</th>
+                                    <th scope="col">End Time</th>
                                     <th scope="col">Open Time</th>
-                                    <th scope="col" >Close Time</th>
+                                    <th scope="col">Close Time</th>
                                     <th scope="col">Slot Len</th>
-                                    <th scope="col" >Year</th>
-                                    <th scope="col" >view</th>
-                                    <th scope="col" >Delete</th>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">view</th>
+                                    <th scope="col">Delete</th>
                                 </tr>
                             </thead>
                             <tbody id="mainbody">

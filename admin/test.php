@@ -1,9 +1,10 @@
-<?
+<?php
 require_once '../email.php';
 require_once '../utils.php';
 require_once '../classdefs.php';
 require_once './autils.php';
 //stress test the get classes function of the classes page
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +26,11 @@ require_once './autils.php';
 </head>
 
 <body>
-<?php
-//write the json to the page of the prefslot
-?>
+    <?php
+    generate_timetable(4);
+
+    //write the json to the page of the prefslot
+    ?>
 </body>
 <?php
 /*
@@ -429,7 +432,6 @@ if(isset($_GET['teacherid'])){
         }
     ]
 } */
-$students = get_all_students_in_year(13);
 //for each student generate a test timetabling json
 //do not put any classes with Zz, Zy, 13T or Sz in the name
 //for each student, get all the classes

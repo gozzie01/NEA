@@ -1923,7 +1923,7 @@ function get_all_PrefSlots_of_event($event)
     $Student = "";
     $Parent = "";
 
-    $sql = "SELECT ID, StartTime, EndTime, Teacher, EventID, Class, Student, Parent FROM PrefferedTime WHERE Event=? ORDER BY ID";
+    $sql = "SELECT ID, StartTime, EndTime, Teacher, EventID, Class, Student, Parent FROM PrefferedTime WHERE EventID=? ORDER BY ID";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $event);
     $stmt->execute();
@@ -2036,6 +2036,22 @@ function get_wanted_classids_of_student($student)
     $sql = "SELECT ClassID FROM Wanted WHERE StudentID = ?";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $student);
+    $stmt->execute();
+    $stmt->bind_result($classid);
+    while ($stmt->fetch()) {
+        $classes[] = $classid;
+    }
+    $stmt->close();
+    return $classes;
+}
+
+function get_wanted_classids_of_student_of_event($student, $event)
+{
+    $classid = "";
+    $classes = array();
+    $sql = "SELECT ClassID FROM Wanted WHERE StudentID = ? AND EventID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $student, $event);
     $stmt->execute();
     $stmt->bind_result($classid);
     while ($stmt->fetch()) {
@@ -2873,6 +2889,132 @@ function get_all_slots_of_event_of_teacher($eventid, $teacher)
     return $slots;
 }
 
+function generate_timetable($eventid)
+{
+    $slots = get_all_prefslots_of_event($eventid);
+    echo count($slots);
+    $event = new Event($eventid);
+    $event->update();
+
+    //a json needs to be written to a file with the following format
+    /*
+    duration: length of the event in number of slots
+    teachers: the ids of the teachers
+    parents: the ids of the parents
+    wantedAppointments: 
+    [
+        {
+            teacher: the id of the teacher
+            parent: the id of the parent
+        }
+    ]
+    Appointments:
+    [
+        {
+            teacher: the id of the teacher
+            parent: the id of the parent
+        }
+    ]
+    TeacherMin:
+    [
+        earliest time the teacher can start
+    ]
+    TeacherMax:
+    [
+        latest time the teacher can start
+    ]
+    ParentMin:
+    [
+        earliest time the parent can start
+    ]
+    ParentMax:
+    [
+        latest time the parent can start
+    ]
+    */
+    //loop through all the slots to make a parent and teacher array
+    //get the legnth of the event in minutes then divide by the duration of the slots to get the number of slots
+    $StartTime = new DateTime($event->getStartTime());
+    $EndTime = new DateTime($event->getEndTime());
+    $length = $StartTime->diff($EndTime)->i;
+    $length = (int) $length;
+    echo $length;
+    $duration = (int)($length / $event->getSlotDuration());
+    echo $duration;
+    $teachers = array();
+    $parents = array();
+    foreach ($slots as $slot) {
+        if (!in_array($slot->getTeacher(), $teachers)) {
+            $teachers[] = $slot->getTeacher();
+        }
+        if (!in_array($slot->getParent(), $parents)) {
+            $parents[] = $slot->getParent();
+        }
+    }
+    $teacherMin = array();
+    $teacherMax = array();
+    $parentMin = array();
+    $parentMax = array();
+    //just set teacher min to 0 and teacher max to duration
+    for ($i = 0; $i < count($teachers); $i++) {
+        $teacherMin[] = 0;
+        $teacherMax[] = $duration;
+    }
+    //for each parent get their min and max from thier pref slots
+    for ($i = 0; $i < count($parents); $i++) {
+        $min = new DateTime("0:00");
+        $max = new DateTime("0:00");
+        foreach ($slots as $slot) {
+            if ($slot->getParent() == $parents[$i]) {
+                if (new DateTime($slot->getStartTime()) < $min) {
+                    $min = new DateTime($slot->getStartTime());
+                }
+                if (new DateTime($slot->getEndTime()) > $max) {
+                    $max = new DateTime($slot->getEndTime());
+                }
+            }
+        }
+        //convert the times to a number of slots from the start, by difference / slot duration
+
+        $parentMin[] = (int)(($min->diff($StartTime))->i / $event->getSlotDuration());
+        $parentMax[] = (int)(($max->diff($StartTime))->i / $event->getSlotDuration());
+    }
+    $wantedAppointments = array();
+    $appointments = array();
+    //for each slot check if the class is in the students wanted list
+    foreach ($slots as $slot) {
+        if (in_array($slot->getClass(), get_wanted_classids_of_student_of_event($slot->getStudent(), $eventid))) {
+            $wantedAppointments[] = array("teacher" => $slot->getTeacher(), "parent" => $slot->getParent());
+        } else {
+            $appointments[] = array("teacher" => $slot->getTeacher(), "parent" => $slot->getParent());
+        }
+    }
+    $timetable = array(
+        "duration" => $duration,
+        "teachers" => $teachers,
+        "parents" => $parents,
+        "wantedAppointments" => $wantedAppointments,
+        "appointments" => $appointments,
+        "teacherMin" => $teacherMin,
+        "teacherMax" => $teacherMax,
+        "parentMin" => $parentMin,
+        "parentMax" => $parentMax
+    );
+    $json = json_encode($timetable);
+    echo $json;
+    //write it to a json file in the folder TimetableGenerator
+    $file = fopen("E:/projects/php/php/src/Admin/input.json", "w");
+    fwrite($file, $json);
+    fclose($file);
+    $ea = exec("E:\projects\php\php\src\TimetableGenerator\TimetableGenerator.exe", $output, $return_var);
+    echo $ea;
+    echo count($output);
+    foreach ($output as $line) {
+        echo $line;
+    }
+
+}
+
 function get_all_slots()
 {
     $ID = "";
@@ -2961,6 +3103,11 @@ function sendAllEmails()
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
     header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
+}
+if(file_exists("E:/projects/php/php/src/TimetableGenerator/output.json")){
+    $file = fopen("E:/projects/php/php/src/TimetableGenerator/output.json", "r");
+    $json = fgets($file);
+    fclose($file);
 }
 //when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
 if (file_exists("autoemailtimer.txt")) {

@@ -649,7 +649,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1>Preffered Slots</h1>
+                    <h1>Preferred Slots</h1>
                     <p>Here you can view all the slots</p>
                     <input class="form-control" id="myInput" type="text" onkeyup="searchupdate()" placeholder="Search..">
                     <div class="well">

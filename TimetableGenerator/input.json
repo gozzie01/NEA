@@ -1,0 +1,86 @@
+{
+    "duration": 6,
+    "teachers": [
+        11319,
+        13640,
+        19629,
+        30071,
+        95,
+        13641,
+        32
+    ],
+    "parents": [
+        9470,
+        3
+    ],
+    "wantedAppointments": [
+        {
+            "teacher": 95,
+            "parent": 3
+        },
+        {
+            "teacher": 32,
+            "parent": 3
+        },
+        {
+            "teacher": 95,
+            "parent": 3
+        }
+    ],
+    "Appointments": [
+        {
+            "teacher": 11319,
+            "parent": 9470
+        },
+        {
+            "teacher": 13640,
+            "parent": 3
+        },
+        {
+            "teacher": 11319,
+            "parent": 3
+        },
+        {
+            "teacher": 19629,
+            "parent": 3
+        },
+        {
+            "teacher": 30071,
+            "parent": 3
+        },
+        {
+            "teacher": 13641,
+            "parent": 3
+        },
+        {
+            "teacher": 13641,
+            "parent": 3
+        }
+    ],
+    "TeacherMin": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "TeacherMax": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+    ],
+    "ParentMin": [
+        0,
+        0
+    ],
+    "ParentMax": [
+        6,
+        6
+    ]
+}   
