@@ -33,10 +33,16 @@ require_once './tutils.php';
                             $slots = get_all_slots_of_event_of_teacher($event->getID(), $student->getID());
                             foreach ($slots as $slot) {
                                 $class = new Class_($slot->getClass());
+                                $class->update();
+                                $student = new Student($slot->getStudent());
+                                $student->update();
+                                $parent = new Parent_($slot->getParent());
+                                $parent->update();
                                 echo "<tr>";
                                 echo "<td>" . $class->getName() . "</td>";
-                                echo "<td>" . $slot->getTeacherName() . "</td>";
-                                echo "<td>" . $slot->getStartTime(). "</td>";
+                                echo "<td>" . $student->getName() . "</td>";
+                                echo "<td>" . $parent->getName() . "</td>";
+                                echo "<td>" . $slot->getStartTime() . "</td>";
                                 echo "</tr>";
                             }
                             ?>
