@@ -2785,9 +2785,42 @@ function get_all_slots_of_event($eventid)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Slot WHERE EventID = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName);
+    $slots = array();
+    while ($stmt->fetch()) {
+        $slots[] = new Slot($ID);
+        $slots[count($slots) - 1]->setStartTime($StartTime);
+        $slots[count($slots) - 1]->setDuration($Duration);
+        $slots[count($slots) - 1]->setTeacher($Teacher);
+        $slots[count($slots) - 1]->setClass($Class);
+        $slots[count($slots) - 1]->setStudent($Student);
+        $slots[count($slots) - 1]->setParent($Parent);
+        $slots[count($slots) - 1]->setClassName($ClassName);
+        $slots[count($slots) - 1]->setTeacherName($TeacherName);
+        $slots[count($slots) - 1]->setEventID($eventid);
+    }
+    $stmt->close();
+    return $slots;
+}
+
+function get_all_slots_of_event_of_student($eventid, $student)
+{
+    $ID = "";
+    $StartTime = "";
+    $Duration = "";
+    $Teacher = "";
+    $Class = "";
+    $Student = "";
+    $Parent = "";
+    $ClassName = "";
+    $TeacherName = "";
+    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? AND Student = ? ORDER BY StartTime";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $eventid, $student);
     $stmt->execute();
     $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName);
     $slots = array();

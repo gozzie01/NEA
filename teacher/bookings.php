@@ -50,6 +50,7 @@ $teacher = $_SESSION['teacher'];
 </head>
 <?php require_once('../teacher/nav.php'); ?>
 <br>
+
 <body>
     <div class="container-fluid" style="width: 100%;">
         <div class="row" style="width: 100%;">
@@ -81,7 +82,23 @@ $teacher = $_SESSION['teacher'];
                                     <td><?php echo $numberTotal; ?></td>
                                     <td><?php echo $numberAttempted; ?></td>
                                     <td><?php echo $numberBooked; ?></td>
-                                    <td><a href="./details.php?event=<?php echo $event->getID(); ?>">View</a></td>
+                                    <td>
+                                        <?php
+                                        if ($event->getStatus() < 3) {
+                                        ?>
+                                            <a href="details.php?event=<?php echo $event->getID(); ?>" class="btn btn-primary">View</a>
+                                        <?php
+                                        } elseif ($event->getStatus() == 4) {
+                                        ?>
+                                            <a href="detailsBooked.php?event=<?php echo $event->getID(); ?>" class="btn btn-primary">View</a>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            Event is being booked
+                                        <?php
+                                        }
+                                        ?>
+                                    </td>
                                 </tr>
                             <?php
                             }

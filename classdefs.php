@@ -748,6 +748,9 @@ class Event
         }
         return false;
     }
+    public function isBooked(){
+        return $this->status == 4;
+    }
     public function setName($name)
     {
         $this->name = $name;

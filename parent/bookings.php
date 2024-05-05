@@ -77,6 +77,7 @@ if (!isset($_GET['student'])) {
                             $student = $_GET['student'];
                             $events = get_all_events_of_student($student);
                             foreach ($events as $event) {
+                                $event->update();
                                 $numberSelected = get_number_of_prefSlots_of_event_of_student($event->getID(), $student);
                                 $numberBooked = get_number_of_slots_of_event_of_student($event->getID(), $student);
                             ?>
@@ -89,9 +90,14 @@ if (!isset($_GET['student'])) {
                                     ?>
                                         <td><a href="details.php?event=<?php echo $event->getID(); ?>&student=<?php echo $student; ?>">View Details</a></td>
                                     <?php
-                                    } else {
+                                    } elseif ($event->isBooked()) {
                                     ?>
                                         <td><a href="detailsBooked.php?event=<?php echo $event->getID(); ?>&student=<?php echo $student; ?>">View Details</a></td>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <td>Booking not open</td>
+
                                     <?php
                                     }
                                     ?>
