@@ -2785,7 +2785,7 @@ function get_all_slots_of_event($eventid)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $eventid);
     $stmt->execute();
@@ -2818,7 +2818,7 @@ function get_all_slots_of_event_of_student($eventid, $student)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? AND Student = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? AND Student = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $eventid, $student);
     $stmt->execute();
@@ -2851,7 +2851,7 @@ function get_all_slots_of_event_of_teacher($eventid, $teacher)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? AND Teacher = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE Event = ? AND Teacher = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $eventid, $teacher);
     $stmt->execute();
@@ -2885,7 +2885,7 @@ function get_all_slots()
     $ClassName = "";
     $TeacherName = "";
     $EventID = "";
-    $sql = "SELECT ID, StartTime, SlotDuration, Teacher, Class, Student, Parent, ClassName, TeacherName, EventID FROM Slot ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName, EventID FROM Times ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName, $EventID);

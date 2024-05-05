@@ -72,6 +72,7 @@ $teacher = $_SESSION['teacher'];
                             <?php
                             $events = get_all_events_of_teacher($teacher);
                             foreach ($events as $event) {
+                                $event->update();
                                 $numberTotal = get_number_of_students_of_event_of_teacher($event->getID(), $teacher);
                                 $numberAttempted = get_number_of_prefSlots_of_event_of_teacher($event->getID(), $teacher);
                                 $numberBooked = get_number_of_slots_of_event_of_teacher($event->getID(), $teacher);

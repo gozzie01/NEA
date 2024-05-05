@@ -3,6 +3,17 @@ require_once '../utils.php';
 require_once '../classdefs.php';
 //check if the user is logged in
 require_once './tutils.php';
+//event and student details check
+
+if (!isset($_GET['event'])) {
+    header('Location: ../teacher/index.php');
+    exit();
+}
+
+$event = new Event($_GET['event']);
+$event->update();
+$teacher = new Teacher($_SESSION['teacher']);
+$teacher->update();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +41,7 @@ require_once './tutils.php';
                         </thead>
                         <tbody>
                             <?php
-                            $slots = get_all_slots_of_event_of_teacher($event->getID(), $student->getID());
+                            $slots = get_all_slots_of_event_of_teacher($event->getID(), $teacher->getID());
                             foreach ($slots as $slot) {
                                 $class = new Class_($slot->getClass());
                                 $class->update();
