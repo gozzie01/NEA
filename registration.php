@@ -92,11 +92,18 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                         $("#email").addClass("is-invalid");
                         return;
                     }
-                    //check if the password is valid
-                    if (password.length < 1) {
+                    //check if the password is valid (length > 6) and contains a number and a letter
+                    if (password.length < 6) {
                         //if the password is not valid then we can display an error message
                         $("#password").addClass("is-invalid");
                         return;
+                    } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+                        //if the password is not valid then we can display an error message
+                        $("#password").addClass("is-invalid");
+                        return;
+                    } else {
+                        //if the password is valid then we can remove the error message
+                        $("#password").removeClass("is-invalid");
                     }
                     //replace leading 01 and 07 with +44 and add + if start with 44
                     var phone = $("#phone").val();
@@ -119,6 +126,9 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                         $("#phone").addClass("is-invalid");
                         return;
                     }
+                    //if the phone number is valid then we can remove the error message
+                    $("#phone").removeClass("is-invalid");
+                    //checl tj
                     //submit the form
                     $("#registerButton").prop("disabled", true);
                     //just popup box for testing
@@ -142,6 +152,7 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                 } else if (phone.startsWith("01")) {
                     phone = "+44" + phone.substring(1);
                 }
+                
 
                 //create a http request to post the register form
                 var xhttp = new XMLHttpRequest();
@@ -181,7 +192,7 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                         <div class="form-group">
                             <label for="email">Email address</label>
                             <input id="email" name="email" type="email" class="form-control" placeholder="<?php echo $Emailfromtoken; ?>" value="<?php echo $Emailfromtoken; ?>" disabled>
-                            <small id="emailHelp" class="form-text text-muted mb-2">We'll never share your email with anyone else.</small>
+                            <small id="emailHelp" class="form-text text-muted mb-2">We'll never share your email address with anyone else.</small>
                             <div class="invalid-feedback">
                                 Please enter a valid email address.
                             </div>
@@ -198,7 +209,9 @@ if (isset($_GET['token']) && is_token_valid($_GET['token'])) {
                             <label for="password">Password</label>
                             <input id="password" name="password" type="password" class="form-control" placeholder="Password" required>
                             <div class="invalid-feedback">
-                                Please enter a password.
+                                Please enter a valid password.
+                                <br>
+                                (At least 6 characters long, containing a number and a letter)
                             </div>
                         </div>
                         <br>

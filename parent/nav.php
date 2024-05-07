@@ -51,11 +51,11 @@ $_SESSION['student'] = isset($_GET['student']) ? intval($_GET['student']) : null
                     <?php
                     //get the children of the parent
                     //loop through the children and display them as options
-                    foreach ($children as $student) {
-                        if (isset($_SESSION['student']) && $_SESSION['student'] == $student) {
-                            echo "<option selected value=", strval($student), ">", get_student_name(intval($student)), "</option>";
+                    foreach ($children as $studentID) {
+                        if (isset($_SESSION['student']) && $_SESSION['student'] == $studentID) {
+                            echo "<option selected value=", strval($studentID), ">", get_student_name(intval($studentID)), "</option>";
                         } else {
-                            echo "<option value=", strval($student), ">", get_student_name(intval($student)), "</option>";
+                            echo "<option value=", strval($studentID), ">", get_student_name(intval($studentID)), "</option>";
                         }
                     }
                     ?>

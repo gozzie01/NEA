@@ -524,6 +524,7 @@ class Account
     private $email;
     private $resettoken;
     private $resettokensenttime;
+    private $admin;
     private $phone;
     private $password;
     private $teacherid;
@@ -536,11 +537,11 @@ class Account
     {
         $id = $this->id;
         //sql for username
-        $sql = "SELECT Email, Password, ResetToken, ResetEmailSentTime FROM User WHERE ID=?";
+        $sql = "SELECT Email, Password, ResetToken, ResetEmailSentTime, Admin FROM User WHERE ID=?";
         $stmt = $GLOBALS['db']->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->bind_result($this->email, $this->password, $this->resettoken, $this->resettokensenttime);
+        $stmt->bind_result($this->email, $this->password, $this->resettoken, $this->resettokensenttime, $this->admin);
         $stmt->fetch();
         $stmt->close();
         //sql for teacherid
@@ -604,6 +605,10 @@ class Account
     {
         return $this->phone;
     }
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
     public function getResetToken()
     {
         return $this->resettoken;
@@ -643,6 +648,10 @@ class Account
     public function setPhone($phone)
     {
         $this->phone = $phone;
+    }
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
     }
 }
 

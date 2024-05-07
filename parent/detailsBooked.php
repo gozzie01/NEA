@@ -78,9 +78,10 @@ $student->update();
                         </thead>
                         <tbody>
                             <?php
-                            $slots = get_all_slots_of_event_of_student($event->getID(), $student->getID());
+                            $slots = get_all_slots_of_event_of_student($event->getID(), $student->getId());
                             foreach ($slots as $slot) {
                                 $class = new Class_($slot->getClass());
+                                $class->update();
                                 echo "<tr>";
                                 echo "<td>" . $class->getName() . "</td>";
                                 echo "<td>" . $slot->getTeacherName() . "</td>";

@@ -5,34 +5,34 @@ require_once '../classdefs.php';
 require_once './autils.php';
 //
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gettabledata'])) {
-    try {
-        //if post has event id set then get the event id
-        if (isset($_POST['eventid'])) {
-            $eventid = $_POST['eventid'];
-            //use get timess by event id
-            $timess = get_all_PrefSlots_of_event($eventid);
-        } else {
-            //use get all timess
-            $timess = get_all_PrefSlots();
-        }
-        //if the timess array is not empty
-        if ($timess) {
-            foreach ($timess as $timess) {
-                echo "<tr>";
-                echo "<td>" . $timess->getId() . "</td>";
-                echo "<td>" . $timess->getEvent() . "</td>";
-                echo "<td>" . $timess->getStartTime() . "</td>";
-                echo "<td>" . $timess->getEndTime() . "</td>";
-                echo "<td style='width: 12%'>" . $timess->getParent() . "</td>";
-                echo "<td style='width: 11%'>" . $timess->getStudent() . "</td>";
-                echo "<td style='width: 11%'>" . $timess->getTeacher() . "</td>";
-                echo "<td style='width: 11%'>" . $timess->getClass() . "</td>";
-                echo "<td style='width: 9%'><button type='button' id='delete" . $timess->getId() . "' class='btn btn-danger'>Delete</button></td>";
-                echo "</tr>";
-            }
-        }
-    } catch (Exception $e) {
+    echo "a";
+    //if post has event id set then get the event id
+    if (isset($_POST['eventid'])) {
+        $eventid = $_POST['eventid'];
+        //use get timess by event id
+        $timess = get_all_Slots_of_event($eventid);
+        echo count($timess);
+    } else {
+        //use get all timess
+        $timess = get_all_Slots();
     }
+    //if the timess array is not empty
+    if ($timess) {
+        foreach ($timess as $timess) {
+            echo "<tr>";
+            echo "<td>" . $timess->getId() . "</td>";
+            echo "<td>" . $timess->getEventID() . "</td>";
+            echo "<td>" . $timess->getStartTime() . "</td>";
+            echo "<td>" . $timess->getDuration() . "</td>";
+            echo "<td style='width: 12%'>" . $timess->getParent() . "</td>";
+            echo "<td style='width: 11%'>" . $timess->getStudent() . "</td>";
+            echo "<td style='width: 11%'>" . $timess->getTeacher() . "</td>";
+            echo "<td style='width: 11%'>" . $timess->getClass() . "</td>";
+            echo "<td style='width: 9%'><button type='button' id='delete" . $timess->getId() . "' class='btn btn-danger'>Delete</button></td>";
+            echo "</tr>";
+        }
+    }
+
     exit();
 }
 
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 requests = [
                     $.ajax({
                         type: "POST",
-                        url: "/admin/bookings.php",
+                        url: "/admin/booked.php",
                         data: {
                             getStudentSelector: true,
                             event: event
@@ -263,40 +263,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }),
                     $.ajax({
                         type: "POST",
-                        url: "/admin/bookings.php",
+                        url: "/admin/booked.php",
                         data: {
                             getParentSelector: true
                         }
                     }),
                     $.ajax({
                         type: "POST",
-                        url: "/admin/bookings.php",
+                        url: "/admin/booked.php",
                         data: {
                             getEventSelector: true
                         }
                     }),
                     $.ajax({
                         type: "POST",
-                        url: "/admin/bookings.php",
+                        url: "/admin/booked.php",
                         data: {
                             getTeacherSelector: true
                         }
                     }),
                     $.ajax({
                         type: "POST",
-                        url: "/admin/bookings.php",
+                        url: "/admin/booked.php",
                         data: {
                             getClassSelector: true,
                             event: event
                         }
 
-                    }),
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/bookings.php",
-                        data: {
-                            gettabledata: true
-                        }
                     })
                 ];
             } catch (error) {
@@ -314,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (error) {
                 alert(error);
             }
-
+            updateTable();
             //add the options to account selector and student selector
             //make the multiselects searchable and 
 
@@ -354,7 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function updateTable() {
             $.ajax({
                 type: "POST",
-                url: "/admin/bookings.php",
+                url: "/admin/booked.php",
                 data: {
                     gettabledata: true
                 },
@@ -376,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //get the times object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/bookings.php",
+                url: "/admin/booked.php",
                 data: {
                     gettimesID: true,
                     id: timesID
@@ -486,7 +479,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                 };
-                xhttp.open("POST", "/admin/bookings.php", true);
+                xhttp.open("POST", "/admin/booked.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xhttp.send("updatetimes=true&id=" + $id + "&startTime=" + $startTime + "&endTime=" + $endTime + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
             } else {
@@ -500,7 +493,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 //get the times object from the database
                 $.ajax({
                     type: "POST",
-                    url: "/admin/bookings.php",
+                    url: "/admin/booked.php",
                     data: {
                         gettimesID: true,
                         id: timesID
@@ -550,7 +543,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             };
-            xhttp.open("POST", "/admin/bookings.php", true);
+            xhttp.open("POST", "/admin/booked.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhttp.send("updatetimes=true&id=" + $id + "&startTime=" + $startTime + "&endTime=" + $endTime + "&teacher=" + $teacher + "&event=" + $event + "&class=" + $class + "&student=" + $student + "&parent=" + $parent);
         });
@@ -567,7 +560,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/bookings.php",
+                url: "/admin/booked.php",
                 data: {
                     gettimesID: true,
                     id: timesID
@@ -591,7 +584,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //get the teacher object from the database
             $.ajax({
                 type: "POST",
-                url: "/admin/bookings.php",
+                url: "/admin/booked.php",
                 data: {
                     deletetimes: true,
                     id: timesID

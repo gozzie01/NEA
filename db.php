@@ -2,12 +2,17 @@
 //db details
 
 //read details from db.details
-$file = fopen("E:\projects\php\php\src\db.details", "r");
+global $rootPath;
+$rootPath = "E:/projects/php/php/src";
+
+$file = fopen($rootPath . "\db.details", "r");
 $dbHost = trim(fgets($file));
 $dbUsername = trim(fgets($file));
 $dbpassword = trim(fgets($file));
 $dbName = trim(fgets($file));
 fclose($file);
+
+
 
 //Connect and select the database
 /*db layout:

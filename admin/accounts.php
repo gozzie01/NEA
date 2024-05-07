@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
     $Account_Phone = $Account->getPhone();
     $Account_ParentID = $Account->getParentID();
     $Account_TeacherID = $Account->getTeacherID();
+    $Account_Admin = $Account->getAdmin();
     //format the json response
     $response = array(
         "id" => $Account_id,
@@ -24,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getAccountID'])) {
         "email" => $Account_Email,
         "phone" => $Account_Phone,
         "parentid" => $Account_ParentID,
-        "teacherid" => $Account_TeacherID
-
+        "teacherid" => $Account_TeacherID,
+        "admin" => $Account_Admin
     );
     echo json_encode($response);
     exit();
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
     $phone = $_POST['phone'];
     $parentid = $_POST['parentid'];
     $teacherid = $_POST['teacherid'];
-
+    $admin = $_POST['admin'];
     //check if the values passed are valid
     //format the variables properly
     $id = intval($id);
@@ -82,6 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         );
         echo json_encode($response);
         exit();
+    }
+    //admin must be either 0 or 1, if it is not 1 set it to 0
+    if ($admin != 1) {
+        $admin = 0;
     }
     //if accountID is empty set it to null
     if ($email == "null" || $email == "") {
@@ -117,11 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateAccount'])) {
         //update the Account
         remove_user_from_teachers($id);
         remove_user_from_parents($id);
-        $respon = update_account($id, $name, $email, $phone, $parentid, $teacherid);
+        $respon = update_account($id, $name, $email, $phone, $parentid, $teacherid, $admin);
     } else {
         //create the Accounts   
-        $respon = create_account($id, $name, $email, $phone, $parentid, $teacherid);
-        
+        $respon = create_account($id, $name, $email, $phone, $parentid, $teacherid, $admin);
     }
     if ($respon) {
         $response = array(
@@ -276,6 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
                     $('#AccountPhone').val(Account.phone);
                     $('#ParentSelector').val(Account.parentid);
                     $('#TeacherSelector').val(Account.teacherid);
+                    $('#AccountAdmin').prop('checked', Account.admin == 1);
                     //refresh the selects
                     $('#ParentSelector').trigger('change');
                     $('#TeacherSelector').trigger('change');
@@ -295,6 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
             $('#AccountPhone').val("");
             $('#ParentSelector').val("");
             $('#TeacherSelector').val("");
+            $('#AccountAdmin').prop('checked', false);
             //change the text in the submit button to add
             $('#ParentSelector').trigger('change');
             $('#TeacherSelector').trigger('change');
@@ -326,6 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
                 $phone = $('#AccountPhone').val();
                 $parentid = $('#ParentSelector').val();
                 $teacherid = $('#TeacherSelector').val();
+                $admin = $('#AccountAdmin').is(':checked') ? 1 : 0;
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     //if the request is complete
@@ -351,7 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
                 };
                 xhttp.open("POST", "/admin/accounts.php", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid);
+                xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid + "&admin=" + $admin);
             } else {
                 //if the button says update
                 //show the confirmation popup
@@ -386,6 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
             $phone = $('#AccountPhone').val();
             $parentid = $('#ParentSelector').val();
             $teacherid = $('#TeacherSelector').val();
+            $admin = $('#AccountAdmin').is(':checked') ? 1 : 0;
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 //if the request is complete
@@ -413,7 +421,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
             };
             xhttp.open("POST", "/admin/accounts.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid);
+            xhttp.send("updateAccount=true" + "&id=" + $id + "&name=" + $name + "&email=" + $email + "&phone=" + $phone + "&parentid=" + $parentid + "&teacherid=" + $teacherid + "&admin=" + $admin);
         });
         //on click of the cancel button
         $(document).on('click', '#cancelButton', function() {
@@ -574,6 +582,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['SendEmails'])) {
                     <select class="form-control" id="TeacherSelector">
 
                     </select>
+                    <!-- admin checkbox-->
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="AccountAdmin">
+                        <label class="form-check-label" for="AccountAdmin">Admin</label>
+                    </div>
+                    <br>
                     <!--submit button-->
                     <button type="submit" id="submitFormButton" class="btn btn-primary">Add</button>
                     <!--clear button-->

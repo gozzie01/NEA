@@ -351,14 +351,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteteacher'])) {
                         var response = JSON.parse(this.responseText);
                         if (response.error) {
                             $('#error').html(response.error);
-                        } else {
-                            if (response.success) {
-                                $('#error').html(response.success);
-                                $('#clear').click();
-                                $('#confirm').hide();
-                                updateTable();
-                            }
                         }
+                        if (response.success) {
+                            $('#error').html(response.success);
+                            $('#clear').click();
+                            $('#confirm').hide();
+                            updateTable();
+                        }
+
                     } else {
                         alert(this.responseText);
                     }

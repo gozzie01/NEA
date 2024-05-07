@@ -7,6 +7,8 @@ session_start();
 require_once 'classdefs.php';
 require_once 'db.php';
 require_once 'email.php';
+
+
 function is_logged_in()
 {
     //if user session is set, return true
@@ -1132,8 +1134,20 @@ function update_teacher($id, $name, $pastoral, $classes, $account)
     if (!teacher_exists($id)) {
         return false;
     }
+    if ($account == "") {
+        $account = null;
+    } else if ($account == "null") {
+        $account = null;
+    } else if ($account == 0) {
+        $account = null;
+    }
+
     //check if the values passed are valid
     if (!is_string($name) || !is_int($pastoral)) {
+        return false;
+    }
+    //if name is longer than 50 characters then return false
+    if (strlen($name) > 50) {
         return false;
     }
     //allow account to be unset or null
@@ -1146,6 +1160,7 @@ function update_teacher($id, $name, $pastoral, $classes, $account)
     if (!is_null($classes)) {
         foreach ($classes as $class) {
             if (!class__exists($class)) {
+                echo "class invalid";
                 return false;
             }
         }
@@ -1187,6 +1202,14 @@ function create_teacher($id, $name, $pastoral, $classes, $account)
     if (teacher_exists($id)) {
         return false;
     }
+    if ($account == "") {
+        $account = null;
+    } else if ($account == "null") {
+        $account = null;
+    } else if ($account == 0) {
+        $account = null;
+    }
+
     //check if the values passed are valid
     if (!is_string($name) || !is_int($pastoral)) {
         return false;
@@ -1521,7 +1544,7 @@ function create_parent($id, $name, $account, $students)
     return true;
 }
 
-function create_account($id, $name, $email, $phone, $parentid, $teacherid)
+function create_account($id, $name, $email, $phone, $parentid, $teacherid, $admin = 0)
 {
     if (account_exists($id)) {
         return false;
@@ -1542,9 +1565,9 @@ function create_account($id, $name, $email, $phone, $parentid, $teacherid)
         }
     }
     //create the account
-    $sql = "INSERT INTO User (ID, Name, Email, Phone) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO User (ID, Name, Email, Phone, Admin) VALUES (?, ?, ?, ?, ?)";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("isss", $id, $name, $email, $phone);
+    $stmt->bind_param("isssi", $id, $name, $email, $phone, $admin);
     $stmt->execute();
     $stmt->close();
     //create the parent
@@ -1629,7 +1652,7 @@ function delete_parent($id)
     return true;
 }
 
-function update_account($id, $name, $email, $phone, $parentid, $teacherid)
+function update_account($id, $name, $email, $phone, $parentid, $teacherid, $admin = 0)
 {
     if (!account_exists($id)) {
         return false;
@@ -1650,9 +1673,9 @@ function update_account($id, $name, $email, $phone, $parentid, $teacherid)
         }
     }
     //update the account
-    $sql = "UPDATE User SET Name=?, Email=?, Phone=? WHERE ID=?";
+    $sql = "UPDATE User SET Name=?, Email=?, Phone=? Admin=? WHERE ID=?";
     $stmt = $GLOBALS['db']->prepare($sql);
-    $stmt->bind_param("sssi", $name, $email, $phone, $id);
+    $stmt->bind_param("sssii", $name, $email, $phone, $admin, $id);
     $stmt->execute();
     $stmt->close();
     //update the parent
@@ -2410,22 +2433,22 @@ function get_all_events_of_student($student)
             if ($events[$i]->getID() == (int)$eventid) {
                 continue;
             }
+            $events[] = new Event((int)$eventid);
+            //set the name of the event
+            $events[count($events) - 1]->setName($name);
+            //set the date of the event
+            $events[count($events) - 1]->setStartTime($StartTime);
+            //set the end time of the event
+            $events[count($events) - 1]->setEndTime($EndTime);
+            //set the open time of the event
+            $events[count($events) - 1]->setOpenTime($OpenTime);
+            //set the close time of the event
+            $events[count($events) - 1]->setCloseTime($CloseTime);
+            //set the slot duration of the event
+            $events[count($events) - 1]->setSlotDuration($SlotDuration);
+            //set the year group of the event
+            $events[count($events) - 1]->setYear($YearGroup);
         }
-        $events[] = new Event((int)$eventid);
-        //set the name of the event
-        $events[count($events) - 1]->setName($name);
-        //set the date of the event
-        $events[count($events) - 1]->setStartTime($StartTime);
-        //set the end time of the event
-        $events[count($events) - 1]->setEndTime($EndTime);
-        //set the open time of the event
-        $events[count($events) - 1]->setOpenTime($OpenTime);
-        //set the close time of the event
-        $events[count($events) - 1]->setCloseTime($CloseTime);
-        //set the slot duration of the event
-        $events[count($events) - 1]->setSlotDuration($SlotDuration);
-        //set the year group of the event
-        $events[count($events) - 1]->setYear($YearGroup);
     }
     $stmt->close();
     //sort the array by date so that the first event is the next event
@@ -2801,7 +2824,7 @@ function get_all_slots_of_event($eventid)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE Event = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("i", $eventid);
     $stmt->execute();
@@ -2834,7 +2857,7 @@ function get_all_slots_of_event_of_student($eventid, $student)
     $Parent = "";
     $ClassName = "";
     $TeacherName = "";
-    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE EventID = ? AND Student = ? ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName FROM Times WHERE Event = ? AND Student = ? ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->bind_param("ii", $eventid, $student);
     $stmt->execute();
@@ -2892,7 +2915,6 @@ function get_all_slots_of_event_of_teacher($eventid, $teacher)
 function generate_timetable($eventid)
 {
     $slots = get_all_prefslots_of_event($eventid);
-    echo count($slots);
     $event = new Event($eventid);
     $event->update();
 
@@ -2936,11 +2958,9 @@ function generate_timetable($eventid)
     //get the legnth of the event in minutes then divide by the duration of the slots to get the number of slots
     $StartTime = new DateTime($event->getStartTime());
     $EndTime = new DateTime($event->getEndTime());
-    $length = $StartTime->diff($EndTime)->i;
+    $length = $StartTime->diff($EndTime)->i + $StartTime->diff($EndTime)->h * 60;
     $length = (int) $length;
-    echo $length;
-    $duration = (int)($length / $event->getSlotDuration());
-    echo $duration;
+    $duration = (int)($length / $event->getSlotDuration()) + 1;
     $teachers = array();
     $parents = array();
     foreach ($slots as $slot) {
@@ -2976,8 +2996,8 @@ function generate_timetable($eventid)
         }
         //convert the times to a number of slots from the start, by difference / slot duration
 
-        $parentMin[] = (int)(($min->diff($StartTime))->i / $event->getSlotDuration());
-        $parentMax[] = (int)(($max->diff($StartTime))->i / $event->getSlotDuration());
+        $parentMin[] = (int)((($min->diff($StartTime))->i + $min->diff($StartTime)->h * 60) / ($event->getSlotDuration() * 10000));
+        $parentMax[] = (int)((($max->diff($StartTime))->i + $max->diff($StartTime)->h * 60) / $event->getSlotDuration()) + 1;
     }
     $wantedAppointments = array();
     $appointments = array();
@@ -3001,18 +3021,94 @@ function generate_timetable($eventid)
         "parentMax" => $parentMax
     );
     $json = json_encode($timetable);
-    echo $json;
     //write it to a json file in the folder TimetableGenerator
-    $file = fopen("E:/projects/php/php/src/Admin/input.json", "w");
+    $file = fopen($GLOBALS['rootPath'] . "/Admin/input.json", "w");
     fwrite($file, $json);
     fclose($file);
     $ea = exec("E:\projects\php\php\src\TimetableGenerator\TimetableGenerator.exe", $output, $return_var);
-    echo $ea;
-    echo count($output);
-    foreach ($output as $line) {
-        echo $line;
+    $file = fopen($GLOBALS['rootPath'] . "/Admin/output.json", "r");
+    $json = fread($file, filesize($GLOBALS['rootPath'] . "/Admin/output.json"));
+    echo $json;
+    fclose($file);
+    $output = json_decode($json, true);
+    //because of the way the generator works only teacher ids and parent ids are present so to get the appointments, we need to order the prefslots so that if a parent has 2 children and they share a teacher then if one is in the wanted list this will be selected first
+    //the out put json looks like this
+    /*
+    {
+        "appointments":
+        [
+            {
+                "teacher": teacher id,
+                "parent": parent id
+                "slot": slot number
+            }
+        ]
     }
+    */
+    //clear the slots of the event
+    $sql = "DELETE FROM Times WHERE Event = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $stmt->close();
+    $StartTime = new DateTime($event->getStartTime());
+    // if the slot is set to -2 then the appointment is not possible
+    // loop through the appointments and add them to the database
+    if ($output !== null && isset($output["appointments"])) {
+        foreach ($output["appointments"] as $appointment) {
+            if ($appointment["slot"] == -2) {
+                continue;
+            }
+            $potMatches = array();
+            // compare the list of prefslots to the appointment to find potential matches
+            foreach ($slots as $slot) {
+                if ($slot->getTeacher() == $appointment["teacher"] && $slot->getParent() == $appointment["parent"]) {
+                    $potMatches[] = $slot;
+                }
+            }
+            // check which of the slots is marked as wanted if none pick the first one if one is pick that then remove that slot from slots
+            $wanted = null;
+            foreach ($potMatches as $potMatch) {
+                if (in_array($potMatch->getClass(), get_wanted_classids_of_student_of_event($potMatch->getStudent(), $eventid))) {
+                    $wanted = $potMatch;
+                    break;
+                }
+            }
+            if (is_null($wanted)) {
+                $wanted = $potMatches[0];
+            }
+            $key = array_search($wanted, $slots);
+            unset($slots[$key]);
+            //add the slot to the database
+            create_slot($eventid, $wanted->getTeacher(), $wanted->getClass(), $wanted->getStudent(), $wanted->getParent(), $StartTime->add(new DateInterval("PT" . $appointment["slot"] * $event->getSlotDuration() . "M"))->format("Y-m-d H:i:s"), $event->getSlotDuration());
+            //set starttime to the start time of the event
+            $StartTime = new DateTime($event->getStartTime());
+        }
+    }
+}
 
+function create_slot($eventid, $teacher, $class, $student, $parent, $starttime, $duration)
+{
+    $sql = "INSERT INTO Times (StartTime, Duration, Teacher, Class, Student, Parent, Event) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("siiiiii", $starttime, $duration, $teacher, $class, $student, $parent, $eventid);
+    $stmt->execute();
+    $stmt->close();
+    $last_id = $GLOBALS['db']->insert_id;
+
+    //set the classname to the current class name
+    $sql = "UPDATE Times SET ClassName = (SELECT Name FROM Class WHERE ID = ?) WHERE ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $class, $last_id);
+    $stmt->execute();
+    $stmt->close();
+    //set the teacher name to the current teacher name
+    $sql = "UPDATE Times SET TeacherName = (SELECT Name FROM Teacher WHERE ID = ?) WHERE ID = ?";
+    $stmt = $GLOBALS['db']->prepare($sql);
+    $stmt->bind_param("ii", $teacher, $last_id);
+    $stmt->execute();
+    $stmt->close();
+    return true;
 }
 
 function get_all_slots()
@@ -3027,7 +3123,7 @@ function get_all_slots()
     $ClassName = "";
     $TeacherName = "";
     $EventID = "";
-    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName, EventID FROM Times ORDER BY StartTime";
+    $sql = "SELECT ID, StartTime, Duration, Teacher, Class, Student, Parent, ClassName, TeacherName, Event FROM Times ORDER BY StartTime";
     $stmt = $GLOBALS['db']->prepare($sql);
     $stmt->execute();
     $stmt->bind_result($ID, $StartTime, $Duration, $Teacher, $Class, $Student, $Parent, $ClassName, $TeacherName, $EventID);
@@ -3052,6 +3148,18 @@ function get_all_slots()
 
 function sendAllEmails()
 {
+    $pwdLess = get_all_accounts_without_password();
+    foreach ($pwdLess as $account) {
+        //generate a reset token
+        $token = bin2hex(random_bytes(32));
+        $id = $account->getID();
+        //set the reset token
+        $sql = "UPDATE User SET ResetToken = ? WHERE ID = ?";
+        $stmt = $GLOBALS['db']->prepare($sql);
+        $stmt->bind_param('si', $token, $id);
+        $stmt->execute();
+        $stmt->close();
+    }
     $accounts = get_all_toreset();
     foreach ($accounts as $account) {
         $email = $account->getEmail();
@@ -3082,41 +3190,24 @@ function sendAllEmails()
             $stmt->close();
         }
     }
-    $toRegister = get_all_accounts_without_password();
-    foreach ($toRegister as $account) {
-        $email = $account->getEmail();
-        $name = $account->getName();
-        $id = $account->getID();
-        $subject = "Account Registration";
-        //generate and set a reset password token
-        $token = bin2hex(random_bytes(32));
-        $sql = "UPDATE User SET ResetToken = ? WHERE ID = ?";
-        $stmt = $GLOBALS['db']->prepare($sql);
-        $stmt->bind_param('si', $token, $id);
-        $stmt->execute();
-        $stmt->close();
-        $message = generate_registration_email($name, "https://www.samgosden.tech/registration.php?token=" . $token);
-        sendEmail($email, $subject, $message, true);
-    }
 }
 
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "on") {
     header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
 }
-if(file_exists("E:/projects/php/php/src/TimetableGenerator/output.json")){
-    $file = fopen("E:/projects/php/php/src/TimetableGenerator/output.json", "r");
+if (file_exists($rootPath . "/TimetableGenerator/output.json")) {
+    $file = fopen($rootPath . "/TimetableGenerator/output.json", "r");
     $json = fgets($file);
     fclose($file);
 }
 //when this file is loaded, if autoemailtimer.txt exists, check if it is time to send emails
-if (file_exists("autoemailtimer.txt")) {
-    return;
-    $file = fopen("autoemailtimer.txt", "r");
+if (file_exists($rootPath . "/autoemailtimer.txt")) {
+    $file = fopen($rootPath . "/autoemailtimer.txt", "r");
     $time = fgets($file);
     fclose($file);
     if (time() >= $time) {
-        $file = fopen("autoemailtimer.txt", "w");
+        $file = fopen($rootPath . "/autoemailtimer.txt", "w");
         sendAllEmails();
         //set the time to 24 hours from now
         fwrite($file, time() + 86400);

@@ -27,6 +27,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['getEventDetails'])) {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generateTimetable'])) {
+    $id = $_POST['id'];
+    $event = new Event($id);
+    $event->update();
+    $respon = generate_timetable($event->getID());
+    if ($respon) {
+        $response = array(
+            "success" => "Timetable generated successfully"
+        );
+        echo json_encode($response);
+        exit();
+    } else {
+        $response = array(
+            "error" => "Timetable could not be generated"
+        );
+        echo json_encode($response);
+        exit();
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateClasses'])) {
     $id = $_POST['id'];
     $classes = $_POST['classes'];
@@ -341,6 +361,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateEvent'])) {
                     $('#message').html('<div class="alert alert-danger" role="alert">Event could not be updated' + msg + '</div>');
                 }
 
+            });
+            //generate timetable button
+            $('#generateTimetable').click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "eventman.php",
+                    data: {
+                        generateTimetable: true,
+                        id: <?php echo $id; ?>
+                    },
+                    success: function(response) {
+                        var data = JSON.parse(response);
+                        if (data.success) {
+                            $('#message').html('<div class="alert alert-success" role="alert">Timetable generated successfully</div>');
+                        } else {
+                            $('#message').html('<div class="alert alert-danger" role="alert">Timetable could not be generated' + data.error + '</div>');
+                        }
+                    },
+                    //failure
+                    error: function() {
+                        $('#message').html('<div class="alert alert-danger" role="alert">Timetable could not be generated</div>');
+                    }
+
+                });
             });
             // search update when the input is changed
             $('#myInput').change(function() {

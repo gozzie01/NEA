@@ -28,9 +28,10 @@ require_once './tutils.php';
                 if (new DateTime($event->getStartTime()) < new DateTime()) {
                     continue;
                 }
+                $event->update();
                 $wantedStudents = get_wanted_students_without_prefslot($event->getID());
                 //if count is not zero display a warning with the number of students left to book and the name of the event
-                if (count($wantedStudents) > 0) {
+                if (count($wantedStudents) > 0 && $event->getStatus()!=4) {
         ?>
                     <div class="row">
                         <div class="col-md-12">
